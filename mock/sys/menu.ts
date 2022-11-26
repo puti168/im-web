@@ -337,6 +337,27 @@ const EmployeeManagement = {
     },
   ],
 };
+const feat = {
+  path: '/feat',
+  name: 'FeatDemo',
+  component: 'LAYOUT',
+  redirect: '/feat/ws',
+  meta: {
+    orderNo: 19,
+    icon: 'bx:bx-home',
+    title: '功能',
+  },
+  children: [
+    {
+      path: 'ws',
+      name: 'WebSocket',
+      component: '/demo/feat/ws/index',
+      meta: {
+        title: 'websocket测试',
+      },
+    },
+  ],
+};
 export default [
   {
     url: '/basic-api/getMenuList',
@@ -363,8 +384,8 @@ export default [
           menu = [dashboardRoute, authRoute, levelRoute, linkRoute];
           break;
         case '3':
-          dashboardRoute.redirect = dashboardRoute.path + '/' +  dashboardRoute.children[1].path;
-          menu = [dashboardRoute,historyRoute,SysConfigRoute,EmployeeManagement];
+          dashboardRoute.redirect = dashboardRoute.path + '/' + dashboardRoute.children[1].path;
+          menu = [dashboardRoute, historyRoute, SysConfigRoute, EmployeeManagement, feat];
           break;
         default:
           menu = [];
