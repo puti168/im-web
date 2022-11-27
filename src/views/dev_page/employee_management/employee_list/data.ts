@@ -167,4 +167,15 @@ export const schemas: FormSchema[] = [
       span: 24,
     },
   },
+  {
+    field: 'id',
+    component: 'Input',
+    show:false,
+    defaultValue:'',
+    rules: [{ required: true }],
+    label: '备注',
+    colProps: {
+      span: 24,
+    },
+  },
 ];

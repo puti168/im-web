@@ -28,7 +28,8 @@ import { useMessage } from '/@/hooks/web/useMessage';
       const [
         registerForm,
         {
-          validate
+          validate,
+          resetFields,
         },
       ] = useForm({
         labelWidth: 120,
@@ -60,6 +61,7 @@ import { useMessage } from '/@/hooks/web/useMessage';
       }
       //监听关闭打开
       function handleVisibleChange(v) {
+        if(!v) resetFields()
         v && props.userData && nextTick(() => onDataReceive(props.userData));
       }
       return { 
