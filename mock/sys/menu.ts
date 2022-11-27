@@ -234,6 +234,28 @@ const linkRoute = {
     },
   ],
 };
+//在线客服
+const onlineService = {
+  path: '/online_service',
+  name: 'online_service',
+  component: 'LAYOUT',
+  redirect: '/online_service/index',
+  meta: {
+    orderNo: 0,
+    icon: 'bx:bx-home',
+    title: '在线客服',
+  },
+  children: [
+    {
+      path: 'index',
+      name: 'online_service-index',
+      component: '/dev_page/online_service/index',
+      meta: {
+        title: '在线客服',
+      },
+    },
+  ],
+};
 // 历史
 const historyRoute = {
   path: '/history_record',
@@ -385,7 +407,14 @@ export default [
           break;
         case '3':
           dashboardRoute.redirect = dashboardRoute.path + '/' + dashboardRoute.children[1].path;
-          menu = [dashboardRoute, historyRoute, SysConfigRoute, EmployeeManagement, feat];
+          menu = [
+            dashboardRoute,
+            onlineService,
+            historyRoute,
+            SysConfigRoute,
+            EmployeeManagement,
+            feat,
+          ];
           break;
         default:
           menu = [];
