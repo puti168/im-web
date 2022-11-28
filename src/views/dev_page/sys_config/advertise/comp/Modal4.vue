@@ -2,13 +2,13 @@
   <BasicModal
     v-bind="$attrs"
     @register="register"
-    :title="modelRef.id?'编辑':'新增'"
+    :title="modelRef.name"
     @visible-change="handleVisibleChange"
     @ok="handleOK"
   >
     <div class="pr-3px">
       <Tabs v-model:activeKey="activeKey" @change="handleChangeTabs" type="card">
-        <TabPane key="name1" tab="默认语言"></TabPane>
+        <TabPane key="name1" tab="*默认语言"></TabPane>
         <TabPane key="name2" tab="越南语"></TabPane>
         <TabPane key="name3" tab="印地语"></TabPane>
         <TabPane key="name4" tab="葡萄牙语"></TabPane>
@@ -25,6 +25,7 @@
   import { BasicForm, useForm } from '/@/components/Form/index';
   import { schemas } from '../data'
   import { useMessage } from '/@/hooks/web/useMessage';
+
   export default defineComponent({
     components: { BasicModal, BasicForm, TabPane, Tabs},
     props: {
@@ -59,7 +60,7 @@
             if(!res.name1) {
               createMessage.warning('请填写默认语言！')
             }else{
-              createMessage.success('保存成功'); 
+              createMessage.success('保存成功 '+modelRef.value.name+'  '+modelRef.value.type); 
               closeModal()
             }
           }

@@ -3,7 +3,6 @@ import {
   FormSchema,
 } from '/@/components/Table';
 
-
  
  export const columns: BasicColumn[] = [
   {
@@ -22,6 +21,28 @@ import {
     width: 150,
   }
 ];
+
+ 
+ export const dataSource = [
+    {
+      name: '顶部banner',
+      name7:'2021-11-11',
+      name2:'你好',
+      type:1,
+    },
+    {
+      name: '循环文案',
+      name7:'2021-11-11',
+      name2:'你好',
+      type:2,
+    },
+    {
+      name: '开场文案',
+      name7:'2021-11-11',
+      name2:'你好',
+      type:3,
+    },
+  ];
 
 export const schemas: FormSchema[] = [
   {
@@ -88,6 +109,24 @@ export const schemas: FormSchema[] = [
     label: 'ID',
     colProps: {
       span: 24,
+    },
+  },
+];
+
+
+import { uploadApi } from '/@/api/sys/upload';
+export const schemasUpload: FormSchema[] = [
+  {
+    field: 'field1',
+    component: 'Upload',
+    label: '',
+    colProps: {
+      span: 8,
+    },
+    rules: [{ required: true, message: '请选择上传文件' }],
+    componentProps: {
+      api: uploadApi,
+      accept:['image/*'],
     },
   },
 ];
