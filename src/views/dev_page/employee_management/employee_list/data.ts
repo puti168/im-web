@@ -4,37 +4,37 @@ import {
 } from '/@/components/Table';
 
 
- 
- export const columns: BasicColumn[] = [
+
+export const columns: BasicColumn[] = [
   {
     title: '账号',
     dataIndex: 'name',
     width: 120,
-  },{
+  }, {
     title: '昵称',
     dataIndex: 'time',
     width: 120,
-  },{
+  }, {
     title: '状态',
     dataIndex: 'name5',
     width: 50,
-  },{
+  }, {
     title: '所属组别',
     dataIndex: 'name7',
     width: 120,
-  },{
+  }, {
     title: '所属组别',
     dataIndex: 'name7',
     width: 100,
-  },{
+  }, {
     title: '最后登录时间',
     dataIndex: 'name7',
     width: 150,
-  },{
+  }, {
     title: '最后登录IP',
     dataIndex: 'name7',
     width: 120,
-  },{
+  }, {
     title: '备注',
     dataIndex: 'name7',
     width: 120,
@@ -45,7 +45,7 @@ export const schemas: FormSchema[] = [
   {
     field: 'name1',
     component: 'Input',
-    defaultValue:'',
+    defaultValue: '',
     rules: [{ required: true }],
     label: '登录账号',
     colProps: {
@@ -55,10 +55,10 @@ export const schemas: FormSchema[] = [
   {
     field: 'name1',
     component: 'Input',
-    componentProps:{
-      type:'password'
+    componentProps: {
+      type: 'password'
     },
-    defaultValue:'',
+    defaultValue: '',
     rules: [{ required: true }],
     label: '登录密码',
     colProps: {
@@ -68,10 +68,10 @@ export const schemas: FormSchema[] = [
   {
     field: 'name1',
     component: 'Input',
-    componentProps:{
-      type:'password'
+    componentProps: {
+      type: 'password'
     },
-    defaultValue:'',
+    defaultValue: '',
     rules: [{ required: true }],
     label: '确认密码',
     colProps: {
@@ -81,8 +81,8 @@ export const schemas: FormSchema[] = [
   {
     field: 'name1',
     component: 'Select',
-    componentProps:{
-      options:[ {
+    componentProps: {
+      options: [{
         label: '组别1',
         value: "0",
         key: 'VIP0',
@@ -93,7 +93,7 @@ export const schemas: FormSchema[] = [
         key: 'VIP1',
       },]
     },
-    defaultValue:'',
+    defaultValue: '',
     rules: [{ required: true }],
     label: '所属组别',
     colProps: {
@@ -103,8 +103,8 @@ export const schemas: FormSchema[] = [
   {
     field: 'name1',
     component: 'Select',
-    componentProps:{
-      options:[ {
+    componentProps: {
+      options: [{
         label: '中文',
         value: "0",
         key: 'VIP0',
@@ -115,7 +115,7 @@ export const schemas: FormSchema[] = [
         key: 'VIP1',
       },]
     },
-    defaultValue:'',
+    defaultValue: '',
     rules: [{ required: true }],
     label: '使用语言',
     colProps: {
@@ -125,9 +125,9 @@ export const schemas: FormSchema[] = [
   {
     field: 'name1',
     component: 'Input',
-    componentProps:{
+    componentProps: {
     },
-    defaultValue:'',
+    defaultValue: '',
     rules: [{ required: true }],
     label: '昵称',
     colProps: {
@@ -160,7 +160,7 @@ export const schemas: FormSchema[] = [
   {
     field: 'name3',
     component: 'InputTextArea',
-    defaultValue:'',
+    defaultValue: '',
     rules: [{ required: true }],
     label: '备注',
     colProps: {
@@ -170,8 +170,8 @@ export const schemas: FormSchema[] = [
   {
     field: 'id',
     component: 'Input',
-    show:false,
-    defaultValue:'',
+    show: false,
+    defaultValue: '',
     rules: [{ required: true }],
     label: '备注',
     colProps: {

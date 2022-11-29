@@ -4,8 +4,8 @@ import {
 } from '/@/components/Table';
 
 
- 
- export const columns: BasicColumn[] = [
+
+export const columns: BasicColumn[] = [
   {
     title: '组别名称',
     dataIndex: 'name',
@@ -32,10 +32,10 @@ export const schemas: FormSchema[] = [
   {
     field: 'name1',
     component: 'Input',
-    componentProps:{
-      type:'number'
+    componentProps: {
+      type: 'number'
     },
-    defaultValue:'',
+    defaultValue: '',
     rules: [{ required: true }],
     label: '组别名称',
     colProps: {
@@ -68,7 +68,7 @@ export const schemas: FormSchema[] = [
   {
     field: 'name3',
     component: 'InputTextArea',
-    defaultValue:'',
+    defaultValue: '',
     rules: [{ required: true }],
     label: '备注',
     colProps: {
