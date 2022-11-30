@@ -15,7 +15,7 @@
 <script lang="ts" setup>
 import { PageWrapper } from '/@/components/Page';
 import { BasicTable, useTable } from '/@/components/Table';
-import { columns , dataSource} from './data';
+import { columns, dataSource } from './data';
 import { useModal } from '/@/components/Modal'
 import Modal4 from './comp/Modal4.vue';
 import UploadModal from './comp/UploadModal.vue';

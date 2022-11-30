@@ -1,6 +1,6 @@
 <template>
-  <BasicModal v-bind="$attrs" @register="register" :title="modelRef.id ? '编辑' : '新增'" @visible-change="handleVisibleChange"
-    @ok="handleOK">
+  <BasicModal v-bind="$attrs" @register="register" :title="modelRef.id ? '编辑' : '新增'"
+    @visible-change="handleVisibleChange" @ok="handleOK">
     <div class="pr-3px">
       <BasicForm @register="registerForm" :model="modelRef" />
     </div>

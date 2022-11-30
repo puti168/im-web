@@ -1,5 +1,5 @@
 import { BasicColumn } from '/@/components/Table';
- 
+
 export const columns: BasicColumn[] = [
   {
     title: 'ID',
