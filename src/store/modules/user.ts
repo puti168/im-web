@@ -83,7 +83,7 @@ export const useUserStore = defineStore({
      * @description: login
      */
     async login(
-      params: LoginParams & {
+      params: LoginParams | any & {
         goHome?: boolean;
         mode?: ErrorMessageMode;
       },
@@ -124,7 +124,23 @@ export const useUserStore = defineStore({
     },
     async getUserInfoAction(): Promise<UserInfo | null> {
       if (!this.getToken) return null;
-      const userInfo = await getUserInfo();
+      // const userInfo = await getUserInfo();
+      const userInfo = {
+        userId: '3',
+        username: 'web',
+        password: '123456',
+        realName: '客服1',
+        avatar: 'https://q1.qlogo.cn/g?b=qq&nk=339449197&s=640',
+        desc: 'tester',
+        token: this.getToken,
+        homePath: '/dashboard/workbench',
+        roles: [
+          {
+            roleName: 'Tester',
+            value: 'test',
+          },
+        ],
+      };
       const { roles = [] } = userInfo;
       if (isArray(roles)) {
         const roleList = roles.map((item) => item.value) as RoleEnum[];

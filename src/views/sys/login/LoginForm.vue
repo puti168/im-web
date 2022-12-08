@@ -8,19 +8,27 @@
     v-show="getShow"
     @keypress.enter="handleLogin"
   >
-    <FormItem name="account" class="enter-x">
+    <FormItem name="distributorId" class="enter-x">
       <Input
         size="large"
-        v-model:value="formData.account"
+        v-model:value="formData.distributorId"
+        placeholder="分销商ID"
+        class="fix-auto-fill"
+      />
+    </FormItem>
+    <FormItem name="userName" class="enter-x">
+      <Input
+        size="large"
+        v-model:value="formData.userName"
         :placeholder="t('sys.login.userName')"
         class="fix-auto-fill"
       />
     </FormItem>
-    <FormItem name="password" class="enter-x">
+    <FormItem name="pwd" class="enter-x">
       <InputPassword
         size="large"
         visibilityToggle
-        v-model:value="formData.password"
+        v-model:value="formData.pwd"
         :placeholder="t('sys.login.password')"
       />
     </FormItem>
@@ -121,8 +129,13 @@
   const rememberMe = ref(false);
 
   const formData = reactive({
-    account: 'web',
-    password: '123456',
+    userName: 'web',
+    pwd: '123456',
+    distributorId: 0,
+    isAnonymous:true,
+    lanCode:'CHT',
+    email:'',
+    tel:'',
   });
 
   const { validForm } = useFormValid(formRef);
@@ -137,8 +150,13 @@
     try {
       loading.value = true;
       const userInfo = await userStore.login({
-        password: data.password,
-        username: data.account,
+        userName: data.userName,
+        pwd: data.pwd,
+        distributorId: data.distributorId,
+        email: formData.email,
+        tel: formData.tel,
+        lanCode: formData.lanCode,
+        isAnonymous: formData.isAnonymous,
         mode: 'none', //不要默认的错误提示
       });
       if (userInfo) {

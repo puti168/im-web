@@ -126,6 +126,11 @@ export const schemasUpload: FormSchema[] = [
     rules: [{ required: true, message: '请选择上传文件' }],
     componentProps: {
       api: uploadApi,
+      multiple:true,
+      value:[
+        'https://4k.wpcoder.cn/wp-content/uploads/2022/07/1_1658113094-1600x743.png',
+      ],
+      maxSize:3,
       accept:['image/*'],
     },
   },
