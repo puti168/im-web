@@ -121,8 +121,8 @@
   const rememberMe = ref(false);
 
   const formData = reactive({
-    account: 'web',
-    password: '123456',
+    account: 'demoData',
+    password: 'demoData',
   });
 
   const { validForm } = useFormValid(formRef);
@@ -133,14 +133,18 @@
 
   async function handleLogin() {
     const data = await validForm();
+    console.log('--登录');
+    
     if (!data) return;
     try {
       loading.value = true;
       const userInfo = await userStore.login({
         password: data.password,
-        username: data.account,
+        name: data.account,
         mode: 'none', //不要默认的错误提示
       });
+      console.log(userInfo,'---userInfo');
+      
       if (userInfo) {
         notification.success({
           message: t('sys.login.loginSuccessTitle'),
