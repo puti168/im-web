@@ -8,14 +8,6 @@
     v-show="getShow"
     @keypress.enter="handleLogin"
   >
-    <FormItem name="distributorId" class="enter-x">
-      <Input
-        size="large"
-        v-model:value="formData.distributorId"
-        placeholder="分销商ID"
-        class="fix-auto-fill"
-      />
-    </FormItem>
     <FormItem name="userName" class="enter-x">
       <Input
         size="large"
@@ -129,8 +121,8 @@
   const rememberMe = ref(false);
 
   const formData = reactive({
-    userName: 'web',
-    pwd: '123456',
+    userName: 'demoData',
+    pwd: 'demoData',
     distributorId: 0,
     isAnonymous:true,
     lanCode:'CHT',
@@ -150,8 +142,8 @@
     try {
       loading.value = true;
       const userInfo = await userStore.login({
-        userName: data.userName,
-        pwd: data.pwd,
+        name: data.userName,
+        password: data.pwd,
         distributorId: data.distributorId,
         email: formData.email,
         tel: formData.tel,
