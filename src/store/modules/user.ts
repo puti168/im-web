@@ -91,23 +91,19 @@ export const useUserStore = defineStore({
       try {
         const { goHome = true, mode, ...loginParams } = params;
         const data = await loginApi(loginParams, mode);
-        console.log(data,'---data');
-        const { token } = data;
-        console.log(data,'---data');
-        
+        const {  loginToken:token } = data;
         // save token
         this.setToken(token);
-        return this.afterLoginAction(goHome);
+        return this.afterLoginAction(data,goHome);
       } catch (error) {
         console.log(error,'---data');
         return Promise.reject(error);
       }
     },
-    async afterLoginAction(goHome?: boolean): Promise<GetUserInfoModel | null> {
+    async afterLoginAction(data:any,goHome?: boolean): Promise<GetUserInfoModel | null> {
       if (!this.getToken) return null;
       // get user info
-      const userInfo = await this.getUserInfoAction();
-
+      const userInfo = await this.getUserInfoAction(data);
       const sessionTimeout = this.sessionTimeout;
       if (sessionTimeout) {
         this.setSessionTimeout(false);
@@ -125,14 +121,14 @@ export const useUserStore = defineStore({
       }
       return userInfo;
     },
-    async getUserInfoAction(): Promise<UserInfo | null> {
+    async getUserInfoAction(data:any): Promise<UserInfo | null> {
       if (!this.getToken) return null;
       // const userInfo = await getUserInfo();
       const userInfo = {
-        userId: '3',
-        username: 'web',
-        password: '123456',
-        realName: '客服1',
+        userId: data.id,
+        username: data.name,
+        password: data.password,
+        realName: data.realName,
         avatar: 'https://q1.qlogo.cn/g?b=qq&nk=339449197&s=640',
         desc: 'tester',
         token: this.getToken,
@@ -159,13 +155,13 @@ export const useUserStore = defineStore({
      * @description: logout
      */
     async logout(goLogin = false) {
-      if (this.getToken) {
-        try {
-          await doLogout();
-        } catch {
-          console.log('注销Token失败');
-        }
-      }
+      // if (this.getToken) {
+      //   try {
+      //     await doLogout();
+      //   } catch {
+      //     console.log('注销Token失败');
+      //   }
+      // }
       this.setToken(undefined);
       this.setSessionTimeout(false);
       this.setUserInfo(null);

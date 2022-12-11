@@ -123,11 +123,6 @@
   const formData = reactive({
     userName: 'demoData',
     pwd: 'demoData',
-    distributorId: 0,
-    isAnonymous:true,
-    lanCode:'CHT',
-    email:'',
-    tel:'',
   });
 
   const { validForm } = useFormValid(formRef);
@@ -144,11 +139,6 @@
       const userInfo = await userStore.login({
         name: data.userName,
         password: data.pwd,
-        distributorId: data.distributorId,
-        email: formData.email,
-        tel: formData.tel,
-        lanCode: formData.lanCode,
-        isAnonymous: formData.isAnonymous,
         mode: 'none', //不要默认的错误提示
       });
       if (userInfo) {

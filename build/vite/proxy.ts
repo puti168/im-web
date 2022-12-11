@@ -27,9 +27,10 @@ export function createProxy(list: ProxyList = []) {
       changeOrigin: true,
       ws: true,
       rewrite: (path) => {
-        let aa = path.replace(new RegExp(`^${prefix}`), '/api/backend')
-        console.log(target,'aatarget');
-        console.log(aa,'aa');
+        let aa = path.replace(new RegExp(`^${prefix}`), '')
+        aa = aa.replace('/api/menu','/swagger/chat-backend-service/menu')
+        console.log(aa);
+        
        return  aa;
       },
       // https is require secure=false
