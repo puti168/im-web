@@ -15,7 +15,7 @@ const SysConfigRoute: AppRouteModule = {
       {
         path: 'customer_service',
         name: 'customer_service',
-        component: '/@/views/dev_page/sys_config/customer_service/index',
+        component: () => import('/@/views/dev_page/sys_config/customer_service/index.vue'),
         meta: {
           title: '客服配置',
         },
@@ -23,7 +23,7 @@ const SysConfigRoute: AppRouteModule = {
       {
         path: 'advertise',
         name: 'advertise',
-        component: '/@/views/dev_page/sys_config/advertise/index',
+        component: () => import('/@/views/dev_page/sys_config/advertise/index.vue'),
         meta: {
           title: '广告设置',
         },
@@ -31,7 +31,7 @@ const SysConfigRoute: AppRouteModule = {
       {
         path: 'copywriting_quick_question',
         name: 'copywriting_quick_question',
-        component: '/@/views/dev_page/sys_config/copywriting_quick_question/index',
+        component: () => import('/@/views/dev_page/sys_config/copywriting_quick_question/index.vue'),
         meta: {
           title: '文案设置-快捷提问',
         },
@@ -39,7 +39,7 @@ const SysConfigRoute: AppRouteModule = {
       {
         path: 'copywriting_quick_reply',
         name: 'copywriting_quick_reply',
-        component: '/@/views/dev_page/sys_config/copywriting_quick_reply/index',
+        component: () => import('/@/views/dev_page/sys_config/copywriting_quick_reply/index.vue'),
         meta: {
           title: '文案设置-快捷回复',
         },

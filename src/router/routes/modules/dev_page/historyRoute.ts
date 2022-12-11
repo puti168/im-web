@@ -15,7 +15,7 @@ const historyRoute: AppRouteModule = {
     {
       path: 'dialogue_details',
       name: 'dialogue_details',
-      component: '/@/views/dev_page/history_record/dialogue_details',
+      component: () => import('/@/views/dev_page/history_record/dialogue_details.vue'),
       meta: {
         title: '对话详细',
       },

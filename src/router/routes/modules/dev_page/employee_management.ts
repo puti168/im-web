@@ -5,7 +5,7 @@ const EmployeeManagement: AppRouteModule = {
     path: '/employee_management',
     name: 'employee_management',
     component: 'LAYOUT',
-    redirect: '/@/views/employee_management/group_management',
+    redirect: 'LAYOUT',
     meta: {
       title: '员工管理',
       icon: 'bx:bx-home',
@@ -15,7 +15,7 @@ const EmployeeManagement: AppRouteModule = {
       {
         path: 'group_management',
         name: 'group_management',
-        component: '/@/views/dev_page/employee_management/group_management/index',
+        component: () => import('/@/views/dev_page/employee_management/group_management/index.vue'),
         meta: {
           title: '组别管理',
         },
@@ -23,7 +23,7 @@ const EmployeeManagement: AppRouteModule = {
       {
         path: 'employee_list',
         name: 'employee_list',
-        component: '/@/views/dev_page/employee_management/employee_list/index',
+        component: () => import('/@/views/dev_page/employee_management/employee_list/index.vue'),
         meta: {
           title: '员工列表',
         },
@@ -31,7 +31,7 @@ const EmployeeManagement: AppRouteModule = {
       {
         path: 'ip_whitelist',
         name: 'ip_whitelist',
-        component: '/@/views/dev_page/employee_management/ip_whitelist/index',
+        component: () => import('/@/views/dev_page/employee_management/ip_whitelist/index.vue'),
         meta: {
           title: 'IP白名单',
         },
