@@ -3,6 +3,7 @@ import type { AppRouteModule } from '/@/router/types';
 import { LAYOUT } from '/@/router/constant';
 const IFrame = () => import('/@/views/sys/iframe/FrameBlank.vue');
 import { t } from '/@/hooks/web/useI18n';
+import { RoleEnum } from '/@/enums/roleEnum';
 
 const iframe: AppRouteModule = {
   path: '/frame',
@@ -13,6 +14,7 @@ const iframe: AppRouteModule = {
     orderNo: 1000,
     icon: 'ion:tv-outline',
     title: t('routes.demo.iframe.frame'),
+    roles:[RoleEnum.SUPER],
   },
 
   children: [

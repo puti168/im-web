@@ -2,6 +2,7 @@ import type { AppRouteModule } from '/@/router/types';
 
 import { LAYOUT } from '/@/router/constant';
 import { t } from '/@/hooks/web/useI18n';
+import { RoleEnum } from '/@/enums/roleEnum';
 
 const setup: AppRouteModule = {
   path: '/setup',
@@ -13,6 +14,7 @@ const setup: AppRouteModule = {
     hideChildrenInMenu: true,
     icon: 'whh:paintroll',
     title: t('routes.demo.setup.page'),
+    roles:[RoleEnum.SUPER],
   },
   children: [
     {

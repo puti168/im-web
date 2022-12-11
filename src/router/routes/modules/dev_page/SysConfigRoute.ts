@@ -1,4 +1,3 @@
-import { RoleEnum } from '/@/enums/roleEnum';
 import type { AppRouteModule } from '/@/router/types';
 
 const SysConfigRoute: AppRouteModule = {
@@ -9,7 +8,6 @@ const SysConfigRoute: AppRouteModule = {
     meta: {
       title: '系统配置',
       icon: 'bx:bx-home',
-      roles: [RoleEnum.TEST]
     },
     children: [
       {

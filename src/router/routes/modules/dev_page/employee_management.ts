@@ -1,4 +1,3 @@
-import { RoleEnum } from '/@/enums/roleEnum';
 import type { AppRouteModule } from '/@/router/types';
 
 const EmployeeManagement: AppRouteModule = {
@@ -9,7 +8,6 @@ const EmployeeManagement: AppRouteModule = {
     meta: {
       title: '员工管理',
       icon: 'bx:bx-home',
-      roles: [RoleEnum.TEST]
     },
     children: [
       {

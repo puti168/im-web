@@ -2,6 +2,7 @@ import type { AppRouteModule } from '/@/router/types';
 
 import { LAYOUT } from '/@/router/constant';
 import { t } from '/@/hooks/web/useI18n';
+import { RoleEnum } from '/@/enums/roleEnum';
 
 const charts: AppRouteModule = {
   path: '/flow',
@@ -12,6 +13,7 @@ const charts: AppRouteModule = {
     orderNo: 5000,
     icon: 'tabler:chart-dots',
     title: t('routes.demo.flow.name'),
+    roles:[RoleEnum.SUPER],
   },
   children: [
     {

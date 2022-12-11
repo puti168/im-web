@@ -13,6 +13,7 @@ const permission: AppRouteModule = {
     orderNo: 15,
     icon: 'ion:key-outline',
     title: t('routes.demo.permission.permission'),
+    roles:[RoleEnum.SUPER],
   },
 
   children: [

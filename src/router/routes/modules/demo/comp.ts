@@ -2,6 +2,7 @@ import type { AppRouteModule } from '/@/router/types';
 
 import { getParentLayout, LAYOUT } from '/@/router/constant';
 import { t } from '/@/hooks/web/useI18n';
+import { RoleEnum } from '/@/enums/roleEnum';
 
 const comp: AppRouteModule = {
   path: '/comp',
@@ -11,6 +12,7 @@ const comp: AppRouteModule = {
   meta: {
     orderNo: 30,
     icon: 'ion:layers-outline',
+    roles:[RoleEnum.SUPER],
     title: t('routes.demo.comp.comp'),
   },
 

@@ -2,6 +2,7 @@ import type { AppRouteModule } from '/@/router/types';
 
 import { getParentLayout, LAYOUT } from '/@/router/constant';
 import { t } from '/@/hooks/web/useI18n';
+import { RoleEnum } from '/@/enums/roleEnum';
 
 const permission: AppRouteModule = {
   path: '/level',
@@ -12,6 +13,7 @@ const permission: AppRouteModule = {
     orderNo: 2000,
     icon: 'ion:menu-outline',
     title: t('routes.demo.level.level'),
+    roles:[RoleEnum.SUPER],
   },
 
   children: [

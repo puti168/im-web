@@ -2,6 +2,7 @@ import type { AppRouteModule } from '/@/router/types';
 
 import { getParentLayout, LAYOUT } from '/@/router/constant';
 import { t } from '/@/hooks/web/useI18n';
+import { RoleEnum } from '/@/enums/roleEnum';
 
 const feat: AppRouteModule = {
   path: '/feat',
@@ -11,6 +12,7 @@ const feat: AppRouteModule = {
   meta: {
     orderNo: 19,
     icon: 'ion:git-compare-outline',
+    roles:[RoleEnum.SUPER],
     title: t('routes.demo.feat.feat'),
   },
 

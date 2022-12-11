@@ -121,25 +121,30 @@ export const useUserStore = defineStore({
       }
       return userInfo;
     },
-    async getUserInfoAction(data:any): Promise<UserInfo | null> {
+    async getUserInfoAction(data?:any): Promise<UserInfo | null> {
       if (!this.getToken) return null;
       // const userInfo = await getUserInfo();
-      const userInfo = {
-        userId: data.id,
-        username: data.name,
-        password: data.password,
-        realName: data.realName,
-        avatar: 'https://q1.qlogo.cn/g?b=qq&nk=339449197&s=640',
-        desc: 'tester',
-        token: this.getToken,
-        homePath: '/dashboard/workbench',
-        roles: [
-          {
-            roleName: 'Tester',
-            value: 'test',
-          },
-        ],
-      };
+      let userInfo:any;
+      if(data){
+         userInfo = {
+          userId: data.id,
+          username: data.name,
+          password: data.password,
+          realName: data.realName,
+          avatar: 'https://q1.qlogo.cn/g?b=qq&nk=339449197&s=640',
+          desc: 'tester',
+          token: this.getToken,
+          homePath: '/dashboard/workbench',
+          roles: [
+            {
+              roleName: 'Tester',
+              value: 'test',
+            },
+          ],
+        };
+      }else{
+        userInfo = this.userInfo || {}
+      }
       const { roles = [] } = userInfo;
       if (isArray(roles)) {
         const roleList = roles.map((item) => item.value) as RoleEnum[];
