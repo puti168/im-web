@@ -56,7 +56,7 @@ export function configThemePlugin(isBuild: boolean): PluginOption[] {
       darkModifyVars: {
         ...generateModifyVars(true),
         'text-color': '#c9d1d9',
-        'primary-1': 'rgb(255 255 255 / 8%)',
+        'primary-1': 'rgb(255 255 25w5 / 8%)',
         'text-color-base': '#c9d1d9',
         'component-background': '#151515',
         'heading-color': 'rgb(255 255 255 / 65%)',
