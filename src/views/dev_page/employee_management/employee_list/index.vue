@@ -17,7 +17,7 @@
 </template>
 <script lang="ts" setup>
 import { BasicTable, useTable } from '/@/components/Table';
-import { demoListApi } from '/@/api/demo/table';
+import { getUserPageList } from '/@/api/dev_page/employee_management';
 import { columns } from './data';
 import { PopConfirmButton } from '/@/components/Button';
 import { PageWrapper } from '/@/components/Page';
@@ -26,7 +26,7 @@ import Modal4 from './comp/Modal4.vue';
 import { useMessage } from '/@/hooks/web/useMessage';
 let { createMessage } = useMessage()
 const [registerTable] = useTable({
-  api: demoListApi,
+  api: getUserPageList,
   columns: columns,
   bordered: true,
   showTableSetting: true,

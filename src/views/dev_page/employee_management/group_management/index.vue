@@ -17,7 +17,7 @@
 </template>
 <script lang="ts" setup>
 import { BasicTable, useTable } from '/@/components/Table';
-import { demoListApi } from '/@/api/demo/table';
+import { getGroupPageList } from '/@/api/dev_page/employee_management';
 import { columns } from './data';
 import { PageWrapper } from '/@/components/Page';
 import { useModal } from '/@/components/Modal'
@@ -26,7 +26,7 @@ import { PopConfirmButton } from '/@/components/Button';
 import { useMessage } from '/@/hooks/web/useMessage';
 
 const [registerTable] = useTable({
-  api: demoListApi,
+  api: getGroupPageList,
   columns: columns,
   bordered: true,
   showTableSetting: true,
