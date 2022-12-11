@@ -1,9 +1,10 @@
 import type { AppRouteModule } from '/@/router/types';
+import { LAYOUT } from '/@/router/constant';
 
 const SysConfigRoute: AppRouteModule = {
     path: '/sys_config',
     name: 'sys_config',
-    component: 'LAYOUT',
+    component: LAYOUT,
     redirect: '/sys_config/customer_service',
     meta: {
       title: '系统配置',

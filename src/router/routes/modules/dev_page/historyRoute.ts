@@ -1,9 +1,10 @@
 import type { AppRouteModule } from '/@/router/types';
+import { LAYOUT } from '/@/router/constant';
 
 const historyRoute: AppRouteModule = {
   path: '/history_record',
   name: 'history_record',
-  component: 'LAYOUT',
+  component: LAYOUT,
   redirect: '/history_record/dialogue_details',
   meta: {
     title: '历史记录',

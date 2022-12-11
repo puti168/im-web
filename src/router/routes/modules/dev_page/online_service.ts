@@ -1,9 +1,10 @@
 import type { AppRouteModule } from '/@/router/types';
+import { LAYOUT } from '/@/router/constant';
 
 const online_service: AppRouteModule = {
     path: '/online_service',
     name: 'online_service',
-    component: 'LAYOUT',
+    component: LAYOUT,
     redirect: '/online_service/index',
     meta: {
       orderNo: 0,

@@ -1,10 +1,12 @@
 import type { AppRouteModule } from '/@/router/types';
+import { LAYOUT } from '/@/router/constant';
+
 
 const EmployeeManagement: AppRouteModule = {
     path: '/employee_management',
     name: 'employee_management',
-    component: 'LAYOUT',
-    redirect: 'LAYOUT',
+    component: LAYOUT,
+    redirect: '/employee_management/group_management',
     meta: {
       title: '员工管理',
       icon: 'bx:bx-home',
