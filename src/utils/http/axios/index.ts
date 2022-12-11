@@ -161,6 +161,9 @@ const transform: AxiosTransform = {
       (config as Recordable).headers.Authorization = options.authenticationScheme
         ? `${options.authenticationScheme} ${token}`
         : token;
+      (config as Recordable).headers.auth = options.authenticationScheme
+        ? `${options.authenticationScheme} ${token}`
+        : token;
     }
     return config;
   },
