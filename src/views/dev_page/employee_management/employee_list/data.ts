@@ -12,38 +12,34 @@ export const columns: BasicColumn[] = [
     width: 120,
   }, {
     title: '昵称',
-    dataIndex: 'time',
+    dataIndex: 'nickname',
     width: 120,
   }, {
     title: '状态',
-    dataIndex: 'name5',
+    dataIndex: 'status',
     width: 50,
   }, {
     title: '所属组别',
-    dataIndex: 'name7',
+    dataIndex: 'groupId',
     width: 120,
   }, {
-    title: '所属组别',
-    dataIndex: 'name7',
-    width: 100,
-  }, {
     title: '最后登录时间',
-    dataIndex: 'name7',
+    dataIndex: 'lastLoginTime',
     width: 150,
   }, {
     title: '最后登录IP',
-    dataIndex: 'name7',
+    dataIndex: 'lastLoginIp',
     width: 120,
   }, {
     title: '备注',
-    dataIndex: 'name7',
+    dataIndex: 'remark',
     width: 120,
   }
 ];
 
 export const schemas: FormSchema[] = [
   {
-    field: 'name1',
+    field: 'name',
     component: 'Input',
     defaultValue: '',
     rules: [{ required: true }],
@@ -53,7 +49,7 @@ export const schemas: FormSchema[] = [
     },
   },
   {
-    field: 'name1',
+    field: 'password',
     component: 'Input',
     componentProps: {
       type: 'password'
@@ -66,7 +62,7 @@ export const schemas: FormSchema[] = [
     },
   },
   {
-    field: 'name1',
+    field: 'password2',
     component: 'Input',
     componentProps: {
       type: 'password'
@@ -79,7 +75,7 @@ export const schemas: FormSchema[] = [
     },
   },
   {
-    field: 'name1',
+    field: 'groupId',
     component: 'Select',
     componentProps: {
       options: [{
@@ -101,7 +97,7 @@ export const schemas: FormSchema[] = [
     },
   },
   {
-    field: 'name1',
+    field: 'langIds',
     component: 'Select',
     componentProps: {
       options: [{
@@ -123,7 +119,7 @@ export const schemas: FormSchema[] = [
     },
   },
   {
-    field: 'name1',
+    field: 'nickname',
     component: 'Input',
     componentProps: {
     },
@@ -135,7 +131,7 @@ export const schemas: FormSchema[] = [
     },
   },
   {
-    field: 'name2',
+    field: 'status',
     component: 'RadioGroup',
     rules: [{ required: true }],
     label: '状态',
@@ -158,19 +154,8 @@ export const schemas: FormSchema[] = [
     },
   },
   {
-    field: 'name3',
+    field: 'remark',
     component: 'InputTextArea',
-    defaultValue: '',
-    rules: [{ required: true }],
-    label: '备注',
-    colProps: {
-      span: 24,
-    },
-  },
-  {
-    field: 'id',
-    component: 'Input',
-    show: false,
     defaultValue: '',
     rules: [{ required: true }],
     label: '备注',

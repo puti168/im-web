@@ -11,6 +11,7 @@ import { defineComponent, ref, nextTick } from 'vue';
 import { BasicModal, useModalInner } from '/@/components/Modal';
 import { BasicForm, useForm } from '/@/components/Form/index';
 import { schemas } from '../data'
+import { saveIP , updateIP } from '/@/api/dev_page/employee_management';
 import { useMessage } from '/@/hooks/web/useMessage';
 export default defineComponent({
   components: { BasicModal, BasicForm },
@@ -19,7 +20,7 @@ export default defineComponent({
   },
   setup(props) { // 传过来的值
     const { createMessage } = useMessage();
-    const modelRef = ref<Recordable>({});
+    const modelRef = ref<Recordable|any>({});
     const [
       registerForm,
       {
@@ -38,11 +39,12 @@ export default defineComponent({
       data && onDataReceive(data);
     });
     function handleOK() {
-
-      validate().then(res => {
-        console.log(res);
+      validate().then(async res => {
+        console.log('res',res);
+        console.log('modelRef.value',modelRef.value);
         if (res) {
-          console.log(modelRef.value);
+          if(modelRef.value.id) await updateIP(modelRef.value)
+          else await saveIP(res)
           createMessage.success('保存成功');
           closeModal()
         }

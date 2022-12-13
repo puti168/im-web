@@ -17,7 +17,7 @@
 </template>
 <script lang="ts" setup>
 import { BasicTable, useTable } from '/@/components/Table';
-import { getUserPageList } from '/@/api/dev_page/employee_management';
+import { getUserPageList,deleteUSER } from '/@/api/dev_page/employee_management';
 import { columns } from './data';
 import { PopConfirmButton } from '/@/components/Button';
 import { PageWrapper } from '/@/components/Page';
@@ -46,7 +46,12 @@ function send(record: any) {
 }
 
 function deleteById(id) {
-  createMessage.success('删除成功' + id)
+  deleteUSER([id]).then(()=>{
+    createMessage.success('删除成功' + id)
+  }).catch(e => {
+    console.error(e);
+    createMessage.success('删除失败' + id)
+  })
 }
 function onEditChange({ column, value, record }) {
   // 本例

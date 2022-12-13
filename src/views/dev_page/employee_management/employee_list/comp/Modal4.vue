@@ -11,6 +11,7 @@ import { defineComponent, ref, nextTick } from 'vue';
 import { BasicModal, useModalInner } from '/@/components/Modal';
 import { BasicForm, useForm } from '/@/components/Form/index';
 import { schemas } from '../data'
+import { saveUSER , updateUSER } from '/@/api/dev_page/employee_management';
 import { useMessage } from '/@/hooks/web/useMessage';
 export default defineComponent({
   components: { BasicModal, BasicForm },
@@ -19,7 +20,7 @@ export default defineComponent({
   },
   setup(props) { // 传过来的值
     const { createMessage } = useMessage();
-    const modelRef = ref<Recordable>({});
+    const modelRef = ref<Recordable|any>({});
     const [
       registerForm,
       {
@@ -38,16 +39,15 @@ export default defineComponent({
       data && onDataReceive(data);
     });
     function handleOK() {
-      validate().then(res => {
-        console.log(res);
+      validate().then(async res => {
         if (res) {
-          console.log(res);
+          if(modelRef.value.id) await updateUSER(modelRef.value)
+          else await saveUSER(res)
           createMessage.success('保存成功');
           closeModal()
         }
       }).catch(e => {
         console.error(e, 'dsa');
-
       })
     }
     function onDataReceive(data) { //初始和表单

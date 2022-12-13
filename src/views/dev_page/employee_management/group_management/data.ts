@@ -13,28 +13,26 @@ export const columns: BasicColumn[] = [
   },
   {
     title: '状态',
-    dataIndex: 'time',
+    dataIndex: 'status',
     width: 100,
+    
   },
   {
     title: '成员数',
-    dataIndex: 'name5',
+    dataIndex: 'memberNum',
     width: 150,
   },
   {
     title: '备注',
-    dataIndex: 'name7',
+    dataIndex: 'remark',
     width: 150,
   }
 ];
 
 export const schemas: FormSchema[] = [
   {
-    field: 'name1',
+    field: 'name',
     component: 'Input',
-    componentProps: {
-      type: 'number'
-    },
     defaultValue: '',
     rules: [{ required: true }],
     label: '组别名称',
@@ -43,7 +41,7 @@ export const schemas: FormSchema[] = [
     },
   },
   {
-    field: 'name2',
+    field: 'status',
     component: 'RadioGroup',
     rules: [{ required: true }],
     label: '状态',
@@ -66,7 +64,7 @@ export const schemas: FormSchema[] = [
     },
   },
   {
-    field: 'name3',
+    field: 'remark',
     component: 'InputTextArea',
     defaultValue: '',
     rules: [{ required: true }],

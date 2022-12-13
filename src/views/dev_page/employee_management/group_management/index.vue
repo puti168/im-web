@@ -1,7 +1,8 @@
 <template>
   <PageWrapper title="组别管理" contentBackground contentClass="p-2">
     <BasicTable @register="registerTable" @edit-change="onEditChange">
-      <template #bodyCell="{ column, record }">
+      <template #bodyCell="{ column, record , text }">
+        <template v-if="column.key === 'status'"> ID: {{ text }} </template>
         <template v-if="column.key === 'action'">
           <a-button class="mr-1" type="warning" @click="send(record)">编辑</a-button>
           <PopConfirmButton type="danger" @confirm="deleteById(record.id)" title="确认删除？">删除</PopConfirmButton>
@@ -17,7 +18,7 @@
 </template>
 <script lang="ts" setup>
 import { BasicTable, useTable } from '/@/components/Table';
-import { getGroupPageList } from '/@/api/dev_page/employee_management';
+import { getGroupPageList,deleteGroup } from '/@/api/dev_page/employee_management';
 import { columns } from './data';
 import { PageWrapper } from '/@/components/Page';
 import { useModal } from '/@/components/Modal'
@@ -47,7 +48,12 @@ function send(record: any) {
 
 let { createMessage } = useMessage()
 function deleteById(id) {
-  createMessage.success('删除成功' + id)
+  deleteGroup([id]).then(()=>{
+    createMessage.success('删除成功' + id)
+  }).catch(e => {
+    console.error(e);
+    createMessage.success('删除失败' + id)
+  })
 }
 
 function onEditChange({ column, value, record }) {
