@@ -18,7 +18,7 @@ export default defineComponent({
   props: {
     userData: { type: Object },
   },
-  setup(props) { // 传过来的值
+  setup(props,{emit}) { // 传过来的值
     const { createMessage } = useMessage();
     const modelRef = ref<Recordable|any>({});
     const [
@@ -42,9 +42,10 @@ export default defineComponent({
       validate().then(async res => {
         console.log(res);
         if (res) {
-          if(modelRef.value.id) await updateGroup(modelRef.value)
+          if(modelRef.value.id) await updateGroup({...res,...{id:modelRef.value.id}})
           else await saveGroup(res)
           console.log(modelRef.value);
+          emit('reloadTable')
           createMessage.success('保存成功');
           closeModal()
         }
@@ -54,7 +55,10 @@ export default defineComponent({
       })
     }
     function onDataReceive(data) { //初始和表单
+      if(typeof data.status == 'number') data.status = data.status =  String(data.status)
       modelRef.value = data
+      console.log(modelRef.value,'modelRef.value');
+      
     }
     //监听关闭打开
     function handleVisibleChange(v) {

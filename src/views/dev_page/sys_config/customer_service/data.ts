@@ -12,36 +12,35 @@ import {
     width: 150,
   },
   {
-    title: '添加时间',
-    dataIndex: 'time',
+    title: '修改时间',
+    dataIndex: 'updateTime',
     width: 100,
   },
   {
     title: '操作人',
-    dataIndex: 'name7',
+    dataIndex: 'updateUser',
     width: 150,
   }
 ];
 
 export const schemas: FormSchema[] = [
   {
-    field: 'field1',
+    field: 'handleLimit',
     component: 'Input',
     componentProps:{
       type:'number'
     },
-    defaultValue:'',
     rules: [{ required: true }],
-    label: '优先匹配等级',
+    label: '客服接待最多人数',
     colProps: {
       span: 24,
     },
   },
   {
-    field: 'field2',
+    field: 'levelNum',
     component: 'Select',
     rules: [{ required: true }],
-    label: '单人上限',
+    label: '优先匹配等级',
     componentProps: {
       class:'start-create-1',
       options: [

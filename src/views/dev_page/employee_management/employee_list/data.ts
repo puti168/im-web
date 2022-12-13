@@ -2,7 +2,7 @@ import {
   BasicColumn,
   FormSchema,
 } from '/@/components/Table';
-
+import { getGroupPageList } from '/@/api/dev_page/employee_management';
 
 
 export const columns: BasicColumn[] = [
@@ -74,24 +74,48 @@ export const schemas: FormSchema[] = [
       span: 24,
     },
   },
+  // {
+  //   field: '',
+  //   component: 'Select',
+  //   componentProps: {
+  //     options: [{
+  //       label: '组别1',
+  //       value: "0",
+  //       key: 'VIP0',
+  //     },
+  //     {
+  //       label: '组别2',
+  //       value: "1",
+  //       key: 'VIP1',
+  //     },]
+  //   },
+  //   defaultValue: '',
+  //   rules: [{ required: true }],
+  //   label: '所属组别',
+  //   colProps: {
+  //     span: 24,
+  //   },
+  // },
   {
     field: 'groupId',
-    component: 'Select',
-    componentProps: {
-      options: [{
-        label: '组别1',
-        value: "0",
-        key: 'VIP0',
-      },
-      {
-        label: '组别2',
-        value: "1",
-        key: 'VIP1',
-      },]
-    },
-    defaultValue: '',
-    rules: [{ required: true }],
+    component: 'ApiSelect',
     label: '所属组别',
+    required: true,
+    componentProps: {
+      // more details see /src/components/Form/src/components/ApiSelect.vue
+      api: getGroupPageList,
+      params: {
+        page: 1,
+        pageSize: 9999
+      },
+      resultField: 'items',
+      // use name as label
+      labelField: 'name',
+      // use id as value
+      valueField: 'id',
+      // not request untill to select
+      immediate: true,
+    },
     colProps: {
       span: 24,
     },

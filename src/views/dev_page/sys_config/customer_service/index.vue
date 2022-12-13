@@ -16,16 +16,18 @@
 </template>
 <script lang="ts" setup>
 import { BasicTable, useTable } from '/@/components/Table';
-import { demoListApi } from '/@/api/demo/table';
 import { columns } from './data';
 import { PageWrapper } from '/@/components/Page';
 import { useModal } from '/@/components/Modal'
 import Modal4 from './comp/Modal4.vue';
-
+import { getUserConfig } from '/@/api/dev_page/sys_config'
 const [registerTable] = useTable({
-  api: demoListApi,
   columns: columns,
   bordered: true,
+  api:getUserConfig,
+  searchInfo:{
+    distributorId:123,
+  },
   showTableSetting: true,
   // showIndexColumn: false,
   actionColumn: {
@@ -36,6 +38,7 @@ const [registerTable] = useTable({
   },
 });
 const [register4, { openModal: openModal4 }] = useModal();
+
 
 
 function send(record: any) {

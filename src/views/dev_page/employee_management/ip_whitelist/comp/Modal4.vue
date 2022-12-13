@@ -18,7 +18,7 @@ export default defineComponent({
   props: {
     userData: { type: Object },
   },
-  setup(props) { // 传过来的值
+  setup(props,{emit}) { // 传过来的值
     const { createMessage } = useMessage();
     const modelRef = ref<Recordable|any>({});
     const [
@@ -43,8 +43,9 @@ export default defineComponent({
         console.log('res',res);
         console.log('modelRef.value',modelRef.value);
         if (res) {
-          if(modelRef.value.id) await updateIP(modelRef.value)
+          if(modelRef.value.id) await updateIP({...res,...{id:modelRef.value.id}})
           else await saveIP(res)
+          emit('reloadTable')
           createMessage.success('保存成功');
           closeModal()
         }

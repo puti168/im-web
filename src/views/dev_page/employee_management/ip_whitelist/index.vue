@@ -15,7 +15,7 @@
         <a-button type="success" @click="send({})">新增</a-button>
       </template>
     </BasicTable>
-    <Modal4 @register="register4" />
+    <Modal4 @register="register4"  @reloadTable="reload"/>
   </PageWrapper>
 </template>
 <script lang="ts" setup>
@@ -28,7 +28,7 @@ import Modal4 from './comp/Modal4.vue';
 import { PopConfirmButton } from '/@/components/Button';
 import { useMessage } from '/@/hooks/web/useMessage';
 
-const [registerTable] = useTable({
+const [registerTable,{reload}] = useTable({
   api: getIPList,
   columns: columns,
   bordered: true,

@@ -18,7 +18,7 @@ export default defineComponent({
   props: {
     userData: { type: Object },
   },
-  setup(props) { // 传过来的值
+  setup(props,{emit}) { // 传过来的值
     const { createMessage } = useMessage();
     const modelRef = ref<Recordable|any>({});
     const [
@@ -36,27 +36,30 @@ export default defineComponent({
       },
     });
     const [register, { closeModal }] = useModalInner((data) => {
-      data && onDataReceive(data);
+      data && onDataReceive(data,true);
     });
     function handleOK() {
       validate().then(async res => {
         if (res) {
-          if(modelRef.value.id) await updateUSER(modelRef.value)
+          if(modelRef.value.id) await updateUSER({...{id:modelRef.value.id},...res})
           else await saveUSER(res)
           createMessage.success('保存成功');
+          emit('reloadTable')
           closeModal()
         }
       }).catch(e => {
         console.error(e, 'dsa');
       })
     }
-    function onDataReceive(data) { //初始和表单
+    function onDataReceive(data,v) { //初始和表单
       modelRef.value = data
+      if(typeof modelRef.value.status == 'number') modelRef.value.status = String(modelRef.value.status)
+      if(typeof modelRef.value.groupId == 'number') modelRef.value.groupId = String(modelRef.value.groupId)
+      if (v && !modelRef.value.id) resetFields()
     }
     //监听关闭打开
     function handleVisibleChange(v) {
-      if (!v) resetFields()
-      v && props.userData && nextTick(() => onDataReceive(props.userData));
+      v && props.userData && nextTick(() => onDataReceive(props.userData,v));
     }
     return {
       register,

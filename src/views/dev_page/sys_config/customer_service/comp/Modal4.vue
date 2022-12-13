@@ -16,6 +16,7 @@ import { defineComponent, ref, nextTick } from 'vue';
 import { BasicModal, useModalInner } from '/@/components/Modal';
 import { BasicForm, useForm } from '/@/components/Form/index';
 import { schemas } from '../data'
+import { updateUserConfig } from '/@/api/dev_page/sys_config'
 import { useMessage } from '/@/hooks/web/useMessage';
 export default defineComponent({
   components: { BasicModal, BasicForm },
@@ -30,6 +31,7 @@ export default defineComponent({
       {
         removeSchemaByField,
         appendSchemaByField,
+        updateSchema,
         validate
       },
     ] = useForm({
@@ -44,11 +46,9 @@ export default defineComponent({
       data && onDataReceive(data);
     });
     function handleOK() {
-
-      validate().then(res => {
-        console.log(res);
+      validate().then(async res => {
         if (res) {
-          console.log(modelRef.value);
+          await updateUserConfig({...res,id:modelRef.value.id})
           createMessage.success('保存成功');
           closeModal()
         }
@@ -59,21 +59,25 @@ export default defineComponent({
     }
     function onDataReceive(data) { //初始和表单
       // // 方式2
-      if (data.id == "0") {
+      if (data.tid == "1") { //客服匹配限制
+        schemas[0].defaultValue = data.handleLimit;
         appendSchemaByField(schemas[0], '')
-        modelRef.value = { field1: data.no, id: data.id };
-      } else {
+        modelRef.value = { handleLimit: data.handleLimit, id: data.id };
+      } else { //优先匹配
+        schemas[1].defaultValue = data.levelNum;
         appendSchemaByField(schemas[1], '')
-        modelRef.value = { field2: data.radio1, id: data.id };
+        modelRef.value = { levelNum: data.levelNum, id: data.id };
       }
+      console.log(modelRef.value,'modelRef.value2');
+      
       // setProps({
       //   model:{ field2: data.data, field1: data.info }
       // })
     }
     //监听关闭打开
     function handleVisibleChange(v) {
-      removeSchemaByField('field1')
-      removeSchemaByField('field2')
+      removeSchemaByField('handleLimit')
+      removeSchemaByField('levelNum')
       v && props.userData && nextTick(() => onDataReceive(props.userData));
     }
     return {

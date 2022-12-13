@@ -12,7 +12,7 @@
         <a-button type="success" @click="send({})">新增</a-button>
       </template>
     </BasicTable>
-    <Modal4 @register="register4" />
+    <Modal4 @register="register4" @reloadTable="reload" />
   </PageWrapper>
 </template>
 <script lang="ts" setup>
@@ -25,7 +25,7 @@ import { useModal } from '/@/components/Modal'
 import Modal4 from './comp/Modal4.vue';
 import { useMessage } from '/@/hooks/web/useMessage';
 let { createMessage } = useMessage()
-const [registerTable] = useTable({
+const [registerTable , {reload}] = useTable({
   api: getUserPageList,
   columns: columns,
   bordered: true,
