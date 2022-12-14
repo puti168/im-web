@@ -1,7 +1,10 @@
 <template>
   <PageWrapper title="员工列表" contentBackground contentClass="p-2">
     <BasicTable @register="registerTable" @edit-change="onEditChange">
-      <template #bodyCell="{ column, record }">
+      <template #bodyCell="{ column, record , text}">
+        <template v-if="column.key === 'status'">
+          {{{0:'启用',1:'禁用'}[text]}}
+        </template>
         <template v-if="column.key === 'action'">
           <a-button class="mr-1" type="warning" @click="send(record)">编辑</a-button>
           <PopConfirmButton type="danger" @confirm="deleteById(record.id)" title="确认删除？">删除</PopConfirmButton>
