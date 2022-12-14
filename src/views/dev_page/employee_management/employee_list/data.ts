@@ -127,33 +127,24 @@ export const schemas: FormSchema[] = [
         return !model.id
     },
   },
-  // {
-  //   field: '',
-  //   component: 'Select',
-  //   componentProps: {
-  //     options: [{
-  //       label: '组别1',
-  //       value: "0",
-  //       key: 'VIP0',
-  //     },
-  //     {
-  //       label: '组别2',
-  //       value: "1",
-  //       key: 'VIP1',
-  //     },]
-  //   },
-  //   defaultValue: '',
-  //   rules: [{ required: true }],
-  //   label: '所属组别',
-  //   colProps: {
-  //     span: 24,
-  //   },
-  // },
   {
     field: 'groupId',
     component: 'ApiSelect',
     label: '所属组别',
-    rules: [{ required: true }],
+    rules: [
+      {
+        required: true,
+        // @ts-ignore
+        validator: async (rule, value) => {
+          if (!value) {
+            /* eslint-disable-next-line */
+            return Promise.reject('请选择组别');
+          }
+          return Promise.resolve();
+        },
+        trigger: 'blur',
+      },
+    ],
     componentProps: {
       // more details see /src/components/Form/src/components/ApiSelect.vue
       api: getGroupPageList,
@@ -189,7 +180,20 @@ export const schemas: FormSchema[] = [
         key: 'VIP1',
       },]
     },
-    rules: [{ required: true }],
+    rules: [
+      {
+        required: true,
+        // @ts-ignore
+        validator: async (rule, value) => {
+          if (value.length <= 0) {
+            /* eslint-disable-next-line */
+            return Promise.reject('至少选择一种语言');
+          }
+          return Promise.resolve();
+        },
+        trigger: 'blur',
+      },
+    ],
     label: '使用语言',
     colProps: {
       span: 24,
