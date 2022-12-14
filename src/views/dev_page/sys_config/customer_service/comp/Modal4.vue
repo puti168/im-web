@@ -31,7 +31,6 @@ export default defineComponent({
       {
         removeSchemaByField,
         appendSchemaByField,
-        updateSchema,
         validate
       },
     ] = useForm({

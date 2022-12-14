@@ -3,7 +3,7 @@
     <BasicTable @register="registerTable" @edit-change="onEditChange">
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
-          <a-button class="mr-1" v-if="record.type != 1" type="warning" @click="send(record)">编辑</a-button>
+          <a-button class="mr-1" v-if="record.tid != 0" type="warning" @click="send(record)">编辑</a-button>
           <a-button class="mr-1" v-else type="warning" @click="sendUpload(record)">编辑</a-button>
         </template>
       </template>
@@ -15,16 +15,20 @@
 <script lang="ts" setup>
 import { PageWrapper } from '/@/components/Page';
 import { BasicTable, useTable } from '/@/components/Table';
-import { columns, dataSource } from './data';
+import { columns } from './data';
 import { useModal } from '/@/components/Modal'
 import Modal4 from './comp/Modal4.vue';
+import { getSchemeInfo } from '/@/api/dev_page/sys_config'
 import UploadModal from './comp/UploadModal.vue';
 
 const [registerTable] = useTable({
-  dataSource: dataSource,
+  api: getSchemeInfo,
   columns: columns,
   bordered: true,
   showTableSetting: true,
+  searchInfo:{
+    distributorId:123
+  },
   // showIndexColumn: false,
   actionColumn: {
     width: 220,
