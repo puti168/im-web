@@ -8,24 +8,24 @@ import {
  export const columns: BasicColumn[] = [
   {
     title: '内容',
-    dataIndex: 'name',
+    dataIndex: 'remark1',
     width: 150,
   },
   {
     title: '添加时间',
-    dataIndex: 'name7',
+    dataIndex: 'updateTime',
     width: 150,
   },
   {
     title: '操作人',
-    dataIndex: 'name2',
+    dataIndex: 'updateUser',
     width: 150,
   }
 ];
 
 export const schemas: FormSchema[] = [
   {
-    field: 'name1',
+    field: 'remark1',
     component: 'InputTextArea',
     defaultValue:'',
     rules: [{ required: true }],
@@ -36,7 +36,7 @@ export const schemas: FormSchema[] = [
     },
   },
   {
-    field: 'name2',
+    field: 'remark2',
     component: 'InputTextArea',
     defaultValue:'',
     // rules: [{ required: true }],
@@ -47,7 +47,7 @@ export const schemas: FormSchema[] = [
     },
   },
   {
-    field: 'name3',
+    field: 'remark3',
     component: 'InputTextArea',
     defaultValue:'',
     // rules: [{ required: true }],
@@ -58,7 +58,7 @@ export const schemas: FormSchema[] = [
     },
   },
   {
-    field: 'name4',
+    field: 'remark4',
     component: 'InputTextArea',
     defaultValue:'',
     // rules: [{ required: true }],
@@ -69,7 +69,7 @@ export const schemas: FormSchema[] = [
     },
   },
   {
-    field: 'name5',
+    field: 'remark5',
     component: 'InputTextArea',
     defaultValue:'',
     show:false,
@@ -83,6 +83,17 @@ export const schemas: FormSchema[] = [
     field: 'id',
     component: 'Input',
     defaultValue:'',
+    show:false,
+    // rules: [{ required: true }],
+    label: 'ID',
+    colProps: {
+      span: 24,
+    },
+  },
+  {
+    field: 'type',
+    component: 'Input',
+    defaultValue:'0',
     show:false,
     // rules: [{ required: true }],
     label: 'ID',

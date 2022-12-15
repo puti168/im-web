@@ -8,8 +8,8 @@
         </template>
       </template>
     </BasicTable>
-    <Modal4 @register="register4" />
-    <UploadModal @register="registerUploadModal" />
+    <Modal4 @register="register4" @reloadTable="reload"/>
+    <UploadModal @register="registerUploadModal" @reloadTable="reload" />
   </PageWrapper>
 </template>
 <script lang="ts" setup>
@@ -21,7 +21,7 @@ import Modal4 from './comp/Modal4.vue';
 import { getSchemeInfo } from '/@/api/dev_page/sys_config'
 import UploadModal from './comp/UploadModal.vue';
 
-const [registerTable] = useTable({
+const [registerTable,{reload}] = useTable({
   api: getSchemeInfo,
   columns: columns,
   bordered: true,

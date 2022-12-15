@@ -12,7 +12,12 @@ enum Api {
   IP_LIST = '/backend/accesslist/pageList',
   SAVE_IP = '/backend/accesslist/save',
   UPDATE_IP = '/backend/accesslist/update',
-  DELETE_IP = '/backend/accesslist/delete',
+  DELETE_IP = '/backend/accesslist/falseDelete',
+
+  PUBLICMSG_LIST = '/backend/publicmsg/pageList',
+  SAVE_PUBLICMSG = '/backend/publicmsg/save',
+  UPDATE_PUBLICMSG = '/backend/publicmsg/update',
+  DELETE_PUBLICMSG = '/backend/publicmsg/falseDelete',
 }
 
 export const getUserConfig = (params:{distributorId: number}) => {
@@ -50,6 +55,35 @@ export const getUserConfig = (params:{distributorId: number}) => {
 export const updateUserConfig = (params: DemoParams) => 
     defHttp.post<DemoListGetResultModel>({
     url: Api.UPDATE_USER_CONFUG,
+    params,
+  });
+
+
+export const getPulbicMsgList = (params: DemoParams) => {
+  params.pageNum = params.page
+  return defHttp.post<DemoListGetResultModel>({
+    url: Api.PUBLICMSG_LIST,
+    params,
+  }).then((res:any) => {
+    return {
+      items:res.records,
+      total:res.total
+    }
+  });
+}
+export const savePulbicMsg = (params: DemoParams) => 
+   defHttp.post<DemoListGetResultModel>({
+    url: Api.SAVE_PUBLICMSG,
+    params,
+  });
+export const updatePulbicMsg = (params: DemoParams) => 
+    defHttp.post<DemoListGetResultModel>({
+    url: Api.UPDATE_PUBLICMSG,
+    params,
+  });
+export const deletePulbicMsg= (params:any[]) => 
+    defHttp.delete<DemoListGetResultModel>({
+    url: Api.DELETE_PUBLICMSG,
     params,
   });
 

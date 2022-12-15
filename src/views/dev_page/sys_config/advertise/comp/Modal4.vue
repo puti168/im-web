@@ -27,7 +27,7 @@ export default defineComponent({
   props: {
     userData: { type: Object },
   },
-  setup(props) { // 传过来的值
+  setup(props,{emit}) { // 传过来的值
     const { createMessage } = useMessage();
     const modelRef = ref<Recordable>({});
     const [
@@ -65,6 +65,7 @@ export default defineComponent({
             })
             createMessage.success('保存成功 ' + modelRef.value.name + '  ' + modelRef.value.type);
             closeModal()
+            emit('reloadTable')
           }
         }
       }).catch(e => {

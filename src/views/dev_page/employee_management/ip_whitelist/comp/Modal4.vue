@@ -36,12 +36,10 @@ export default defineComponent({
       },
     });
     const [register, { closeModal }] = useModalInner((data) => {
-      data && onDataReceive(data);
+      data && onDataReceive(data,true);
     });
     function handleOK() {
       validate().then(async res => {
-        console.log('res',res);
-        console.log('modelRef.value',modelRef.value);
         if (res) {
           if(modelRef.value.id) await updateIP({...res,...{id:modelRef.value.id}})
           else await saveIP(res)
@@ -54,13 +52,13 @@ export default defineComponent({
 
       })
     }
-    function onDataReceive(data) { //初始和表单
+    function onDataReceive(data,v) { //初始和表单
       modelRef.value = data
+      if (v && !modelRef.value.id) resetFields()
     }
     //监听关闭打开
     function handleVisibleChange(v) {
-      if (!v) resetFields()
-      v && props.userData && nextTick(() => onDataReceive(props.userData));
+      v && props.userData && nextTick(() => onDataReceive(props.userData,v));
     }
     return {
       register,
