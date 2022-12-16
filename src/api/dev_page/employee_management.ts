@@ -30,16 +30,20 @@ export const getUserPageList = (params: DemoParams) => {
     }
   });
 }
-export const saveUSER = (params: DemoParams) => 
-   defHttp.post<DemoListGetResultModel>({
-    url: Api.SAVE_USER,
-    params,
-  });
-export const updateUSER = (params: DemoParams) => 
-    defHttp.post<DemoListGetResultModel>({
-    url: Api.UPDATE_USER,
-    params,
-  });
+export const saveUSER = (params: DemoParams|any) => {
+  if(params.langIds) params.langIds = params.langIds.toString()
+  return defHttp.post<DemoListGetResultModel>({
+   url: Api.SAVE_USER,
+   params,
+ });
+}
+export const updateUSER = (params: DemoParams|any) => {
+  if(params.langIds) params.langIds = params.langIds.toString()
+  return defHttp.post<DemoListGetResultModel>({
+  url: Api.UPDATE_USER,
+  params,
+});
+}
 export const deleteUSER= (params: any[]) => 
     defHttp.delete<DemoListGetResultModel>({
     url: Api.DELETE_USER,

@@ -2,7 +2,7 @@
   <PageWrapper title="IP白名单" contentBackground contentClass="p-2">
     <BasicTable @register="registerTable" @edit-change="onEditChange">
       <template #bodyCell="{ column, record,text}">
-        <template v-if="column.key = 'type'">
+        <template v-if="column.key == 'type'">
             {{({0:'白名单',1:'黑名单'}[text])}}
         </template>
         <template v-if="column.key === 'action'">
@@ -45,6 +45,7 @@ const [register4, { openModal: openModal4 }] = useModal();
 
 
 function send(record: any) {
+  record.type = String(record.type)
   openModal4(true, record);
 }
 

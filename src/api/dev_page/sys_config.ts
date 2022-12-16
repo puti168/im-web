@@ -6,15 +6,18 @@ enum Api {
   USER_CONFUG_INFO = '/backend/customerserviceconfig/info',
   UPDATE_USER_CONFUG = '/backend/customerserviceconfig/saveOrUpdate',
 
-  GROUP_LIST = '/backend/group/pageList',
-  SAVE_GROUP = '/backend/group/save',
-  UPDATE_GROUP = '/backend/group/update',
-  DELETE_GROUP = '/backend/group/delete',
+  SCHEME_INFO = '/backend/scheme/info',
+  UPDATE_SCHEME = '/backend/scheme/saveOrUpdate',
 
   IP_LIST = '/backend/accesslist/pageList',
   SAVE_IP = '/backend/accesslist/save',
   UPDATE_IP = '/backend/accesslist/update',
-  DELETE_IP = '/backend/accesslist/delete',
+  DELETE_IP = '/backend/accesslist/falseDelete',
+
+  PUBLICMSG_LIST = '/backend/publicmsg/pageList',
+  SAVE_PUBLICMSG = '/backend/publicmsg/save',
+  UPDATE_PUBLICMSG = '/backend/publicmsg/update',
+  DELETE_PUBLICMSG = '/backend/publicmsg/falseDelete',
 }
 
 export const getUserConfig = (params:{distributorId: number}) => {
@@ -56,6 +59,35 @@ export const updateUserConfig = (params: DemoParams) =>
   });
 
 
+export const getPulbicMsgList = (params: DemoParams) => {
+  params.pageNum = params.page
+  return defHttp.post<DemoListGetResultModel>({
+    url: Api.PUBLICMSG_LIST,
+    params,
+  }).then((res:any) => {
+    return {
+      items:res.records,
+      total:res.total
+    }
+  });
+}
+export const savePulbicMsg = (params: DemoParams) => 
+   defHttp.post<DemoListGetResultModel>({
+    url: Api.SAVE_PUBLICMSG,
+    params,
+  });
+export const updatePulbicMsg = (params: DemoParams) => 
+    defHttp.post<DemoListGetResultModel>({
+    url: Api.UPDATE_PUBLICMSG,
+    params,
+  });
+export const deletePulbicMsg= (params:any[]) => 
+    defHttp.delete<DemoListGetResultModel>({
+    url: Api.DELETE_PUBLICMSG,
+    params,
+  });
+
+
 export const saveIP = (params: DemoParams) => 
    defHttp.post<DemoListGetResultModel>({
     url: Api.SAVE_IP,
@@ -72,26 +104,45 @@ export const deleteIP= (params:any[]) =>
     params,
   });
 
+   
+const dataSource:any = [
+  {
+    name: '顶部banner',
+    tid:0,
+  },
+  {
+    name: '循环文案',
+    tid:1,
+  },
+  {
+    name: '开场文案',
+    tid:2,
+  },
+];
+export const getSchemeInfo = async (params: any) => {
+  let res0 = await defHttp.post<DemoListGetResultModel>({
+    url: Api.SCHEME_INFO,
+    params:{distributorId:params.distributorId,type:0},
+  })
+  dataSource[0] = {...res0,...dataSource[0],distributorId:params.distributorId};
+  let res1 = await defHttp.post<DemoListGetResultModel>({
+    url: Api.SCHEME_INFO,
+    params:{distributorId:params.distributorId,type:1},
+  })
+  dataSource[1] = {...res1,...dataSource[1],distributorId:params.distributorId};
+  let res2 = await defHttp.post<DemoListGetResultModel>({
+    url: Api.SCHEME_INFO,
+    params:{distributorId:params.distributorId,type:2},
+  })
+  dataSource[2] = {...res2,...dataSource[2],distributorId:params.distributorId};
   
-export const getGroupPageList = (params: DemoParams) => {
-  params.pageNum = params.pageSize
-  return defHttp.post<DemoListGetResultModel>({
-    url: Api.GROUP_LIST,
-    params,
-  });
+  return {
+    items:dataSource,
+    total:3
+  }
 }
-export const saveGroup = (params: DemoParams) => 
+export const updateSchemeMsd = (params: DemoParams) => 
    defHttp.post<DemoListGetResultModel>({
-    url: Api.SAVE_GROUP,
-    params,
-  });
-export const updateGroup = (params: DemoParams) => 
-   defHttp.post<DemoListGetResultModel>({
-    url: Api.UPDATE_GROUP,
-    params,
-  });
-export const deleteGroup = (params: any[]) => 
-   defHttp.delete<DemoListGetResultModel>({
-    url: Api.DELETE_GROUP,
+    url: Api.UPDATE_SCHEME,
     params,
   });

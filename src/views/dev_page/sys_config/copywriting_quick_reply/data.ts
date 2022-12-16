@@ -25,7 +25,7 @@ import {
 
 export const schemas: FormSchema[] = [
   {
-    field: 'name1',
+    field: 'remark1',
     component: 'InputTextArea',
     defaultValue:'',
     rules: [{ required: true }],
@@ -36,7 +36,7 @@ export const schemas: FormSchema[] = [
     },
   },
   {
-    field: 'name2',
+    field: 'remark2',
     component: 'InputTextArea',
     defaultValue:'',
     // rules: [{ required: true }],
@@ -47,7 +47,7 @@ export const schemas: FormSchema[] = [
     },
   },
   {
-    field: 'name3',
+    field: 'remark3',
     component: 'InputTextArea',
     defaultValue:'',
     // rules: [{ required: true }],
@@ -58,7 +58,7 @@ export const schemas: FormSchema[] = [
     },
   },
   {
-    field: 'name4',
+    field: 'remark4',
     component: 'InputTextArea',
     defaultValue:'',
     // rules: [{ required: true }],
@@ -69,7 +69,7 @@ export const schemas: FormSchema[] = [
     },
   },
   {
-    field: 'name5',
+    field: 'remark5',
     component: 'InputTextArea',
     defaultValue:'',
     show:false,
@@ -83,6 +83,17 @@ export const schemas: FormSchema[] = [
     field: 'id',
     component: 'Input',
     defaultValue:'',
+    show:false,
+    // rules: [{ required: true }],
+    label: 'ID',
+    colProps: {
+      span: 24,
+    },
+  },
+  {
+    field: 'type',
+    component: 'Input',
+    defaultValue:'1',
     show:false,
     // rules: [{ required: true }],
     label: 'ID',

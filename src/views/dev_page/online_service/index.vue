@@ -37,7 +37,8 @@
               @mouseenter="item.showChat = true"
               @mouseleave="item.showChat = false"
             >
-              <a-checkbox @change="(e) => changeItem(e, item)"></a-checkbox>
+              <input type="checkbox" :value="item.id" v-model="state.checkedList" @change="changeItem" />
+              <!--              <input type="checkbox" value="item.id" v-model="state.checkedList" @change="(e) => changeItem(e, item)" />-->
               <div class="start-content">
                 <div class="start-content-top">
                   <span>{{ item.name }}-{{ item.lang }}</span>
@@ -99,7 +100,7 @@
         "
       >
         <template v-if="id">
-          <div v-for="item in chatListData" :key="item.id">
+          <div v-for="item in chatListData" :key="item.id" style="width: 100%">
             <div class="chat-list-item" :class="item.float === 'left' ? 'left' : 'right'">
               <div v-if="item.float === 'left'" class="chat-top">
                 <span>{{ item.nickname }}</span
@@ -112,6 +113,7 @@
               <div class="chat-content">{{ item.content }}</div>
             </div>
           </div>
+          <div style="height: 50px; clear: both"></div>
         </template>
       </div>
       <div class="chat-right-input">
@@ -374,14 +376,11 @@
   const dataReadyData = ref(dataReady);
   function onCheckAllChange(e) {
     Object.assign(state, {
-      checkedList: e.target.checked ? dataReadyData.value : [],
+      checkedList: e.target.checked ? dataReadyData.value.map((item) => item.id) : [],
     });
   }
-  function changeItem(e, item) {
-    if (e.target.checked) state.checkedList.push(item.id);
-    else if (state.checkedList.includes(item.id)) state.checkedList.splice(state.checkedList.indexOf(item.id), 1);
-    if (state.checkedList.length === dataReadyData.value.length) state.checkAll = true;
-    else state.checkAll = false;
+  function changeItem(e) {
+    state.checkAll = state.checkedList.length === dataReady.length;
   }
 </script>
 <style lang="less">
@@ -518,6 +517,7 @@
       }
 
       .chat-right-content {
+        width: 100%;
         flex: 2;
         background-color: #ffffff;
         margin-top: 10px;
@@ -561,7 +561,7 @@
   }
 
   .chat-list-item {
-    width: 300px;
+    width: 50%;
     background-color: #f5f5f5;
     font-size: 12px;
     color: #555555;
@@ -573,6 +573,7 @@
   .left {
     float: left;
     margin-left: 10px;
+    margin-right: 100px;
   }
 
   .right {
@@ -704,8 +705,9 @@
         border-radius: 5px;
         font-size: 12px;
         margin-top: 10px;
+
         &:hover {
-          color: #00bb00;
+          color: #0960bd;
         }
       }
     }

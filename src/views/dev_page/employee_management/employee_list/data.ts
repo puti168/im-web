@@ -39,6 +39,16 @@ export const columns: BasicColumn[] = [
 
 export const schemas: FormSchema[] = [
   {
+    field: 'id',
+    component: 'Input',
+    defaultValue: '',
+    label: 'id',
+    show:false,
+    colProps: {
+      span: 24,
+    },
+  },
+  {
     field: 'name',
     component: 'Input',
     defaultValue: '',
@@ -55,7 +65,28 @@ export const schemas: FormSchema[] = [
       type: 'password'
     },
     defaultValue: '',
-    rules: [{ required: true }],
+    ifShow({model}) {
+        return !model.id
+    },
+    rules: [
+      {
+        required: true,
+        // @ts-ignore
+        validator: async (rule, value) => {
+          value = value.replace(/\s*/g,"");
+          if (!value) {
+            /* eslint-disable-next-line */
+            return Promise.reject('值不能为空');
+          }
+          if (value.length < 6) {
+            /* eslint-disable-next-line */
+            return Promise.reject('密码不能少于6位');
+          }
+          return Promise.resolve();
+        },
+        trigger: 'blur',
+      },
+    ],
     label: '登录密码',
     colProps: {
       span: 24,
@@ -68,39 +99,52 @@ export const schemas: FormSchema[] = [
       type: 'password'
     },
     defaultValue: '',
-    rules: [{ required: true }],
+    dynamicRules({model}) {
+        return [
+          {
+            required: true,
+            // @ts-ignore
+            validator: async (rule, value) => {
+              if (!value) {
+                /* eslint-disable-next-line */
+                return Promise.reject('值不能为空');
+              }
+              if (value != model.password) {
+                /* eslint-disable-next-line */
+                return Promise.reject('两次密码不一致');
+              }
+              return Promise.resolve();
+            },
+            trigger: 'blur',
+          },
+        ]
+    },
     label: '确认密码',
     colProps: {
       span: 24,
     },
+    ifShow({model}) {
+        return !model.id
+    },
   },
-  // {
-  //   field: '',
-  //   component: 'Select',
-  //   componentProps: {
-  //     options: [{
-  //       label: '组别1',
-  //       value: "0",
-  //       key: 'VIP0',
-  //     },
-  //     {
-  //       label: '组别2',
-  //       value: "1",
-  //       key: 'VIP1',
-  //     },]
-  //   },
-  //   defaultValue: '',
-  //   rules: [{ required: true }],
-  //   label: '所属组别',
-  //   colProps: {
-  //     span: 24,
-  //   },
-  // },
   {
     field: 'groupId',
     component: 'ApiSelect',
     label: '所属组别',
-    required: true,
+    rules: [
+      {
+        required: true,
+        // @ts-ignore
+        validator: async (rule, value) => {
+          if (!value) {
+            /* eslint-disable-next-line */
+            return Promise.reject('请选择组别');
+          }
+          return Promise.resolve();
+        },
+        trigger: 'blur',
+      },
+    ],
     componentProps: {
       // more details see /src/components/Form/src/components/ApiSelect.vue
       api: getGroupPageList,
@@ -124,6 +168,7 @@ export const schemas: FormSchema[] = [
     field: 'langIds',
     component: 'Select',
     componentProps: {
+      mode:'multiple',
       options: [{
         label: '中文',
         value: "0",
@@ -135,8 +180,20 @@ export const schemas: FormSchema[] = [
         key: 'VIP1',
       },]
     },
-    defaultValue: '',
-    rules: [{ required: true }],
+    rules: [
+      {
+        required: true,
+        // @ts-ignore
+        validator: async (rule, value) => {
+          if (value.length <= 0) {
+            /* eslint-disable-next-line */
+            return Promise.reject('至少选择一种语言');
+          }
+          return Promise.resolve();
+        },
+        trigger: 'blur',
+      },
+    ],
     label: '使用语言',
     colProps: {
       span: 24,

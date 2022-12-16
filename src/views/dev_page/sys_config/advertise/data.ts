@@ -26,27 +26,21 @@ import {
  export const dataSource = [
     {
       name: '顶部banner',
-      name7:'2021-11-11',
-      name2:'你好',
-      type:1,
+      id:0,
     },
     {
       name: '循环文案',
-      name7:'2021-11-11',
-      name2:'你好',
-      type:2,
+      id:1,
     },
     {
       name: '开场文案',
-      name7:'2021-11-11',
-      name2:'你好',
-      type:3,
+      id:2,
     },
   ];
 
 export const schemas: FormSchema[] = [
   {
-    field: 'name1',
+    field: 'remark1',
     component: 'InputTextArea',
     defaultValue:'',
     rules: [{ required: true }],
@@ -57,7 +51,7 @@ export const schemas: FormSchema[] = [
     },
   },
   {
-    field: 'name2',
+    field: 'remark2',
     component: 'InputTextArea',
     defaultValue:'',
     // rules: [{ required: true }],
@@ -68,7 +62,7 @@ export const schemas: FormSchema[] = [
     },
   },
   {
-    field: 'name3',
+    field: 'remark3',
     component: 'InputTextArea',
     defaultValue:'',
     // rules: [{ required: true }],
@@ -79,7 +73,7 @@ export const schemas: FormSchema[] = [
     },
   },
   {
-    field: 'name4',
+    field: 'remark4',
     component: 'InputTextArea',
     defaultValue:'',
     // rules: [{ required: true }],
@@ -90,7 +84,7 @@ export const schemas: FormSchema[] = [
     },
   },
   {
-    field: 'name5',
+    field: 'remark5',
     component: 'InputTextArea',
     defaultValue:'',
     show:false,

@@ -1,5 +1,5 @@
 <template>
-  <PageWrapper title="快捷提问" contentBackground contentClass="p-2">
+  <PageWrapper title="快捷回复" contentBackground contentClass="p-2">
     <BasicTable @register="registerTable" @edit-change="onEditChange">
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
@@ -11,21 +11,24 @@
         <a-button type="success" @click="send({})">新增</a-button>
       </template>
     </BasicTable>
-    <Modal4 @register="register4" />
+    <Modal4 @register="register4" @reloadTable="reload" />
   </PageWrapper>
 </template>
 <script lang="ts" setup>
 import { PageWrapper } from '/@/components/Page';
 import { BasicTable, useTable } from '/@/components/Table';
-import { demoListApi } from '/@/api/demo/table';
+import { getPulbicMsgList , deletePulbicMsg } from '/@/api/dev_page/sys_config';
 import { columns } from './data';
 import { useModal } from '/@/components/Modal'
 import Modal4 from './comp/Modal4.vue';
 import { PopConfirmButton } from '/@/components/Button';
 import { useMessage } from '/@/hooks/web/useMessage';
 
-const [registerTable] = useTable({
-  api: demoListApi,
+const [registerTable,{reload}] = useTable({
+  api: getPulbicMsgList,
+  searchInfo:{
+    type:0
+  },
   columns: columns,
   bordered: true,
   showTableSetting: true,
@@ -46,8 +49,10 @@ function send(record: any) {
 
 
 let { createMessage } = useMessage()
-function deleteById(id) {
+async function deleteById(id) {
+  await deletePulbicMsg([id])
   createMessage.success('删除成功' + id)
+  reload();
 }
 function onEditChange({ column, value, record }) {
   // 本例
