@@ -32,6 +32,7 @@ export const getUserPageList = (params: DemoParams) => {
 }
 export const saveUSER = (params: DemoParams|any) => {
   if(params.langIds) params.langIds = params.langIds.toString()
+  if(params.status) params.status = params.status-0
   return defHttp.post<DemoListGetResultModel>({
    url: Api.SAVE_USER,
    params,

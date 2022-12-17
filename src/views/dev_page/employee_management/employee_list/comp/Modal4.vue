@@ -41,8 +41,8 @@ export default defineComponent({
     function handleOK() {
       validate().then(async res => {
         if (res) {
-          if(modelRef.value.id) await updateUSER({...{id:modelRef.value.id},...res})
-          else await saveUSER(res)
+          if(modelRef.value.id) await updateUSER({...{id:modelRef.value.id, "distributorId": 123},...res})
+          else await saveUSER({...res,"distributorId": 123})
           createMessage.success('保存成功');
           emit('reloadTable')
           closeModal()
