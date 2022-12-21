@@ -18,6 +18,9 @@ enum Api {
   DeptList = '/system/getDeptList',
   setRoleStatus = '/system/setRoleStatus',
   MenuList = '/menu/tree',
+  saveMenu = '/menu/save',
+  updateMenu = '/menu/update',
+  deleteMenu = '/menu/falseDelete',
   RolePageList = '/system/getRoleListByPage',
   GetAllRoleList = '/system/getAllRoleList',
 }
@@ -30,6 +33,12 @@ export const getDeptList = (params?: DeptListItem) =>
 
 export const getMenuList = (params?: MenuParams) =>
   defHttp.get<MenuListGetResultModel>({ url: Api.MenuList, params });
+export const saveMenu = (params?: MenuParams) =>
+  defHttp.post<MenuListGetResultModel>({ url: Api.saveMenu, params });
+export const updateMenu = (params?: MenuParams) =>
+  defHttp.post<MenuListGetResultModel>({ url: Api.updateMenu, params });
+export const deleteMenu = (params:{ids:any[]}) =>
+  defHttp.post<MenuListGetResultModel>({ url: Api.deleteMenu, params });
 
 export const getRoleListByPage = (params?: RolePageParams) =>
   defHttp.get<RolePageListGetResultModel>({ url: Api.RolePageList, params });
