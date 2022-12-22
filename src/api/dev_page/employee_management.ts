@@ -19,6 +19,7 @@ enum Api {
 }
 
 export const getUserPageList = (params: DemoParams) => {
+  params.deleteFlag = 0;
   params.pageNum = params.page
   return defHttp.post<DemoListGetResultModel>({
     url: Api.USER_LIST,
@@ -54,6 +55,7 @@ export const deleteUSER= (params: any[]) =>
   
 export const getIPList = (params: DemoParams) => {
   params.pageNum = params.page
+  params.deleteFlag = 0;
   return defHttp.post<DemoListGetResultModel>({
     url: Api.IP_LIST,
     params,
@@ -83,6 +85,7 @@ export const deleteIP= (params:any[]) =>
   
 export const getGroupPageList = (params: DemoParams) => {
   params.pageNum = params.page
+  params.deleteFlag = 0;
   return defHttp.post<DemoListGetResultModel>({
     url: Api.GROUP_LIST,
     params,

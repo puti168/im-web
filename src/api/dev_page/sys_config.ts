@@ -61,6 +61,7 @@ export const updateUserConfig = (params: DemoParams) =>
 
 export const getPulbicMsgList = (params: DemoParams) => {
   params.pageNum = params.page
+  params.deleteFlag = 0;
   return defHttp.post<DemoListGetResultModel>({
     url: Api.PUBLICMSG_LIST,
     params,

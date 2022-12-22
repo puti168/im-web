@@ -1,4 +1,5 @@
 export interface BasicPageParams {
+  deleteFlag: number;
   page: number;
   pageNum:number;
   pageSize: number;
