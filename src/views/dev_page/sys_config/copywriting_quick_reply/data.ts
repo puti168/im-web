@@ -8,7 +8,7 @@ import {
  export const columns: BasicColumn[] = [
   {
     title: '内容',
-    dataIndex: 'title',
+    dataIndex: 'remark1',
     width: 150,
   },
   {
