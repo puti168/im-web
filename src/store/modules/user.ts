@@ -131,6 +131,7 @@ export const useUserStore = defineStore({
           username: data.name,
           password: data.password,
           realName: data.realName,
+          nickname: data.nickname,
           avatar: 'https://q1.qlogo.cn/g?b=qq&nk=339449197&s=640',
           desc: 'tester',
           token: this.getToken,
