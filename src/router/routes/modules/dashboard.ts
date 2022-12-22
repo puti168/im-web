@@ -14,15 +14,15 @@ const dashboard: AppRouteModule = {
     title: t('routes.dashboard.dashboard'),
   },
   children: [
-    {
-      path: 'analysis',
-      name: 'Analysis',
-      component: () => import('/@/views/dashboard/analysis/index.vue'),
-      meta: {
-        // affix: true,
-        title: t('routes.dashboard.analysis'),
-      },
-    },
+    // {
+    //   path: 'analysis',
+    //   name: 'Analysis',
+    //   component: () => import('/@/views/dashboard/analysis/index.vue'),
+    //   meta: {
+    //     // affix: true,
+    //     title: t('routes.dashboard.analysis'),
+    //   },
+    // },
     {
       path: 'workbench',
       name: 'Workbench',
