@@ -41,6 +41,8 @@ export const useUserStore = defineStore({
   }),
   getters: {
     getUserInfo(): UserInfo {
+      console.log(this.userInfo, 'userInfo');
+      console.log(getAuthCache<UserInfo>(USER_INFO_KEY), 'getAuthCache');
       return this.userInfo || getAuthCache<UserInfo>(USER_INFO_KEY) || {};
     },
     getToken(): string {
@@ -68,6 +70,7 @@ export const useUserStore = defineStore({
     setUserInfo(info: UserInfo | null) {
       this.userInfo = info;
       this.lastUpdateTime = new Date().getTime();
+      console.log('setUserInfo', 'setUserInfo');
       setAuthCache(USER_INFO_KEY, info);
     },
     setSessionTimeout(flag: boolean) {
@@ -83,24 +86,26 @@ export const useUserStore = defineStore({
      * @description: login
      */
     async login(
-      params: LoginParams | any & {
-        goHome?: boolean;
-        mode?: ErrorMessageMode;
-      },
+      params:
+        | LoginParams
+        | (any & {
+            goHome?: boolean;
+            mode?: ErrorMessageMode;
+          }),
     ): Promise<GetUserInfoModel | null> {
       try {
         const { goHome = true, mode, ...loginParams } = params;
         const data = await loginApi(loginParams, mode);
-        const {  loginToken:token } = data;
+        const { loginToken: token } = data;
         // save token
         this.setToken(token);
-        return this.afterLoginAction(data,goHome);
+        return this.afterLoginAction(data, goHome);
       } catch (error) {
-        console.log(error,'---data');
+        console.log(error, '---data');
         return Promise.reject(error);
       }
     },
-    async afterLoginAction(data:any,goHome?: boolean): Promise<GetUserInfoModel | null> {
+    async afterLoginAction(data: any, goHome?: boolean): Promise<GetUserInfoModel | null> {
       if (!this.getToken) return null;
       // get user info
       const userInfo = await this.getUserInfoAction(data);
@@ -121,12 +126,12 @@ export const useUserStore = defineStore({
       }
       return userInfo;
     },
-    async getUserInfoAction(data?:any): Promise<UserInfo | null> {
+    async getUserInfoAction(data?: any): Promise<UserInfo | null> {
       if (!this.getToken) return null;
       // const userInfo = await getUserInfo();
-      let userInfo:any;
-      if(data){
-         userInfo = {
+      let userInfo: any;
+      if (data) {
+        userInfo = {
           userId: data.id,
           username: data.name,
           password: data.password,
@@ -142,8 +147,8 @@ export const useUserStore = defineStore({
             },
           ],
         };
-      }else{
-        userInfo = this.userInfo || {}
+      } else {
+        userInfo = this.userInfo || {};
       }
       const { roles = [] } = userInfo;
       if (isArray(roles)) {
