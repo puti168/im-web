@@ -53,6 +53,7 @@ function send(record: any) {
 let { createMessage } = useMessage()
 function deleteById(id) {
   deleteIP([id]).then(()=>{
+    reload()
     createMessage.success('删除成功' + id)
   }).catch(e => {
     console.error(e);

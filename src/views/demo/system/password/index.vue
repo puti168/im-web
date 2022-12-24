@@ -13,6 +13,8 @@
   import { defineComponent } from 'vue';
   import { PageWrapper } from '/@/components/Page';
   import { BasicForm, useForm } from '/@/components/Form';
+  import { updateMyPassword } from '/@/api/dev_page/employee_management';
+  import { useMessage } from '/@/hooks/web/useMessage';
 
   import { formSchema } from './pwd.data';
   export default defineComponent({
@@ -27,11 +29,20 @@
         schemas: formSchema,
       });
 
+      let { createMessage } = useMessage();
+
       async function handleSubmit() {
         try {
           const values = await validate();
           const { passwordOld, passwordNew } = values;
-
+          const params = { password: passwordOld, rePassword: passwordNew };
+          updateMyPassword(params)
+            .then(() => {
+              createMessage.success('修改成功');
+            })
+            .catch(() => {
+              createMessage.error('修改失败');
+            });
           // TODO custom api
           console.log(passwordOld, passwordNew);
           // const { router } = useRouter();

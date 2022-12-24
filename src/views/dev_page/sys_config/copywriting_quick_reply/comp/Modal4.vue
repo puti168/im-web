@@ -57,6 +57,8 @@ export default defineComponent({
         if (res) {
           console.log('res:', res);
           console.log('model:', modelRef.value);
+          res.distributorId = '123'
+          res.title = '123'
           if (!res.remark1) {
             createMessage.warning('请填写默认语言！')
           } else {

@@ -56,6 +56,8 @@ export default defineComponent({
       validate().then(async res => {
         if (res) {
           console.log('res:', res);
+          res.distributorId = '123'
+          res.title = '123'
           console.log('model:', modelRef.value);
           if (!res.remark1) {
             createMessage.warning('请填写默认语言！')
