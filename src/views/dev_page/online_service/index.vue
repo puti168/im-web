@@ -95,7 +95,7 @@
           <a-button @click="changeLineStatus" size="small" style="margin-right: 10px"
             >切换{{ onLine ? '忙碌' : '在线' }}</a-button
           >
-          <close-circle-outlined @click="closeOrder" />
+          <close-circle-outlined @click="closeOrderVue" />
         </div>
       </div>
       <div
@@ -210,7 +210,7 @@
             </div>
           </div>
         </div>
-        <div class="quick-replay" v-else>
+        <div class="quick-replay" v-else ref="payListDataRef">
           <div class="search">
             <a-input-search
               v-model:value="searchValue"
@@ -221,10 +221,10 @@
           </div>
           <div v-for="item in payListData" @mouseover="item.showSend = true" @mouseout="item.showSend = false">
             <div class="content">
-              <div class="content-answer margin-bottom">{{ item.question }}</div>
-              <div class="content-answer">{{ item.answer }}</div>
+              <div class="content-answer margin-bottom">{{ item.title }}</div>
+              <div class="content-answer">{{ item.remark }}</div>
             </div>
-            <div class="send" v-show="item.showSend" @click="sendQuickReplay(item.answer)"> 发送 </div>
+            <div class="send" v-show="item.showSend" @click="sendQuickReplay(item.remark)"> 发送 </div>
           </div>
         </div>
       </div>
@@ -244,6 +244,8 @@
     matchOrders,
     queryHistoryRecords,
     queryUserMessage,
+    closeOrder,
+    pageList,
   } from '/@/api/dev_page/online_service';
   import { useServiceStore } from '/@/store/modules/online-service';
   import { useUserStore } from '/@/store/modules/user';
@@ -318,8 +320,15 @@
     console.log(onLine.value, '-----');
     changeLineStatusNet(onLine.value ? '2' : '1');
   }
-  function closeOrder() {
-    id.value = null;
+  async function closeOrderVue() {
+    const { op } = await closeOrder({
+      distributorId: 123,
+      orderId: currOrderId.value,
+    });
+    if (op === 1) {
+      id.value = null;
+      currOrderId.value = null;
+    }
   }
   if (serviceStore.getServiceInfo?.opStatus === 1) {
     firstLogin.value = false;
@@ -532,13 +541,28 @@
   }
   onMounted(async () => {
     //开始直接接口请求;
-    console.log('mounted');
-    payListData.value = [...listData3];
-
     queryOnlineStatusVue();
     queryMychatListVue();
     queryCsMWChatCountVue();
+    pageListVue();
   });
+
+  const quickReplay = reactive({
+    pageNum: 1,
+    pageSize: 10,
+    pageLimitNum: 0,
+  });
+  async function pageListVue() {
+    // todo
+    const data = await pageList({
+      type: 1,
+      pageNum: quickReplay.pageNum,
+      pageSize: quickReplay.pageSize,
+    });
+    console.log(data, '----');
+    quickReplay.pageLimitNum = Number(data.pages);
+    payListData.value.push(...data.records);
+  }
 
   watch(userListRef, (curr, pre) => {
     curr &&
@@ -581,6 +605,7 @@
   }
   //红包list
   const payListData = ref([]);
+  const payListDataRef = ref();
   const searchValue = ref('');
   const showSend = ref(false);
   function search() {
@@ -590,6 +615,20 @@
     if (!id.value) return;
     addData(content);
   }
+  watch(payListDataRef, (curr) => {
+    curr &&
+      payListDataRef.value.addEventListener('scroll', function (e) {
+        const el = e.target;
+        const clientHeight = el.clientHeight;
+        const scrollTop = el.scrollTop;
+        const scrollHeight = el.scrollHeight;
+        if (clientHeight + scrollTop === scrollHeight) {
+          if (quickReplay.pageNum > quickReplay.pageLimitNum) return;
+          quickReplay.pageNum++;
+          pageListVue();
+        }
+      });
+  });
   //待接入list
   const state = reactive({
     checkAll: false,
@@ -991,9 +1030,11 @@
     }
 
     .send {
-      height: 15px;
-      line-height: 15px;
+      height: 25px;
+      line-height: 25px;
       text-align: center;
+      border: 1px solid #ebebeb;
+      border-radius: 5px;
     }
   }
   .left-list-box {

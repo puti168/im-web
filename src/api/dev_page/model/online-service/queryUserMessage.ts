@@ -1,4 +1,4 @@
 export interface queryUserMessage {
   distributeId: number;
-  userId: string;
+  orderId: string;
 }

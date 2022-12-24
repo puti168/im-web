@@ -6,6 +6,8 @@ import { matchOrdersEntry } from './model/online-service/matchOrders';
 import { DemoListGetResultModel } from '/@/api/demo/model/tableModel';
 import { queryHistoryRecordsEntry } from '/@/api/dev_page/model/online-service/queryHistoryRecordsEntry';
 import { queryUserMessage } from '/@/api/dev_page/model/online-service/queryUserMessage';
+import { pageList } from '/@/api/dev_page/model/online-service/pageList';
+import { closeOrder } from '/@/api/dev_page/model/online-service/closeOrder';
 
 enum Api {
   SETCSSTATUS = '/backend/chatMessage/setCsStatus',
@@ -16,6 +18,8 @@ enum Api {
   matchOrders = '/backend/customerservice/matchOrders',
   queryHistoryRecords = '/backend/chatMessage/queryHistoryRecords',
   queryUserDetail = '/backend/chatMessage/queryUserDetail',
+  closeOrder = '/backend/chatMessage/closeOrder',
+  pageList = '/backend/publicmsg/pageList',
 }
 
 export const setOnlineStatus = (params: SetOnlineStatusModel) =>
@@ -62,5 +66,17 @@ export const queryHistoryRecords = (params: queryHistoryRecordsEntry) =>
 export const queryUserMessage = (params: queryUserMessage) =>
   defHttp.post<DemoListGetResultModel>({
     url: Api.queryUserDetail,
+    params,
+  });
+
+export const closeOrder = (params: closeOrder) =>
+  defHttp.post<DemoListGetResultModel>({
+    url: Api.closeOrder,
+    params,
+  });
+
+export const pageList = (params: pageList) =>
+  defHttp.post<DemoListGetResultModel>({
+    url: Api.pageList,
     params,
   });
