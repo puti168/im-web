@@ -37,7 +37,7 @@ class SocketInstance {
         if (!token) {
           window.location.reload();
         }
-        return `ws://13.228.27.17/long-connecting/ws/cs?Auth=` + token;
+        return `ws://13.213.15.62/long-connecting/ws/cs?Auth=` + token;
       },
       {
         onError: (evt) => {
