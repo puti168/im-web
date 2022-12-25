@@ -56,15 +56,15 @@
           </div>
         </div>
         <div class="chat-list-list" v-else>
-          <div @click="changeFirstLogin" class="chat-list-list-empty" v-if="firstLogin">
-            <a-button type="primary">开始接入</a-button>
+          <div class="chat-list-list-empty" v-if="firstLogin">
+            <a-button type="primary" @click="changeFirstLogin">开始接入</a-button>
           </div>
           <div class="chat-list-list-content" v-else ref="userListRef">
             <div v-for="item in list" @click="changeId(item)">
               <div class="list-content">
                 <div class="list-content-top">
                   <div class="list-content-top-left">
-                    <div class="list-content-top-name">{{ item.nickName }}</div>
+                    <div class="list-content-top-name">{{ item.nickName }}-</div>
                     <div class="list-content-top-name">{{ item.lanSimpleCode }}</div>
                   </div>
                   <div class="list-content-top-time">{{ getTimeHour(Number(item.lastTime)) }}</div>
@@ -265,9 +265,10 @@
   let firstLogin = ref(true);
   async function changeFirstLogin() {
     //请求列表,将列表加入我的会话中,将等待用户加入到我的会话;
-    changeLineStatusNet('1');
+    // changeLineStatusNet('1');
     //开始启动service
     startIm();
+    firstLogin.value = false;
   }
 
   const current_time = computed(() => {
@@ -279,24 +280,21 @@
   });
 
   function getTime(time) {
-    return moment(time).utcOffset(current_time).format('YYYY-MM-DD HH:mm:ss');
+    return moment(time).utcOffset(current_time.value).format('YYYY-MM-DD HH:mm:ss');
   }
   function getTimeHour(time) {
-    return moment(time).utcOffset(current_time).format('HH:mm:ss');
+    return moment(time).utcOffset(current_time.value).format('HH:mm:ss');
   }
   async function queryOnlineStatusVue() {
     const { status } = await queryOnlineStatus();
-    firstLogin.value = status != 1;
+    // firstLogin.value = status != 1;
     // //开始接入会改变在线状态;
     onLine.value = status === 1;
-    if (onLine.value) {
-      //开始启动service
-      startIm();
-    }
   }
 
   onUnmounted(() => {
-    changeLineStatusNet('2');
+    // changeLineStatusNet('2');
+    SocketInstance.close();
   });
 
   async function changeLineStatusNet(status) {
@@ -304,7 +302,7 @@
       status,
     });
     if (opStatus === 1) {
-      firstLogin.value = false;
+      // firstLogin.value = false;
       // //开始接入会改变在线状态;
       onLine.value = !onLine.value;
     }
@@ -312,26 +310,17 @@
       opStatus,
     });
   }
+  //ws是否在线
+  const wsOnline = ref(false);
   //是否在线
   const onLine = ref(false);
   function changeLineStatus() {
-    if (firstLogin.value) return;
-    // onLine.value = !onLine.value;
-    console.log(onLine.value, '-----');
+    // if (firstLogin.value) return;
     changeLineStatusNet(onLine.value ? '2' : '1');
   }
-  async function closeOrderVue() {
-    const { op } = await closeOrder({
-      distributorId: 123,
-      orderId: currOrderId.value,
-    });
-    if (op === 1) {
-      id.value = null;
-      currOrderId.value = null;
-    }
-  }
+
   if (serviceStore.getServiceInfo?.opStatus === 1) {
-    firstLogin.value = false;
+    // firstLogin.value = false;
     // //开始接入会改变在线状态;
     onLine.value = true;
   }
@@ -450,10 +439,14 @@
       crtTime: Date.now(),
     };
     newMsg.content = msg;
-    newMsg.msgType = msgType;
-    newMsg.sendType = sendType;
-    newMsg.crtTime = time;
+    if (sendType) {
+      newMsg.msgType = msgType;
+      newMsg.sendType = sendType;
+      newMsg.crtTime = time;
+    }
+
     newMsg.csNickName = userStore.getUserInfo.username;
+    console.log(newMsg, '---newMsg----');
     chatListData.value.push(newMsg);
     if (!sendType) {
       SocketInstance.send({
@@ -464,6 +457,7 @@
         sendType: '2',
         content: msg,
         senderNickName: userStore.getUserInfo.username,
+        time: Date.now(),
       });
     }
 
@@ -620,6 +614,7 @@
       payListDataRef.value.addEventListener('scroll', function (e) {
         const el = e.target;
         const clientHeight = el.clientHeight;
+        想``;
         const scrollTop = el.scrollTop;
         const scrollHeight = el.scrollHeight;
         if (clientHeight + scrollTop === scrollHeight) {
@@ -733,6 +728,20 @@
         }
       }
     });
+  }
+  async function closeOrderVue() {
+    const { op } = await closeOrder({
+      distributorId: 123,
+      orderId: currOrderId.value,
+    });
+    if (op === 1) {
+      id.value = null;
+      currOrderId.value = null;
+      list.splice(0, list.length);
+      userListPageNo.value = 1;
+      queryMychatListVue();
+      queryCsMWChatCountVue();
+    }
   }
 </script>
 <style lang="less">

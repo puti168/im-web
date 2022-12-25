@@ -132,6 +132,19 @@ class SocketInstance {
   on(event, fn) {
     this.socket.on(event, fn);
   }
+
+  /**
+   * close;
+   * 前端增加关闭;
+   * 1:前端:客服手动打开ws;
+   * 2:前端:每次进入页面开始接单都会显示;
+   * 3:前端:右上角控制客服状态;status
+   * 4:前端+后端:客服端订单关闭,服务端发送消息;用户关闭订单,ws关闭,后端推送消息到客服,清空order_id和刷新会话列表;
+   * 5:前端+后端:新的会话, 新增message_type用于刷新会话列表
+   */
+  close() {
+    this.socket.close();
+  }
 }
 
 export default new SocketInstance();
