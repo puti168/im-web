@@ -234,7 +234,6 @@
 <script lang="ts" setup>
   import { PageWrapper } from '/@/components/Page';
   import { ref, onMounted, onUnmounted, reactive, watch, nextTick } from 'vue';
-  import listData3 from './data3';
   import {
     setOnlineStatus,
     queryOnlineStatus,
@@ -250,9 +249,7 @@
   import { useServiceStore } from '/@/store/modules/online-service';
   import { useUserStore } from '/@/store/modules/user';
   import moment from 'moment';
-
   import { computed } from 'vue';
-
   import SocketInstance from '/@/api/im-server/socket-instance';
   import { CopyOutlined, CloseCircleOutlined } from '@ant-design/icons-vue';
 
@@ -712,19 +709,33 @@
     console.log('startIm', 'connect');
     SocketInstance.connect();
     SocketInstance.on('message', (data) => {
-      console.log(data);
-      console.log(currOrderId.value, data.orderId);
-      //如果订单id不是当前的,不执行;如果当前的id,执行addData操作;
-      if (currOrderId.value === data.orderId)
-        addData(data.content, data.senderNickName, data.sendType, data.msgType, data.time);
-      else {
-        //刷新页面;
-        // todo
-        console.log(currentTab.value, '--------');
+      if (data.msgType === 9) {
+        //用户发起关单操作,发送到客服端,清空orderid,刷新列表 todo
+        id.value = null;
         if (currentTab.value === 1) {
           list.splice(0, list.length);
           userListPageNo.value = 1;
           queryMychatListVue();
+        }
+      } else if (data.msgType === 10) {
+        //表示有会话匹配成功,需要自动刷新页面
+        if (currentTab.value === 1) {
+          list.splice(0, list.length);
+          userListPageNo.value = 1;
+          queryMychatListVue();
+        }
+      } else {
+        console.log(currOrderId.value, data.orderId);
+        //如果订单id不是当前的,不执行;如果当前的id,执行addData操作;
+        if (currOrderId.value === data.orderId)
+          addData(data.content, data.senderNickName, data.sendType, data.msgType, data.time);
+        else {
+          //刷新页面;
+          if (currentTab.value === 1) {
+            list.splice(0, list.length);
+            userListPageNo.value = 1;
+            queryMychatListVue();
+          }
         }
       }
     });
