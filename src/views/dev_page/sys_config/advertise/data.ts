@@ -1,10 +1,6 @@
-import {
-  BasicColumn,
-  FormSchema,
-} from '/@/components/Table';
+import { BasicColumn, FormSchema } from '/@/components/Table';
 
- 
- export const columns: BasicColumn[] = [
+export const columns: BasicColumn[] = [
   {
     title: '项目名',
     dataIndex: 'name',
@@ -12,40 +8,39 @@ import {
   },
   {
     title: '添加时间',
-    dataIndex: 'name7',
+    dataIndex: 'createTime',
     width: 150,
   },
   {
     title: '操作人',
-    dataIndex: 'name2',
+    dataIndex: 'createUser',
     width: 150,
-  }
+  },
 ];
 
- 
- export const dataSource = [
-    {
-      name: '顶部banner',
-      id:0,
-    },
-    {
-      name: '循环文案',
-      id:1,
-    },
-    {
-      name: '开场文案',
-      id:2,
-    },
-  ];
+export const dataSource = [
+  {
+    name: '顶部banner',
+    id: 0,
+  },
+  {
+    name: '循环文案',
+    id: 1,
+  },
+  {
+    name: '开场文案',
+    id: 2,
+  },
+];
 
 export const schemas: FormSchema[] = [
   {
     field: 'remark1',
     component: 'InputTextArea',
-    defaultValue:'',
+    defaultValue: '',
     rules: [{ required: true }],
     label: '内容',
-    show:true,
+    show: true,
     colProps: {
       span: 24,
     },
@@ -53,10 +48,10 @@ export const schemas: FormSchema[] = [
   {
     field: 'remark2',
     component: 'InputTextArea',
-    defaultValue:'',
+    defaultValue: '',
     // rules: [{ required: true }],
     label: '内容',
-    show:false,
+    show: false,
     colProps: {
       span: 24,
     },
@@ -64,10 +59,10 @@ export const schemas: FormSchema[] = [
   {
     field: 'remark3',
     component: 'InputTextArea',
-    defaultValue:'',
+    defaultValue: '',
     // rules: [{ required: true }],
     label: '内容',
-    show:false,
+    show: false,
     colProps: {
       span: 24,
     },
@@ -75,10 +70,10 @@ export const schemas: FormSchema[] = [
   {
     field: 'remark4',
     component: 'InputTextArea',
-    defaultValue:'',
+    defaultValue: '',
     // rules: [{ required: true }],
     label: '内容',
-    show:false,
+    show: false,
     colProps: {
       span: 24,
     },
@@ -86,8 +81,8 @@ export const schemas: FormSchema[] = [
   {
     field: 'remark5',
     component: 'InputTextArea',
-    defaultValue:'',
-    show:false,
+    defaultValue: '',
+    show: false,
     // rules: [{ required: true }],
     label: '内容',
     colProps: {
@@ -97,8 +92,8 @@ export const schemas: FormSchema[] = [
   {
     field: 'id',
     component: 'Input',
-    defaultValue:'',
-    show:false,
+    defaultValue: '',
+    show: false,
     // rules: [{ required: true }],
     label: 'ID',
     colProps: {
@@ -106,7 +101,6 @@ export const schemas: FormSchema[] = [
     },
   },
 ];
-
 
 import { uploadApi } from '/@/api/sys/upload';
 export const schemasUpload: FormSchema[] = [
@@ -120,12 +114,10 @@ export const schemasUpload: FormSchema[] = [
     rules: [{ required: true, message: '请选择上传文件' }],
     componentProps: {
       api: uploadApi,
-      multiple:true,
-      value:[
-        'https://4k.wpcoder.cn/wp-content/uploads/2022/07/1_1658113094-1600x743.png',
-      ],
-      maxSize:3,
-      accept:['image/*'],
+      multiple: true,
+      value: ['https://4k.wpcoder.cn/wp-content/uploads/2022/07/1_1658113094-1600x743.png'],
+      maxSize: 3,
+      accept: ['image/*'],
     },
   },
 ];
