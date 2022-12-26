@@ -2,7 +2,7 @@ import { defHttp } from '/@/utils/http/axios';
 import { getMenuListResultModel } from './model/menuModel';
 
 enum Api {
-  GetMenuList = '/getMenuList',
+  GetMenuList = '/backend/menu/tree',
 }
 
 /**
@@ -10,5 +10,25 @@ enum Api {
  */
 
 export const getMenuList = () => {
-  return defHttp.get<getMenuListResultModel>({ url: Api.GetMenuList });
+  return defHttp.post<getMenuListResultModel>({ url: Api.GetMenuList }).then(res => {
+    updateMenuData(res)
+    return res;
+  });
 };
+
+function updateMenuData(childrens:any,type="0"){
+  childrens.forEach(item => {
+    item.type = type
+    item.name = item.menuName
+    item.orderNo = item.sortNum;
+    item.routePath = item.path;
+    item.parentMenu = item.parentId;
+    item.children = item.childrens;
+    if(!item.component) item.component = 'LAYOUT'
+    if(!item.meta) item.meta = {}
+    item.meta.title = item.menuName
+    if(item.children && item.children.length > 0){
+      updateMenuData(item.children,"1")
+    }
+  })
+}
