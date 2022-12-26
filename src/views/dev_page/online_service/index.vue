@@ -84,7 +84,7 @@
         <div class="chat-right-top-header">
           <div class="chat-right-top-header-left">{{ currentName ? currentName + '-' + currentLang : '等待接入' }}</div>
           <div class="chat-right-top-header-right">
-            <div class="chat-right-top-header-right-name">tom001</div>
+            <div class="chat-right-top-header-right-name">{{ userStore.getUserInfo.username }}</div>
             <div class="chat-right-top-header-right-line">
               <span class="red-dot" :class="{ red: !onLine }"></span>
               <span>{{ onLine ? '在线' : '忙碌' }}</span>
@@ -345,7 +345,7 @@
       pageSize: 10,
       userId: id.value,
     });
-    historyPageLimit.value = pageCount;
+    historyPageLimit.value = Number(pageCount);
     return records;
   }
   const userInfo = reactive({});
@@ -510,8 +510,9 @@
       pageNo: userListPageNo.value,
       pageSize: 10,
     });
-    list.push(...mlist);
-    userListPageNoLimit.value = pageCount;
+    if (userListPageNo.value === 1) list.push(...mlist);
+    else list.splice(0, 0, ...mlist);
+    userListPageNoLimit.value = Number(pageCount);
   }
 
   async function queryWaitListVue() {
@@ -521,7 +522,7 @@
       pageSize: 10,
     });
     dataReadyData.value.push(...wlist);
-    userWaitListPageNoLimit.value = pageCount;
+    userWaitListPageNoLimit.value = Number(pageCount);
   }
   async function queryCsMWChatCountVue() {
     const { myChatCount, waitChatCount } = await queryCsMWChatCount({
@@ -631,6 +632,8 @@
   function onCheckAllChange(e) {
     if (e.target.checked) {
       state.showChat = true;
+    } else {
+      state.showChat = false;
     }
     Object.assign(state, {
       checkedList: e.target.checked ? dataReadyData.value.map((item) => item.userId + ',' + item.orderId) : [],
@@ -640,7 +643,7 @@
     state.checkAll = state.checkedList.length === dataReadyData.value.length;
     if (state.checkedList.length > 0) {
       state.showChat = true;
-    }
+    } else state.showChat = false;
   }
   async function startChat() {
     const data = await matchOrders({
