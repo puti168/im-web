@@ -22,7 +22,7 @@ enum Api {
 
 export const getUserConfig = (params: { distributorId: number }) => {
   return defHttp
-    .get<any>({
+    .post<any>({
       url: Api.USER_CONFUG_INFO + '/' + params.distributorId,
     })
     .then((res: any) => {
@@ -87,9 +87,9 @@ export const updatePulbicMsg = (params: DemoParams) =>
     params,
   });
 export const deletePulbicMsg = (params: any[]) =>
-  defHttp.delete<DemoListGetResultModel>({
+  defHttp.post<DemoListGetResultModel>({
     url: Api.DELETE_PUBLICMSG,
-    params,
+    params:{ids:params},
   });
 
 export const saveIP = (params: DemoParams) =>
@@ -103,9 +103,9 @@ export const updateIP = (params: DemoParams) =>
     params,
   });
 export const deleteIP = (params: any[]) =>
-  defHttp.delete<DemoListGetResultModel>({
+  defHttp.post<DemoListGetResultModel>({
     url: Api.DELETE_IP,
-    params,
+    params:{ids:params},
   });
 
 const dataSource: any = [

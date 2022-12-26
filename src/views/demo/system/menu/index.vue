@@ -84,8 +84,7 @@
       }
 
       function handleDelete(record: Recordable) {
-        deleteMenu({ids:[record.id]})
-        console.log(record);
+        deleteMenu([record.id])
       }
 
       function handleSuccess() {

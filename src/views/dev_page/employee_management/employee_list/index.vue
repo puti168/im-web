@@ -26,6 +26,7 @@
   import { useModal } from '/@/components/Modal';
   import Modal4 from './comp/Modal4.vue';
   import { useMessage } from '/@/hooks/web/useMessage';
+
   let { createMessage } = useMessage();
   const [registerTable, { reload }] = useTable({
     api: getUserPageList,
