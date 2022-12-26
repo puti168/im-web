@@ -123,8 +123,8 @@ export const deleteGroup = (params: any[]) =>
 
 export const getGroupById = (params: DemoParams) =>
   defHttp.get<DemoListGetResultModel>({
-    url: Api.GET_GROUP_BY_ID,
-    params,
+    url: `${Api.GET_GROUP_BY_ID}/${params.id}`,
+    // params,
   });
 
 export const updateMyPassword = (params) =>
