@@ -57,6 +57,7 @@ export const deleteUSER = (params: any[]) =>
   });
 
 export const getIPList = (params: DemoParams) => {
+  params.page = params.page || 1
   params.pageNum = params.page;
   params.deleteFlag = 0;
   return defHttp
