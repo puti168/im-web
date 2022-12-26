@@ -416,7 +416,8 @@
     nextTick(() => {
       const el = chatListRef.value;
       let scrollHeight = el.scrollHeight;
-      chatListData.value.push(...list);
+      if (historyPageNo.value === 1) chatListData.value.push(...list);
+      else chatListData.value.splice(0, 0, ...list);
 
       nextTick(() => {
         if (count.value === 0) el.scrollTop = el.scrollHeight;
@@ -510,8 +511,7 @@
       pageNo: userListPageNo.value,
       pageSize: 10,
     });
-    if (userListPageNo.value === 1) list.push(...mlist);
-    else list.splice(0, 0, ...mlist);
+    list.push(...mlist);
     userListPageNoLimit.value = Number(pageCount);
   }
 
