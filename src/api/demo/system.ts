@@ -32,7 +32,7 @@ export const getDeptList = (params?: DeptListItem) =>
   defHttp.get<DeptListGetResultModel>({ url: Api.DeptList, params });
 
 export const getMenuList = (params?: MenuParams) =>
-  defHttp.get<MenuListGetResultModel>({ url: Api.MenuList, params });
+  defHttp.get<MenuListGetResultModel>({ url: Api.MenuList, params })
 export const saveMenu = (params?: MenuParams) =>
   defHttp.post<MenuListGetResultModel>({ url: Api.saveMenu, params });
 export const updateMenu = (params?: MenuParams) =>

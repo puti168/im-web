@@ -8,7 +8,6 @@
         <template v-if="column.key === 'action'">
           <a-button class="mr-1" type="warning" @click="send(record)">编辑</a-button>
           <PopConfirmButton type="danger" @confirm="deleteById(record.id)" title="确认删除？">删除</PopConfirmButton>
-          <a-button class="ml-1">权限</a-button>
         </template>
       </template>
       <template #toolbar>
