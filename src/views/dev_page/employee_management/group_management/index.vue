@@ -6,7 +6,7 @@
         <template v-if="column.key === 'action'">
           <a-button class="mr-1" type="warning" @click="send(record)">编辑</a-button>
           <PopConfirmButton type="danger" @confirm="deleteById(record.id)" title="确认删除？">删除</PopConfirmButton>
-          <a-button class="ml-1">权限</a-button>
+          <a-button class="ml-1" @click="handleAuthority(record.id)">权限</a-button>
         </template>
       </template>
       <template #toolbar>
@@ -18,7 +18,7 @@
 </template>
 <script lang="ts" setup>
   import { BasicTable, useTable } from '/@/components/Table';
-  import { getGroupPageList, deleteGroup } from '/@/api/dev_page/employee_management';
+  import { getGroupPageList, deleteGroup, getGroupById } from '/@/api/dev_page/employee_management';
   import { columns } from './data';
   import { PageWrapper } from '/@/components/Page';
   import { useModal } from '/@/components/Modal';
@@ -64,5 +64,11 @@
       record.editValueRefs.name4.value = `${value}`;
     }
     console.log(column, value, record);
+  }
+
+  function handleAuthority(id) {
+    getGroupById({ id })
+      .then(() => {})
+      .catch(() => {});
   }
 </script>
