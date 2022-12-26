@@ -27,6 +27,7 @@ function updateMenuData(childrens:any,type="0"){
     if(!item.component) item.component = 'LAYOUT'
     if(!item.meta) item.meta = {}
     item.meta.title = item.menuName
+    item.meta.orderNo = item.sortNum
     if(item.children && item.children.length > 0){
       updateMenuData(item.children,"1")
     }
