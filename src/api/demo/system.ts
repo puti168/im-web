@@ -20,7 +20,7 @@ enum Api {
   MenuList = '/menu/tree',
   saveMenu = '/menu/save',
   updateMenu = '/menu/update',
-  deleteMenu = '/menu/falseDelete',
+  deleteMenu = '/menu/delete',
   RolePageList = '/system/getRoleListByPage',
   GetAllRoleList = '/system/getAllRoleList',
 }
@@ -31,14 +31,40 @@ export const getAccountList = (params: AccountParams) =>
 export const getDeptList = (params?: DeptListItem) =>
   defHttp.get<DeptListGetResultModel>({ url: Api.DeptList, params });
 
-export const getMenuList = (params?: MenuParams) =>
-  defHttp.get<MenuListGetResultModel>({ url: Api.MenuList, params })
-export const saveMenu = (params?: MenuParams) =>
-  defHttp.post<MenuListGetResultModel>({ url: Api.saveMenu, params });
-export const updateMenu = (params?: MenuParams) =>
-  defHttp.post<MenuListGetResultModel>({ url: Api.updateMenu, params });
-export const deleteMenu = (params: { ids: any[] }) =>
-  defHttp.post<MenuListGetResultModel>({ url: Api.deleteMenu, params });
+export const getMenuList = (params?: MenuParams | any) => {
+  return defHttp.post<MenuListGetResultModel>({ url: Api.MenuList, params:{...params,deleteFlag:0}}).then((res:any) => {
+    updateMenuData(res)
+    return res;
+  })
+}
+
+function updateMenuData(childrens:any,type="0"){
+  childrens.forEach(item => {
+    item.type = type
+    item.orderNo = item.sortNum;
+    item.routePath = item.path;
+    item.parentMenu = item.parentId;
+    item.children = item.childrens;
+    if(item.children && item.children.length > 0){
+      updateMenuData(item.children,"1")
+    }
+  })
+}
+export const saveMenu = (params?: MenuParams|any) => {
+  params.sortNum = params.orderNo;
+  params.path = params.routePath;
+  params.parentId = params.parentMenu;
+  return defHttp.post<MenuListGetResultModel>({ url: Api.saveMenu, params });
+}
+export const updateMenu = (params?: MenuParams|any) => {
+  params.sortNum = params.orderNo;
+  params.path = params.routePath;
+  params.parentId = params.parentMenu;
+  return defHttp.post<MenuListGetResultModel>({ url: Api.updateMenu, params });
+}
+
+export const deleteMenu = (params: any[]) =>
+  defHttp.post<MenuListGetResultModel>({ url: Api.deleteMenu, params:{ids:params} });
 
 export const getRoleListByPage = (params?: RolePageParams) =>
   defHttp.get<RolePageListGetResultModel>({ url: Api.RolePageList, params });

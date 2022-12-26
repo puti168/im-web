@@ -20,7 +20,7 @@
   export default defineComponent({
     name: 'MenuDrawer',
     components: { BasicDrawer, BasicForm },
-    emits: ['success', 'register'],
+    emits: ['success', 'register'], 
     setup(_, { emit }) {
       const isUpdate = ref(true);
 
@@ -30,12 +30,14 @@
         showActionButtonGroup: false,
         baseColProps: { lg: 12, md: 24 },
       });
-
+      let selectData:any = {}
       const [registerDrawer, { setDrawerProps, closeDrawer }] = useDrawerInner(async (data) => {
         resetFields();
         setDrawerProps({ confirmLoading: false });
         isUpdate.value = !!data?.isUpdate;
-
+        selectData = data.record;
+        console.log(data.record);
+        
         if (unref(isUpdate)) {
           setFieldsValue({
             ...data.record,
@@ -53,8 +55,8 @@
       async function handleSubmit() {
         try {
           const values = await validate();
-          if(isUpdate){
-            await updateMenu(values)
+          if(isUpdate.value){
+            await updateMenu({...values,id:selectData.id})
           }else{
             await saveMenu(values)
           }

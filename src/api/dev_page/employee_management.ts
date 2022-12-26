@@ -50,9 +50,9 @@ export const updateUSER = (params: DemoParams | any) => {
   });
 };
 export const deleteUSER = (params: any[]) =>
-  defHttp.delete<DemoListGetResultModel>({
+  defHttp.post<DemoListGetResultModel>({
     url: Api.DELETE_USER,
-    params,
+    params:{ids:params},
   });
 
 export const getIPList = (params: DemoParams) => {
@@ -81,9 +81,9 @@ export const updateIP = (params: DemoParams) =>
     params,
   });
 export const deleteIP = (params: any[]) =>
-  defHttp.delete<DemoListGetResultModel>({
+  defHttp.post<DemoListGetResultModel>({
     url: Api.DELETE_IP,
-    params,
+    params:{ids:params},
   });
 
 export const getGroupPageList = (params: DemoParams) => {
@@ -115,9 +115,9 @@ export const updateGroup = (params: DemoParams) =>
     params,
   });
 export const deleteGroup = (params: any[]) =>
-  defHttp.delete<DemoListGetResultModel>({
+  defHttp.post<DemoListGetResultModel>({
     url: Api.DELETE_GROUP,
-    params,
+    params:{ids:params},
   });
 
 export const updateMyPassword = (params) =>
