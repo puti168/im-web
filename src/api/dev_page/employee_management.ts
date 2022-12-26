@@ -53,7 +53,7 @@ export const updateUSER = (params: DemoParams | any) => {
 export const deleteUSER = (params: any[]) =>
   defHttp.post<DemoListGetResultModel>({
     url: Api.DELETE_USER,
-    params:{ids:params},
+    params: { ids: params },
   });
 
 export const getIPList = (params: DemoParams) => {
@@ -84,7 +84,7 @@ export const updateIP = (params: DemoParams) =>
 export const deleteIP = (params: any[]) =>
   defHttp.post<DemoListGetResultModel>({
     url: Api.DELETE_IP,
-    params:{ids:params},
+    params: { ids: params },
   });
 
 export const getGroupPageList = (params: DemoParams) => {
@@ -118,11 +118,11 @@ export const updateGroup = (params: DemoParams) =>
 export const deleteGroup = (params: any[]) =>
   defHttp.post<DemoListGetResultModel>({
     url: Api.DELETE_GROUP,
-    params:{ids:params},
+    params: { ids: params },
   });
 
 export const getGroupById = (params: DemoParams) =>
-  defHttp.get<DemoListGetResultModel>({
+  defHttp.post<DemoListGetResultModel>({
     url: `${Api.GET_GROUP_BY_ID}/${params.id}`,
     // params,
   });
