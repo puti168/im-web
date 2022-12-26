@@ -17,7 +17,7 @@
     props: {
       userData: { type: Object },
     },
-    setup(props) {
+    setup(props, { emit }) {
       // 传过来的值
       const { createMessage } = useMessage();
       const modelRef = ref<Recordable>({});
@@ -38,6 +38,7 @@
             if (res) {
               await updateUserConfig({ ...res, id: modelRef.value.id, distributorId: modelRef.value.distributorId });
               createMessage.success('保存成功');
+              emit('reloadTable');
               closeModal();
             }
           })
