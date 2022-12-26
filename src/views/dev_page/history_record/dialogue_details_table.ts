@@ -10,7 +10,7 @@ export const columns: BasicColumn[] = [
   },
   {
     title: '时间',
-    dataIndex: 'time',
+    dataIndex: 'createTime',
     width: 120,
   },
   {

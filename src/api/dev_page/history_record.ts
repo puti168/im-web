@@ -8,8 +8,15 @@ enum Api {
 export const getSessionorderList = (params: DemoParams) => {
   params.pageNum = params.page;
   params.distributorId = '123';
-  defHttp.post<DemoListGetResultModel>({
-    url: Api.SESSIONORDER_LIST,
-    params,
-  });
+  return defHttp
+    .post<DemoListGetResultModel>({
+      url: Api.SESSIONORDER_LIST,
+      params,
+    })
+    .then((res: any) => {
+      return {
+        items: res.records,
+        total: res.total,
+      };
+    });
 };
