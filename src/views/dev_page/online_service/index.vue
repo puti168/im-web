@@ -6,13 +6,13 @@
           @click="changeCurrentTab(0)"
           class="chat-list-tab-left"
           :class="{ 'chat-list-tab-current-tab': currentTab === 0 }"
-          >等待用户</div
+          >等待用户({{ waitCount }})</div
         >
         <div
           @click="changeCurrentTab(1)"
           class="chat-list-tab-right"
           :class="{ 'chat-list-tab-current-tab': currentTab === 1 }"
-          >我的对话</div
+          >我的对话({{ myCount }})</div
         >
       </div>
       <div style="height: 100%">
@@ -28,44 +28,50 @@
             >
               全选
             </a-checkbox>
-            <span>当前等待{{ 233 }}....</span>
+            <span v-if="!state.showChat">当前等待{{ waitCount }}....</span>
+            <span v-else @click="startChat" style="cursor: pointer">开始会话</span>
           </div>
-          <div class="left-list-box">
+          <div class="left-list-box" ref="userWaitListRef">
             <div
               class="left-list"
               v-for="item in dataReadyData"
               @mouseenter="item.showChat = true"
               @mouseleave="item.showChat = false"
             >
-              <input type="checkbox" :value="item.id" v-model="state.checkedList" @change="changeItem" />
+              <input
+                type="checkbox"
+                :value="item.userId + ',' + item.orderId"
+                v-model="state.checkedList"
+                @change="changeItem"
+              />
               <!--              <input type="checkbox" value="item.id" v-model="state.checkedList" @change="(e) => changeItem(e, item)" />-->
               <div class="start-content">
                 <div class="start-content-top">
-                  <span>{{ item.name }}-{{ item.lang }}</span>
-                  <span>{{ item.time }}</span>
+                  <span>{{ item.nickName }}-{{ item.lang }}</span>
+                  <span>{{ getTimeHour(Number(item.time)) }}</span>
                 </div>
-                <div class="start-content-bottom" v-show="item.showChat">开始会话</div>
+                <div class="start-content-bottom" v-show="item.showChat" @click="startChatItem(item)">开始会话</div>
               </div>
             </div>
           </div>
         </div>
         <div class="chat-list-list" v-else>
-          <div @click="changeFirstLogin" class="chat-list-list-empty" v-if="firstLogin">
-            <a-button type="primary">开始接入</a-button>
+          <div class="chat-list-list-empty" v-if="firstLogin">
+            <a-button type="primary" @click="changeFirstLogin">开始接入</a-button>
           </div>
-          <div class="chat-list-list-content" v-else>
+          <div class="chat-list-list-content" v-else ref="userListRef">
             <div v-for="item in list" @click="changeId(item)">
               <div class="list-content">
                 <div class="list-content-top">
                   <div class="list-content-top-left">
-                    <div class="list-content-top-name">{{ item.name }}</div>
-                    <div class="list-content-top-name">{{ item.lang }}</div>
+                    <div class="list-content-top-name">{{ item.nickName }}-</div>
+                    <div class="list-content-top-name">{{ item.lanSimpleCode }}</div>
                   </div>
-                  <div class="list-content-top-time">{{ item.timeStamp }}</div>
+                  <div class="list-content-top-time">{{ getTimeHour(Number(item.lastTime)) }}</div>
                 </div>
                 <div class="list-content-bottom">
-                  <div class="list-content-bottom-content">{{ item.content }}</div>
-                  <div class="list-content-bottom-num">{{ item.num }}</div>
+                  <div class="list-content-bottom-content">{{ item.lastContent }}</div>
+                  <div class="list-content-bottom-num">{{ item.unReadNum }}</div>
                 </div>
               </div>
             </div>
@@ -85,9 +91,11 @@
             </div>
           </div>
         </div>
-        <div class="chat-right-top-footer" @click="changeLineStatus">
-          <a-button size="small">切换{{ onLine ? '忙碌' : '在线' }}</a-button>
-          <image>1</image>
+        <div class="chat-right-top-footer">
+          <a-button @click="changeLineStatus" size="small" style="margin-right: 10px"
+            >切换{{ onLine ? '忙碌' : '在线' }}</a-button
+          >
+          <close-circle-outlined @click="closeOrderVue" />
         </div>
       </div>
       <div
@@ -101,14 +109,14 @@
       >
         <template v-if="id">
           <div v-for="item in chatListData" :key="item.id" style="width: 100%">
-            <div class="chat-list-item" :class="item.float === 'left' ? 'left' : 'right'">
-              <div v-if="item.float === 'left'" class="chat-top">
-                <span>{{ item.nickname }}</span
-                ><span>{{ 'tom' }}</span>
+            <div class="chat-list-item" :class="item.sendType === 1 ? 'left' : 'right'">
+              <div v-if="item.sendType === 1" class="chat-top">
+                <span style="margin-right: 10px">{{ item.userNickName }}</span>
+                <span>{{ getTime(Number(item.crtTime)) }}</span>
               </div>
               <div v-else class="chat-top">
-                <span>{{ 'tom' }}</span>
-                <span>{{ item.nickname }}</span>
+                <span style="margin-right: 10px">{{ getTime(Number(item.crtTime)) }}</span>
+                <span>{{ item.csNickName }}</span>
               </div>
               <div class="chat-content">{{ item.content }}</div>
             </div>
@@ -137,13 +145,13 @@
     <div class="chat-right">
       <div class="chat-list-tab">
         <div
-          @click="changeRightTab"
+          @click="changeRightTab(0)"
           class="chat-list-tab-left"
           :class="{ 'chat-list-tab-current-tab': curentRigthTab === 0 }"
           >用户信息</div
         >
         <div
-          @click="changeRightTab"
+          @click="changeRightTab(1)"
           class="chat-list-tab-right"
           :class="{ 'chat-list-tab-current-tab': curentRigthTab === 1 }"
           >快捷回复</div
@@ -154,55 +162,55 @@
           <div v-if="!id" class="user-message-empty">暂无</div>
           <div v-else class="user-message-detail">
             <div class="user-message-detail-line">
-              <div>用户ID:{{ 123 }}</div>
-              <image>复制</image>
+              <div>用户ID:{{ userInfo?.userId }}</div>
+              <copy-outlined @click="copy(userInfo.userId)" />
             </div>
             <div class="user-message-detail-line">
-              <div>用户昵称:{{ 123 }}</div>
-              <image>复制</image>
+              <div>用户昵称:{{ userInfo?.nickName }}</div>
+              <copy-outlined @click="copy(userInfo.nickName)" />
             </div>
             <div class="user-message-detail-line">
-              <div>用户余额:{{ 123 }}</div>
+              <div>用户余额:{{ userInfo?.balance }}</div>
             </div>
             <div class="user-message-detail-line">
-              <div>用户地区:{{ 123 }}</div>
+              <div>用户地区:{{ userInfo?.userLocation }}</div>
             </div>
             <div class="user-message-detail-line">
-              <div>用户状态:{{ 123 }}</div>
-              <a-switch v-model:checked="checked" />
+              <div>用户状态:{{ userInfo?.status === 1 ? '启用' : '停用' }}</div>
+              <a-switch v-model:checked="userInfo.status" disabled />
             </div>
             <div class="user-message-detail-line">
-              <div>用户返点:{{ 123 }}</div>
-              <a-switch v-model:checked="checked" />
+              <div>用户返点:{{ userInfo?.commissionStatus === 1 ? '启用' : '停用' }}</div>
+              <a-switch v-model:checked="userInfo.commissionStatus" disabled />
             </div>
             <div class="user-message-detail-line">
-              <div>用户投注:{{ 123 }}</div>
-              <a-switch v-model:checked="checked" /> </div
+              <div>用户投注:{{ userInfo?.investStatus === 1 ? '启用' : '停用' }}</div>
+              <a-switch v-model:checked="userInfo.investStatus" disabled /> </div
             ><div class="user-message-detail-line">
-              <div>用户出款:{{ 123 }}</div>
-              <a-switch v-model:checked="checked" /> </div
+              <div>用户出款:{{ userInfo?.disbursementsStatus === 1 ? '启用' : '停用' }}</div>
+              <a-switch v-model:checked="userInfo.disbursementsStatus" disabled /> </div
             ><div class="user-message-detail-line">
-              <div>用户手机:{{ 123 }}</div>
-              <image>复制</image> </div
+              <div>用户手机:{{ userInfo?.tel }}</div>
+              <copy-outlined @click="copy(userInfo.tel)" /> </div
             ><div class="user-message-detail-line">
-              <div>用户邮箱:{{ 123 }}</div>
-              <image>复制</image> </div
+              <div>用户邮箱:{{ userInfo?.email }}</div>
+              <copy-outlined @click="copy(userInfo.email)" /> </div
             ><div class="user-message-detail-line">
-              <div>用户上级:{{ 123 }}</div>
-              <image>复制</image> </div
+              <div>用户上级:{{ userInfo?.superior }}</div>
+              <copy-outlined @click="copy(userInfo.superior)" /> </div
             ><div class="user-message-detail-line">
-              <div>用户下级:{{ 123 }}</div>
+              <div>用户下级:{{ userInfo?.subordinate }}</div>
             </div>
             <div class="user-message-detail-line">
-              <div>用户邀请码:{{ 123 }}</div>
-              <image>复制</image>
+              <div>用户邀请码:{{ userInfo?.inviteCode }}</div>
+              <copy-outlined @click="copy(userInfo.inviteCode)" />
             </div>
             <div class="user-message-detail-line">
               <div>用户IP:{{ 123 }}</div>
             </div>
           </div>
         </div>
-        <div class="quick-replay" v-else>
+        <div class="quick-replay" v-else ref="payListDataRef">
           <div class="search">
             <a-input-search
               v-model:value="searchValue"
@@ -213,10 +221,10 @@
           </div>
           <div v-for="item in payListData" @mouseover="item.showSend = true" @mouseout="item.showSend = false">
             <div class="content">
-              <div class="content-answer margin-bottom">{{ item.question }}</div>
-              <div class="content-answer">{{ item.answer }}</div>
+              <div class="content-answer margin-bottom">{{ item.title }}</div>
+              <div class="content-answer">{{ item.remark }}</div>
             </div>
-            <div class="send" v-show="item.showSend" @click="sendQuickReplay(item.answer)"> 发送 </div>
+            <div class="send" v-show="item.showSend" @click="sendQuickReplay(item.remark)"> 发送 </div>
           </div>
         </div>
       </div>
@@ -225,48 +233,169 @@
 </template>
 <script lang="ts" setup>
   import { PageWrapper } from '/@/components/Page';
-  import { ref, onMounted, reactive, watch, nextTick } from 'vue';
-  import listData from './data';
-  import listData2 from './data2';
-  import listData3 from './data3';
-  import dataReady from './data-ready';
-  //tab切换,首次进入
-  let currentTab = ref(1);
-  function changeCurrentTab(curr) {
-    if (currentTab.value === curr) return;
-    // if (firstLogin.value) return;
-    currentTab.value === 1 ? (currentTab.value = 0) : (currentTab.value = 1);
-  }
+  import { ref, onMounted, onUnmounted, reactive, watch, nextTick } from 'vue';
+  import {
+    setOnlineStatus,
+    queryOnlineStatus,
+    queryMychatList,
+    queryWaitList,
+    queryCsMWChatCount,
+    matchOrders,
+    queryHistoryRecords,
+    queryUserMessage,
+    closeOrder,
+    pageList,
+  } from '/@/api/dev_page/online_service';
+  import { useServiceStore } from '/@/store/modules/online-service';
+  import { useUserStore } from '/@/store/modules/user';
+  import moment from 'moment';
+  import { computed } from 'vue';
+  import SocketInstance from '/@/api/im-server/socket-instance';
+  import { CopyOutlined, CloseCircleOutlined } from '@ant-design/icons-vue';
+
+  const serviceStore = useServiceStore();
+  const userStore = useUserStore();
+
+  const waitCount = ref(0);
+  const myCount = ref(0);
+
   let firstLogin = ref(true);
-  function changeFirstLogin() {
+  async function changeFirstLogin() {
     //请求列表,将列表加入我的会话中,将等待用户加入到我的会话;
+    // changeLineStatusNet('1');
+    //开始启动service
+    startIm();
     firstLogin.value = false;
-    //开始接入会改变在线状态;
-    onLine.value = true;
   }
+
+  const current_time = computed(() => {
+    var offset = new Date() + ''; //将时间格式转为字符串
+    console.log(offset); //  Mon Nov 02 2020 20:57:20 GMT-0600 (北美中部标准时间)
+    let asderf = offset.indexOf('GMT');
+    let fghdfgd = offset.substring(asderf + 3, asderf + 8);
+    return fghdfgd; //给了你定义的一个字段，在拿到数据后使用
+  });
+
+  function getTime(time) {
+    return moment(time).utcOffset(current_time.value).format('YYYY-MM-DD HH:mm:ss');
+  }
+  function getTimeHour(time) {
+    return moment(time).utcOffset(current_time.value).format('HH:mm:ss');
+  }
+  async function queryOnlineStatusVue() {
+    const { status } = await queryOnlineStatus();
+    // firstLogin.value = status != 1;
+    // //开始接入会改变在线状态;
+    onLine.value = status === 1;
+  }
+
+  onUnmounted(() => {
+    // changeLineStatusNet('2');
+    SocketInstance.close();
+  });
+
+  async function changeLineStatusNet(status) {
+    const { opStatus } = await setOnlineStatus({
+      status,
+    });
+    if (opStatus === 1) {
+      // firstLogin.value = false;
+      // //开始接入会改变在线状态;
+      onLine.value = !onLine.value;
+    }
+    serviceStore.setServiceInfo({
+      opStatus,
+    });
+  }
+  //ws是否在线
+  const wsOnline = ref(false);
   //是否在线
   const onLine = ref(false);
   function changeLineStatus() {
-    if (firstLogin.value) return;
-    onLine.value = !onLine.value;
+    // if (firstLogin.value) return;
+    changeLineStatusNet(onLine.value ? '2' : '1');
   }
-  //当前选中的id;
+
+  if (serviceStore.getServiceInfo?.opStatus === 1) {
+    // firstLogin.value = false;
+    // //开始接入会改变在线状态;
+    onLine.value = true;
+  }
+  //当前选中的id; todo
   const id = ref();
+  const currOrderId = ref();
   let currentName = ref();
   let currentLang = ref();
+  const historyPageNo = ref(1);
+  const historyPageLimit = ref(1);
   function changeId(item) {
     console.log(item);
-    id.value = item.id;
-    currentName.value = item.name;
-    currentLang.value = item.lang;
+    currOrderId.value = item.orderId;
+    id.value = item.userId;
+    currentName.value = item.nickName;
+    currentLang.value = item.lanSimpleCode;
   }
   //id只要改变走接口,请求当前的聊天记录
+  async function queryHistoryRecordsVue() {
+    if (!id.value) return;
+    const { pageCount, records } = await queryHistoryRecords({
+      cutTime: Date.now(),
+      distributeId: '123',
+      pageNo: historyPageNo.value,
+      pageSize: 10,
+      userId: id.value,
+    });
+    historyPageLimit.value = pageCount;
+    return records;
+  }
+  const userInfo = reactive({});
+  async function queryUserMessageVue() {
+    // todo
+    const {
+      balance,
+      commissionStatus,
+      disbursementsStatus,
+      distributeId,
+      email,
+      investStatus,
+      inviteCode,
+      ip,
+      nickName,
+      status,
+      subordinate,
+      superior,
+      tel,
+      userId,
+      userLocation,
+    } = await queryUserMessage({
+      distributeId: '123',
+      userId: id.value,
+    });
+    userInfo.balance = balance;
+    userInfo.commissionStatus = commissionStatus;
+    userInfo.disbursementsStatus = disbursementsStatus;
+    userInfo.distributeId = distributeId;
+    userInfo.email = email;
+    userInfo.investStatus = investStatus;
+    userInfo.inviteCode = inviteCode;
+    userInfo.ip = ip;
+    userInfo.nickName = nickName;
+    userInfo.status = status;
+    userInfo.subordinate = subordinate;
+    userInfo.superior = superior;
+    userInfo.tel = tel;
+    userInfo.userId = userId;
+    userInfo.userLocation = userLocation;
+  }
   watch(
     id,
     (curr, pre) => {
       if (curr && curr !== pre) {
         //请求网路数据
+        historyPageNo.value = 1;
+        chatListData.value = [];
         getData();
+        queryUserMessageVue();
         nextTick(() => {
           console.log(textArea.value);
           textArea.value?.focus();
@@ -280,13 +409,14 @@
   //滚动监听:
   let count = ref(0);
   const chatListRef = ref();
-  function getData() {
-    chatListData.value = [];
+  async function getData() {
+    let list = await queryHistoryRecordsVue();
+    console.log(list, '-------');
 
     nextTick(() => {
       const el = chatListRef.value;
       let scrollHeight = el.scrollHeight;
-      chatListData.value = [...listData];
+      chatListData.value.push(...list);
 
       nextTick(() => {
         if (count.value === 0) el.scrollTop = el.scrollHeight;
@@ -297,18 +427,36 @@
       });
     });
   }
-  function addData(msg) {
+  function addData(msg, userNickName, sendType, msgType, time) {
+    // todo
     const newMsg = {
-      avatar: 'https://im.gzydong.club/public/media/image/avatar/20221124/ea1bf7400e61fad835ad72c2c9e985b1_200x200.png',
-      content: 'tom',
-      nickname: 'kert',
-      id: 8,
-      user_id: '123',
-      receiver_id: '312',
-      float: 'right',
+      msgType: 1,
+      sendType: 2,
+      userNickName,
+      crtTime: Date.now(),
     };
     newMsg.content = msg;
+    if (sendType) {
+      newMsg.msgType = msgType;
+      newMsg.sendType = sendType;
+      newMsg.crtTime = time;
+    }
+
+    newMsg.csNickName = userStore.getUserInfo.username;
+    console.log(newMsg, '---newMsg----');
     chatListData.value.push(newMsg);
+    if (!sendType) {
+      SocketInstance.send({
+        distributorId: '123',
+        msgType: '1',
+        orderId: currOrderId.value,
+        fromId: userStore.getUserInfo.userId,
+        sendType: '2',
+        content: msg,
+        senderNickName: userStore.getUserInfo.username,
+        time: Date.now(),
+      });
+    }
 
     nextTick(() => {
       const el = chatListRef.value;
@@ -316,8 +464,9 @@
     });
   }
   function chatScroll(e) {
-    console.log(e);
     if (e.target.scrollTop === 0) {
+      historyPageNo.value++;
+      if (historyPageNo.value > historyPageLimit.value) return;
       getData();
     }
   }
@@ -345,42 +494,265 @@
   //input-value
   let inputValue = ref('');
   let textArea = ref();
+  let userListRef = ref();
+  const userWaitListRef = ref();
+  const userListPageNo = ref(1);
+  const userWaitListPageNo = ref(1);
+  const userListPageNoLimit = ref(1);
+  const userWaitListPageNoLimit = ref(1);
+
   //网络请求
-  const list = reactive(listData2);
-  onMounted(() => {
+  const list = reactive([]);
+  //开始执行query我的会话列表
+  async function queryMychatListVue() {
+    const { mlist, pageCount } = await queryMychatList({
+      distributeId: 123,
+      pageNo: userListPageNo.value,
+      pageSize: 10,
+    });
+    list.push(...mlist);
+    userListPageNoLimit.value = pageCount;
+  }
+
+  async function queryWaitListVue() {
+    const { wlist, pageCount } = await queryWaitList({
+      distributeId: 123,
+      pageNo: userWaitListPageNo.value,
+      pageSize: 10,
+    });
+    dataReadyData.value.push(...wlist);
+    userWaitListPageNoLimit.value = pageCount;
+  }
+  async function queryCsMWChatCountVue() {
+    const { myChatCount, waitChatCount } = await queryCsMWChatCount({
+      distributeId: 123,
+    });
+    waitCount.value = waitChatCount;
+    myCount.value = myChatCount;
+  }
+  onMounted(async () => {
     //开始直接接口请求;
-    console.log('mounted');
-    payListData.value = [...listData3];
+    queryOnlineStatusVue();
+    queryMychatListVue();
+    queryCsMWChatCountVue();
+    pageListVue();
   });
+
+  const quickReplay = reactive({
+    pageNum: 1,
+    pageSize: 10,
+    pageLimitNum: 0,
+  });
+  async function pageListVue() {
+    // todo
+    const data = await pageList({
+      type: 1,
+      pageNum: quickReplay.pageNum,
+      pageSize: quickReplay.pageSize,
+    });
+    console.log(data, '----');
+    quickReplay.pageLimitNum = Number(data.pages);
+    payListData.value.push(...data.records);
+  }
+
+  watch(userListRef, (curr, pre) => {
+    curr &&
+      userListRef.value.addEventListener('scroll', function (e) {
+        const el = e.target;
+        const clientHeight = el.clientHeight;
+        const scrollTop = el.scrollTop;
+        const scrollHeight = el.scrollHeight;
+        if (clientHeight + scrollTop === scrollHeight) {
+          if (userListPageNo.value > userListPageNoLimit.value) return;
+          userListPageNo.value++;
+          queryMychatListVue();
+        }
+      });
+  });
+
+  watch(userWaitListRef, (curr, pre) => {
+    curr &&
+      userWaitListRef.value.addEventListener('scroll', function (e) {
+        const el = e.target;
+        const clientHeight = el.clientHeight;
+        const scrollTop = el.scrollTop;
+        const scrollHeight = el.scrollHeight;
+        if (clientHeight + scrollTop === scrollHeight) {
+          console.log('bbottom');
+          if (userWaitListPageNo.value > userListPageNoLimit.value) return;
+          userWaitListPageNo.value++;
+          queryWaitListVue();
+        }
+      });
+  });
+
   //右侧tab
   const curentRigthTab = ref(0);
-  function changeRightTab() {
-    curentRigthTab.value === 1 ? (curentRigthTab.value = 0) : (curentRigthTab.value = 1);
+  function changeRightTab(curr) {
+    curentRigthTab.value = curr;
+    if (curr === 1) {
+      console.log(123213212);
+    }
   }
   //红包list
   const payListData = ref([]);
+  const payListDataRef = ref();
   const searchValue = ref('');
   const showSend = ref(false);
   function search() {
     console.log(123);
   }
   function sendQuickReplay(content) {
-    if (!id) return;
+    if (!id.value) return;
     addData(content);
   }
+  watch(payListDataRef, (curr) => {
+    curr &&
+      payListDataRef.value.addEventListener('scroll', function (e) {
+        const el = e.target;
+        const clientHeight = el.clientHeight;
+        想``;
+        const scrollTop = el.scrollTop;
+        const scrollHeight = el.scrollHeight;
+        if (clientHeight + scrollTop === scrollHeight) {
+          if (quickReplay.pageNum > quickReplay.pageLimitNum) return;
+          quickReplay.pageNum++;
+          pageListVue();
+        }
+      });
+  });
   //待接入list
   const state = reactive({
     checkAll: false,
     checkedList: [],
+    showChat: false,
   });
-  const dataReadyData = ref(dataReady);
+  const dataReadyData = ref([]);
   function onCheckAllChange(e) {
+    if (e.target.checked) {
+      state.showChat = true;
+    }
     Object.assign(state, {
-      checkedList: e.target.checked ? dataReadyData.value.map((item) => item.id) : [],
+      checkedList: e.target.checked ? dataReadyData.value.map((item) => item.userId + ',' + item.orderId) : [],
     });
   }
   function changeItem(e) {
-    state.checkAll = state.checkedList.length === dataReady.length;
+    state.checkAll = state.checkedList.length === dataReadyData.value.length;
+    if (state.checkedList.length > 0) {
+      state.showChat = true;
+    }
+  }
+  async function startChat() {
+    const data = await matchOrders({
+      distributorId: '123',
+      csId: userStore.getUserInfo.userId,
+      orderBaseInfos: state.checkedList.map((item) => {
+        return {
+          orderId: item.split(',')[1],
+          userId: item.split(',')[0],
+        };
+      }),
+    });
+    if (data?.matchResList.length > 0) {
+      dataReadyData.value = [];
+      queryWaitListVue();
+      queryCsMWChatCountVue();
+    }
+  }
+  async function startChatItem(item) {
+    console.log(item, '----');
+    const data = await matchOrders({
+      distributorId: '123',
+      csId: userStore.getUserInfo.userId,
+      orderBaseInfos: [
+        {
+          orderId: item.orderId,
+          userId: item.userId,
+        },
+      ],
+    });
+    if (data?.matchResList.length > 0) {
+      dataReadyData.value = [];
+      queryWaitListVue();
+      queryCsMWChatCountVue();
+    }
+  }
+  function copy(text) {
+    const input = document.createElement('input');
+    document.body.appendChild(input);
+    input.setAttribute('value', text);
+    input.select();
+    if (document.execCommand('copy')) {
+      document.execCommand('copy');
+      console.log('复制成功');
+    }
+    document.body.removeChild(input);
+  }
+  //tab切换,首次进入
+  let currentTab = ref(1);
+  function changeCurrentTab(curr) {
+    if (currentTab.value === curr) return;
+    // if (firstLogin.value) return;
+    currentTab.value === 1 ? (currentTab.value = 0) : (currentTab.value = 1);
+    if (currentTab.value === 0) {
+      dataReadyData.value = [];
+      userWaitListPageNo.value = 1;
+      queryWaitListVue();
+    } else {
+      list.splice(0, list.length);
+      userListPageNo.value = 1;
+      queryMychatListVue();
+    }
+  }
+  function startIm() {
+    // todo
+    console.log('startIm', 'connect');
+    SocketInstance.connect();
+    SocketInstance.on('message', (data) => {
+      if (data.msgType === 9) {
+        //用户发起关单操作,发送到客服端,清空orderid,刷新列表 todo
+        id.value = null;
+        if (currentTab.value === 1) {
+          list.splice(0, list.length);
+          userListPageNo.value = 1;
+          queryMychatListVue();
+        }
+      } else if (data.msgType === 10) {
+        //表示有会话匹配成功,需要自动刷新页面
+        if (currentTab.value === 1) {
+          list.splice(0, list.length);
+          userListPageNo.value = 1;
+          queryMychatListVue();
+        }
+      } else {
+        console.log(currOrderId.value, data.orderId);
+        //如果订单id不是当前的,不执行;如果当前的id,执行addData操作;
+        if (currOrderId.value === data.orderId)
+          addData(data.content, data.senderNickName, data.sendType, data.msgType, data.time);
+        else {
+          //刷新页面;
+          if (currentTab.value === 1) {
+            list.splice(0, list.length);
+            userListPageNo.value = 1;
+            queryMychatListVue();
+          }
+        }
+      }
+    });
+  }
+  async function closeOrderVue() {
+    const { op } = await closeOrder({
+      distributorId: 123,
+      orderId: currOrderId.value,
+    });
+    if (op === 1) {
+      id.value = null;
+      currOrderId.value = null;
+      list.splice(0, list.length);
+      userListPageNo.value = 1;
+      queryMychatListVue();
+      queryCsMWChatCountVue();
+    }
   }
 </script>
 <style lang="less">
@@ -511,6 +883,7 @@
         &-footer {
           display: flex;
           justify-content: flex-end;
+          align-items: center;
           margin-top: 20px;
           margin-bottom: 10px;
         }
@@ -561,13 +934,18 @@
   }
 
   .chat-list-item {
-    width: 50%;
-    background-color: #f5f5f5;
+    //width: 50%;
+    width: 100%;
     font-size: 12px;
     color: #555555;
     margin: 10px 0;
-    padding: 10px;
-    border-radius: 10px;
+
+    .chat-content {
+      display: inline-block;
+      background-color: #f5f5f5;
+      border-radius: 10px;
+      padding: 10px;
+    }
   }
 
   .left {
@@ -593,6 +971,7 @@
       text-align: center;
       line-height: 43px;
       color: #d7d7d7; //7f7f7f
+      cursor: pointer;
     }
 
     &-current-tab {
@@ -625,7 +1004,14 @@
       &-line {
         display: flex;
         justify-content: space-between;
+        align-items: center;
         margin-bottom: 10px;
+        div {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          margin-right: 10px;
+        }
       }
     }
   }
@@ -664,9 +1050,11 @@
     }
 
     .send {
-      height: 15px;
-      line-height: 15px;
+      height: 25px;
+      line-height: 25px;
       text-align: center;
+      border: 1px solid #ebebeb;
+      border-radius: 5px;
     }
   }
   .left-list-box {

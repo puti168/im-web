@@ -37,7 +37,7 @@ export const saveMenu = (params?: MenuParams) =>
   defHttp.post<MenuListGetResultModel>({ url: Api.saveMenu, params });
 export const updateMenu = (params?: MenuParams) =>
   defHttp.post<MenuListGetResultModel>({ url: Api.updateMenu, params });
-export const deleteMenu = (params:{ids:any[]}) =>
+export const deleteMenu = (params: { ids: any[] }) =>
   defHttp.post<MenuListGetResultModel>({ url: Api.deleteMenu, params });
 
 export const getRoleListByPage = (params?: RolePageParams) =>

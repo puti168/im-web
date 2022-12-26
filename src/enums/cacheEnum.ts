@@ -25,6 +25,9 @@ export const APP_LOCAL_CACHE_KEY = 'COMMON__LOCAL__KEY__';
 // base global session key
 export const APP_SESSION_CACHE_KEY = 'COMMON__SESSION__KEY__';
 
+//online-service
+export const ONLINE_SERVICE_KEY = 'ONLINE_SERVICE_KEY__';
+
 export enum CacheTypeEnum {
   SESSION,
   LOCAL,

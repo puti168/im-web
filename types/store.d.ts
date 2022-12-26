@@ -41,6 +41,10 @@ export interface UserInfo {
   roles: RoleInfo[];
 }
 
+export interface ServiceInfo {
+  opStatus: number;
+}
+
 export interface BeforeMiniState {
   menuCollapsed?: boolean;
   menuSplit?: boolean;
