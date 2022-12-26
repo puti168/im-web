@@ -1,6 +1,7 @@
 <template>
   <BasicModal v-bind="$attrs" @register="register" title="权限" @visible-change="handleVisibleChange" @ok="handleOK">
     <div class="pr-3px">
+      <!-- 树选择 \src\views\demo\tree\index.vue -->
       <BasicForm @register="registerForm" :model="modelRef" />
     </div>
   </BasicModal>
