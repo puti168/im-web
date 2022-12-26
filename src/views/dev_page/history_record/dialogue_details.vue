@@ -1,5 +1,4 @@
 <template>
-
   <PageWrapper title="对话详细" contentBackground contentClass="p-4">
     <BasicTable @register="registerTable">
       <template #bodyCell="{ column, record, text }">
@@ -12,15 +11,14 @@
   </PageWrapper>
 </template>
 <script lang="ts" setup>
-import { BasicTable, useTable, TableImg } from '/@/components/Table';
-import { demoListApi } from '/@/api/demo/table';
-import { columns } from './dialogue_details_table';
+  import { BasicTable, useTable, TableImg } from '/@/components/Table';
+  import { getSessionorderList } from '/@/api/dev_page/history_record';
+  import { columns } from './dialogue_details_table';
 
-const [registerTable] = useTable({
-  api: demoListApi,
-  columns: columns,
-  bordered: true,
-  showTableSetting: true,
-});
-
+  const [registerTable] = useTable({
+    api: getSessionorderList,
+    columns: columns,
+    bordered: true,
+    showTableSetting: true,
+  });
 </script>

@@ -12,6 +12,7 @@ enum Api {
   SAVE_GROUP = '/backend/group/save',
   UPDATE_GROUP = '/backend/group/update',
   DELETE_GROUP = '/backend/group/falseDelete',
+  GET_GROUP_BY_ID = '/backend/group/getById',
 
   IP_LIST = '/backend/accesslist/pageList',
   SAVE_IP = '/backend/accesslist/save',
@@ -118,6 +119,12 @@ export const deleteGroup = (params: any[]) =>
   defHttp.post<DemoListGetResultModel>({
     url: Api.DELETE_GROUP,
     params:{ids:params},
+  });
+
+export const getGroupById = (params: DemoParams) =>
+  defHttp.get<DemoListGetResultModel>({
+    url: `${Api.GET_GROUP_BY_ID}/${params.id}`,
+    // params,
   });
 
 export const updateMyPassword = (params) =>

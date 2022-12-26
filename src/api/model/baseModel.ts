@@ -1,7 +1,8 @@
 export interface BasicPageParams {
+  distributorId: string;
   deleteFlag: number;
   page: number;
-  pageNum:number;
+  pageNum: number;
   pageSize: number;
 }
 

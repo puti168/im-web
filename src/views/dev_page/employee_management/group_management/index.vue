@@ -6,7 +6,7 @@
         <template v-if="column.key === 'action'">
           <a-button class="mr-1" type="warning" @click="send(record)">编辑</a-button>
           <PopConfirmButton type="danger" @confirm="deleteById(record.id)" title="确认删除？">删除</PopConfirmButton>
-          <a-button class="ml-1">权限</a-button>
+          <a-button class="ml-1" @click="handleAuthority(record)">权限</a-button>
         </template>
       </template>
       <template #toolbar>
@@ -14,6 +14,7 @@
       </template>
     </BasicTable>
     <Modal4 @register="register4" @reloadTable="reload" />
+    <authorit @register="registerUploadModal" @reloadTable="reload" />
   </PageWrapper>
 </template>
 <script lang="ts" setup>
@@ -25,6 +26,7 @@
   import Modal4 from './comp/Modal4.vue';
   import { PopConfirmButton } from '/@/components/Button';
   import { useMessage } from '/@/hooks/web/useMessage';
+  import authorit from './comp/authorit/index.vue';
 
   const [registerTable, { reload }] = useTable({
     api: getGroupPageList,
@@ -40,6 +42,7 @@
     },
   });
   const [register4, { openModal: openModal4 }] = useModal();
+  const [registerUploadModal, { openModal: openUploadModal }] = useModal();
 
   function send(record: any) {
     openModal4(true, record);
@@ -64,5 +67,9 @@
       record.editValueRefs.name4.value = `${value}`;
     }
     console.log(column, value, record);
+  }
+
+  function handleAuthority(record) {
+    openUploadModal(true, record);
   }
 </script>
