@@ -95,7 +95,7 @@
           <a-button @click="changeLineStatus" size="small" style="margin-right: 10px"
             >切换{{ onLine ? '忙碌' : '在线' }}</a-button
           >
-          <close-circle-outlined @click="closeOrderVue" />
+          <close-circle-outlined @click="closeOrderVue" v-if="id" />
         </div>
       </div>
       <div
