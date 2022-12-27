@@ -719,6 +719,7 @@
           list.splice(0, list.length);
           userListPageNo.value = 1;
           queryMychatListVue();
+          queryCsMWChatCountVue();
         }
       } else if (data.msgType === 10) {
         //表示有会话匹配成功,需要自动刷新页面
