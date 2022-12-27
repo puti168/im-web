@@ -22,7 +22,7 @@
   import { BasicForm, useForm } from '/@/components/Form/index';
   import { getMenuList } from '/@/api/sys/menu';
   import { schemas } from './data';
-  import { saveGroup, getGroupById } from '/@/api/dev_page/employee_management';
+  import { updateGroup, getGroupById } from '/@/api/dev_page/employee_management';
   import { useMessage } from '/@/hooks/web/useMessage';
   export default defineComponent({
     components: { BasicModal, BasicForm ,Spin ,BasicTree },
@@ -54,7 +54,7 @@
               setListForKey(menuList.value)
               res.menuList = menuList.value
               res.id = id.value;
-              await saveGroup(res);
+              await updateGroup(res);
               console.log(modelRef.value);
               emit('reloadTable');
               createMessage.success('保存成功');
