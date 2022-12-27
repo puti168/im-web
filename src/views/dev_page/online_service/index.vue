@@ -61,7 +61,7 @@
           </div>
           <div class="chat-list-list-content" v-else ref="userListRef">
             <div v-for="item in list" @click="changeId(item)">
-              <div class="list-content">
+              <div class="list-content" :class="{ curr: item.orderId === currOrderId }">
                 <div class="list-content-top">
                   <div class="list-content-top-left">
                     <div class="list-content-top-name">{{ item.nickName }}-</div>
@@ -783,7 +783,9 @@
           height: 66px;
           border-radius: 10px;
           background-color: #f2f2f2;
-          padding: 15px 20px;
+          padding-top: 12px;
+          padding-left: 15px;
+          padding-right: 15px;
           margin: 15px;
 
           &-top {
@@ -823,6 +825,9 @@
               border-radius: 100%;
             }
           }
+        }
+        .curr {
+          background-color: #d7d7d7;
         }
 
         &-empty {
