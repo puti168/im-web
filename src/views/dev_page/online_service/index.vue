@@ -71,7 +71,7 @@
                 </div>
                 <div class="list-content-bottom">
                   <div class="list-content-bottom-content">{{ item.lastContent }}</div>
-                  <div class="list-content-bottom-num">{{ item.unReadNum }}</div>
+                  <div class="list-content-bottom-num">{{ item.hasClick ? 0 : item.unReadNum }}</div>
                 </div>
               </div>
             </div>
@@ -334,6 +334,7 @@
     id.value = item.userId;
     currentName.value = item.nickName;
     currentLang.value = item.lanSimpleCode;
+    item.hasClick = true;
   }
   //id只要改变走接口,请求当前的聊天记录
   async function queryHistoryRecordsVue() {
@@ -511,7 +512,12 @@
       pageNo: userListPageNo.value,
       pageSize: 10,
     });
-    list.push(...mlist);
+    list.push(
+      ...mlist.map((item) => {
+        item.hasClick = false;
+        return item;
+      }),
+    );
     userListPageNoLimit.value = Number(pageCount);
   }
 
@@ -727,7 +733,11 @@
           list.splice(0, list.length);
           userListPageNo.value = 1;
           queryMychatListVue();
+          queryCsMWChatCountVue();
         }
+      } else if (data.msgType === 11) {
+        //表示有会话匹配成功,需要自动刷新页面
+        queryCsMWChatCountVue();
       } else {
         console.log(currOrderId.value, data.orderId);
         //如果订单id不是当前的,不执行;如果当前的id,执行addData操作;
@@ -739,6 +749,7 @@
             list.splice(0, list.length);
             userListPageNo.value = 1;
             queryMychatListVue();
+            queryCsMWChatCountVue();
           }
         }
       }
