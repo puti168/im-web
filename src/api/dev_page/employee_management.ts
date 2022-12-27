@@ -122,7 +122,7 @@ export const deleteGroup = (params: any[]) =>
     params: { ids: params },
   });
 
-export const getGroupById = (params: DemoParams) =>
+export const getGroupById = (params: DemoParams|any) =>
   defHttp.post<DemoListGetResultModel>({
     url: `${Api.GET_GROUP_BY_ID}/${params.id}`,
     // params,

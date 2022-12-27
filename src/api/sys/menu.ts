@@ -19,6 +19,8 @@ export const getMenuList = () => {
 function updateMenuData(childrens:any,type="0"){
   childrens.forEach(item => {
     item.type = type
+    item.title = item.menuName
+    item.key = item.id
     item.name = item.menuName
     item.orderNo = item.sortNum;
     item.routePath = item.path;
