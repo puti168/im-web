@@ -86,6 +86,7 @@
         const token = 'fakeToken' + userId;
         userStore.setToken(token);
 
+        console.log('getUserInfoActiongetUserInfoAction1');
         // 重新获取用户信息和菜单
         userStore.getUserInfoAction();
         permissionStore.changePermissionCode();
