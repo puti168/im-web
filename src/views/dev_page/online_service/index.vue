@@ -444,7 +444,7 @@
       newMsg.crtTime = time;
     }
 
-    newMsg.csNickName = userStore.getUserInfo.username;
+    newMsg.csNickName = userStore.getUserInfo.nickname;
     console.log(newMsg, '---newMsg----');
     chatListData.value.push(newMsg);
     if (!sendType) {
@@ -455,7 +455,7 @@
         fromId: userStore.getUserInfo.userId,
         sendType: '2',
         content: msg,
-        senderNickName: userStore.getUserInfo.username,
+        senderNickName: userStore.getUserInfo.nickname,
         time: Date.now(),
       });
     }
