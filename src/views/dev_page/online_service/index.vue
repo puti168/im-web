@@ -71,7 +71,7 @@
                 </div>
                 <div class="list-content-bottom">
                   <div class="list-content-bottom-content">{{ item.lastContent }}</div>
-                  <div class="list-content-bottom-num">{{ item.unReadNum }}</div>
+                  <div class="list-content-bottom-num">{{ item.hasClick ? 0 : item.unReadNum }}</div>
                 </div>
               </div>
             </div>
@@ -95,7 +95,7 @@
           <a-button @click="changeLineStatus" size="small" style="margin-right: 10px"
             >切换{{ onLine ? '忙碌' : '在线' }}</a-button
           >
-          <close-circle-outlined @click="closeOrderVue" />
+          <close-circle-outlined @click="closeOrderVue" v-if="id" />
         </div>
       </div>
       <div
@@ -334,13 +334,13 @@
     id.value = item.userId;
     currentName.value = item.nickName;
     currentLang.value = item.lanSimpleCode;
+    item.hasClick = true;
   }
   //id只要改变走接口,请求当前的聊天记录
   async function queryHistoryRecordsVue() {
     if (!id.value) return;
     const { pageCount, records } = await queryHistoryRecords({
       cutTime: Date.now(),
-      distributeId: '123',
       pageNo: historyPageNo.value,
       pageSize: 10,
       userId: id.value,
@@ -368,7 +368,6 @@
       userId,
       userLocation,
     } = await queryUserMessage({
-      distributeId: '123',
       userId: id.value,
     });
     userInfo.balance = balance;
@@ -448,7 +447,6 @@
     chatListData.value.push(newMsg);
     if (!sendType) {
       SocketInstance.send({
-        distributorId: '123',
         msgType: '1',
         orderId: currOrderId.value,
         fromId: userStore.getUserInfo.userId,
@@ -507,17 +505,20 @@
   //开始执行query我的会话列表
   async function queryMychatListVue() {
     const { mlist, pageCount } = await queryMychatList({
-      distributeId: 123,
       pageNo: userListPageNo.value,
       pageSize: 10,
     });
-    list.push(...mlist);
+    list.push(
+      ...mlist.map((item) => {
+        item.hasClick = false;
+        return item;
+      }),
+    );
     userListPageNoLimit.value = Number(pageCount);
   }
 
   async function queryWaitListVue() {
     const { wlist, pageCount } = await queryWaitList({
-      distributeId: 123,
       pageNo: userWaitListPageNo.value,
       pageSize: 10,
     });
@@ -525,9 +526,7 @@
     userWaitListPageNoLimit.value = Number(pageCount);
   }
   async function queryCsMWChatCountVue() {
-    const { myChatCount, waitChatCount } = await queryCsMWChatCount({
-      distributeId: 123,
-    });
+    const { myChatCount, waitChatCount } = await queryCsMWChatCount();
     waitCount.value = waitChatCount;
     myCount.value = myChatCount;
   }
@@ -647,7 +646,6 @@
   }
   async function startChat() {
     const data = await matchOrders({
-      distributorId: '123',
       csId: userStore.getUserInfo.userId,
       orderBaseInfos: state.checkedList.map((item) => {
         return {
@@ -665,7 +663,6 @@
   async function startChatItem(item) {
     console.log(item, '----');
     const data = await matchOrders({
-      distributorId: '123',
       csId: userStore.getUserInfo.userId,
       orderBaseInfos: [
         {
@@ -719,6 +716,7 @@
           list.splice(0, list.length);
           userListPageNo.value = 1;
           queryMychatListVue();
+          queryCsMWChatCountVue();
         }
       } else if (data.msgType === 10) {
         //表示有会话匹配成功,需要自动刷新页面
@@ -726,7 +724,11 @@
           list.splice(0, list.length);
           userListPageNo.value = 1;
           queryMychatListVue();
+          queryCsMWChatCountVue();
         }
+      } else if (data.msgType === 11) {
+        //表示有会话匹配成功,需要自动刷新页面
+        queryCsMWChatCountVue();
       } else {
         console.log(currOrderId.value, data.orderId);
         //如果订单id不是当前的,不执行;如果当前的id,执行addData操作;
@@ -738,6 +740,7 @@
             list.splice(0, list.length);
             userListPageNo.value = 1;
             queryMychatListVue();
+            queryCsMWChatCountVue();
           }
         }
       }
@@ -745,7 +748,6 @@
   }
   async function closeOrderVue() {
     const { op } = await closeOrder({
-      distributorId: 123,
       orderId: currOrderId.value,
     });
     if (op === 1) {

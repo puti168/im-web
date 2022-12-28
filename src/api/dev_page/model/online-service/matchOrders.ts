@@ -1,6 +1,5 @@
 export interface matchOrdersEntry {
   csId: string;
-  distributorId: string;
   orderBaseInfos: orderBaseInfos;
 }
 

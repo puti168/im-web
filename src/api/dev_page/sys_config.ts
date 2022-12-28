@@ -89,7 +89,7 @@ export const updatePulbicMsg = (params: DemoParams) =>
 export const deletePulbicMsg = (params: any[]) =>
   defHttp.post<DemoListGetResultModel>({
     url: Api.DELETE_PUBLICMSG,
-    params:{ids:params},
+    params,
   });
 
 export const saveIP = (params: DemoParams) =>
@@ -105,7 +105,7 @@ export const updateIP = (params: DemoParams) =>
 export const deleteIP = (params: any[]) =>
   defHttp.post<DemoListGetResultModel>({
     url: Api.DELETE_IP,
-    params:{ids:params},
+    params,
   });
 
 const dataSource: any = [
