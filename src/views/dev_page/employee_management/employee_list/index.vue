@@ -8,6 +8,7 @@
         <template v-if="column.key === 'action'">
           <a-button class="mr-1" type="warning" @click="send(record)">编辑</a-button>
           <PopConfirmButton type="danger" @confirm="deleteById(record.id)" title="确认删除？">删除</PopConfirmButton>
+          <a-button class="ml-1" type="success" @click="look(record)">查看密钥</a-button>
         </template>
       </template>
       <template #toolbar>
@@ -15,6 +16,7 @@
       </template>
     </BasicTable>
     <Modal4 @register="register4" @reloadTable="reload" />
+    <ModalSecretKey @register="modalSecretKey" />
   </PageWrapper>
 </template>
 <script lang="ts" setup>
@@ -26,6 +28,7 @@
   import { useModal } from '/@/components/Modal';
   import Modal4 from './comp/Modal4.vue';
   import { useMessage } from '/@/hooks/web/useMessage';
+  import ModalSecretKey from './comp/ModalSecretKey.vue';
 
   let { createMessage } = useMessage();
   const [registerTable, { reload }] = useTable({
@@ -35,7 +38,7 @@
     showTableSetting: true,
     // showIndexColumn: false,
     actionColumn: {
-      width: 220,
+      width: 250,
       title: '操作',
       dataIndex: 'action',
       // slots: { customRender: 'action' },
@@ -43,8 +46,14 @@
   });
   const [register4, { openModal: openModal4 }] = useModal();
 
+  const [modalSecretKey, { openModal: openModalSecretKey }] = useModal();
+
   function send(record: any) {
     openModal4(true, record);
+  }
+
+  function look(record: any) {
+    openModalSecretKey(true, record);
   }
 
   function deleteById(id) {

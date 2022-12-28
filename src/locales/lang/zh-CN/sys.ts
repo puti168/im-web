@@ -78,6 +78,7 @@ export default {
     forgetPassword: '忘记密码?',
     otherSignIn: '其他登录方式',
     distributorId: '分销商ID',
+    secretCode: '验证码',
     // notify
     loginSuccessTitle: '登录成功',
     loginSuccessDesc: '欢迎回来',

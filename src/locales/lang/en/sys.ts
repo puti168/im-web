@@ -82,6 +82,7 @@ export default {
     forgetPassword: 'Forget Password?',
     otherSignIn: 'Sign in with',
     distributorId: 'distributorID',
+    secretCode: 'Verification code',
 
     // notify
     loginSuccessTitle: 'Login successful',

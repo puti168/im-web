@@ -16,6 +16,7 @@
         class="fix-auto-fill"
       />
     </FormItem>
+
     <FormItem name="userName" class="enter-x">
       <Input
         size="large"
@@ -32,7 +33,14 @@
         :placeholder="t('sys.login.password')"
       />
     </FormItem>
-
+    <FormItem name="secretCode" class="enter-x">
+      <Input
+        size="large"
+        v-model:value="formData.secretCode"
+        :placeholder="t('sys.login.secretCode')"
+        class="fix-auto-fill"
+      />
+    </FormItem>
     <ARow class="enter-x">
       <ACol :span="12">
         <FormItem>
@@ -132,6 +140,7 @@
     userName: 'demoData',
     pwd: 'demoData',
     distributorId: '123',
+    secretCode: '',
   });
 
   const { validForm } = useFormValid(formRef);
@@ -145,10 +154,11 @@
     if (!data) return;
     try {
       loading.value = true;
-      console.log(data,'---data---');
-      
+      console.log(data, '---data---');
+
       const userInfo = await userStore.login({
         distributorId: data.distributorId,
+        secretCode: data.secretCode,
         name: data.userName,
         password: data.pwd,
         mode: 'none', //不要默认的错误提示
