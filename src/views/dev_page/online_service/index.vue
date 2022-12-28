@@ -341,7 +341,6 @@
     if (!id.value) return;
     const { pageCount, records } = await queryHistoryRecords({
       cutTime: Date.now(),
-      distributeId: '123',
       pageNo: historyPageNo.value,
       pageSize: 10,
       userId: id.value,
@@ -369,7 +368,6 @@
       userId,
       userLocation,
     } = await queryUserMessage({
-      distributeId: '123',
       userId: id.value,
     });
     userInfo.balance = balance;
@@ -449,7 +447,6 @@
     chatListData.value.push(newMsg);
     if (!sendType) {
       SocketInstance.send({
-        distributorId: '123',
         msgType: '1',
         orderId: currOrderId.value,
         fromId: userStore.getUserInfo.userId,
@@ -508,7 +505,6 @@
   //开始执行query我的会话列表
   async function queryMychatListVue() {
     const { mlist, pageCount } = await queryMychatList({
-      distributeId: 123,
       pageNo: userListPageNo.value,
       pageSize: 10,
     });
@@ -523,7 +519,6 @@
 
   async function queryWaitListVue() {
     const { wlist, pageCount } = await queryWaitList({
-      distributeId: 123,
       pageNo: userWaitListPageNo.value,
       pageSize: 10,
     });
@@ -531,9 +526,7 @@
     userWaitListPageNoLimit.value = Number(pageCount);
   }
   async function queryCsMWChatCountVue() {
-    const { myChatCount, waitChatCount } = await queryCsMWChatCount({
-      distributeId: 123,
-    });
+    const { myChatCount, waitChatCount } = await queryCsMWChatCount();
     waitCount.value = waitChatCount;
     myCount.value = myChatCount;
   }
@@ -653,7 +646,6 @@
   }
   async function startChat() {
     const data = await matchOrders({
-      distributorId: '123',
       csId: userStore.getUserInfo.userId,
       orderBaseInfos: state.checkedList.map((item) => {
         return {
@@ -671,7 +663,6 @@
   async function startChatItem(item) {
     console.log(item, '----');
     const data = await matchOrders({
-      distributorId: '123',
       csId: userStore.getUserInfo.userId,
       orderBaseInfos: [
         {
@@ -757,7 +748,6 @@
   }
   async function closeOrderVue() {
     const { op } = await closeOrder({
-      distributorId: 123,
       orderId: currOrderId.value,
     });
     if (op === 1) {
