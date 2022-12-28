@@ -133,10 +133,11 @@ export const useUserStore = defineStore({
       if (!this.getToken) return null;
       // const userInfo = await getUserInfo();
       let userInfo: any;
+      console.log(data, '---data---');
       if (data) {
         userInfo = {
           userId: data.id,
-          id:data.id,
+          id: data.id,
           username: data.name,
           password: data.password,
           realName: data.realName,
@@ -163,6 +164,7 @@ export const useUserStore = defineStore({
         userInfo.roles = [];
         this.setRoleList([]);
       }
+      console.log(userInfo, '---userInfo---');
       this.setUserInfo(userInfo);
       return userInfo;
     },
