@@ -8,8 +8,8 @@
   >
     <span>密钥：{{ modelRef.secretKey }}</span>
     <a-button class="ml-1" size="small" type="success" @click="copy(modelRef.secretKey)">复制</a-button>
-    <div class="title">密钥二维码 </div>
-    <QrCode :value="modelRef.secretKey" />
+    <div class="title mt-3">密钥二维码 </div>
+    <QrCode :value="modelRef.secretKey" class="title" />
   </BasicModal>
 </template>
 <script lang="ts">
@@ -66,6 +66,6 @@
 </script>
 <style lang="less" scoped>
   .title {
-    padding: 10px 0 0 60px;
+    text-align: center;
   }
 </style>
