@@ -20,10 +20,10 @@ enum Api {
   DELETE_PUBLICMSG = '/backend/publicmsg/falseDelete',
 }
 
-export const getUserConfig = (params: { distributorId: number }) => {
+export const getUserConfig = () => {
   return defHttp
     .post<any>({
-      url: Api.USER_CONFUG_INFO + '/' + params.distributorId,
+      url: Api.USER_CONFUG_INFO,
     })
     .then((res: any) => {
       let data: any = [];
@@ -125,7 +125,7 @@ const dataSource: any = [
 export const getSchemeInfo = async (params: any) => {
   let res0 = await defHttp.post<DemoListGetResultModel>({
     url: Api.SCHEME_INFO,
-    params: { distributorId: params.distributorId, type: 0 },
+    params: { type: 0 },
   });
   dataSource[0] = { ...res0, ...dataSource[0], distributorId: params.distributorId };
   let res1 = await defHttp.post<DemoListGetResultModel>({
