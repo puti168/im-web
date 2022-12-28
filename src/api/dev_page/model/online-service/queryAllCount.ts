@@ -1,1 +1,3 @@
-export interface queryAllCount {}
+export interface queryAllCount {
+  distributeId: number;
+}
