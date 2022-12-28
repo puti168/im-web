@@ -336,16 +336,18 @@
     currentLang.value = item.lanSimpleCode;
     item.hasClick = true;
   }
+  let preTimeHistory = 0;
   //id只要改变走接口,请求当前的聊天记录
   async function queryHistoryRecordsVue() {
     if (!id.value) return;
-    const { pageCount, records } = await queryHistoryRecords({
-      cutTime: Date.now(),
+    const { pageCount, records, cutTime } = await queryHistoryRecords({
+      cutTime: preTimeHistory || Date.now(),
       distributeId: '123',
       pageNo: historyPageNo.value,
       pageSize: 10,
       userId: id.value,
     });
+    preTimeHistory = cutTime;
     historyPageLimit.value = Number(pageCount);
     return records;
   }
@@ -739,9 +741,15 @@
         //如果订单id不是当前的,不执行;如果当前的id,执行addData操作;
         if (currOrderId.value === data.orderId) {
           //刷新当前会话item todo
-          chatListData.value.forEach((item) => {
+          console.log(data.orderId, '-------');
+          list.forEach((item, index) => {
+            console.log(item, item.orderId, currOrderId.value, '----');
             if (item.orderId === currOrderId.value) {
-              item.content = data.content;
+              console.log('相等');
+              // item.content = data.content;
+              list[index].lastContent = data.content;
+              // console.log(list[index].content);
+              console.log(list[index], '----', list);
             }
           });
           addData(data.content, data.senderNickName, data.sendType, data.msgType, data.time);
