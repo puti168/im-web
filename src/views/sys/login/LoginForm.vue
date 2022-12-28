@@ -8,7 +8,7 @@
     v-show="getShow"
     @keypress.enter="handleLogin"
   >
-    <FormItem name="userName" class="enter-x">
+    <FormItem name="distributorId" class="enter-x">
       <Input
         size="large"
         v-model:value="formData.distributorId"
@@ -145,6 +145,8 @@
     if (!data) return;
     try {
       loading.value = true;
+      console.log(data,'---data---');
+      
       const userInfo = await userStore.login({
         distributorId: data.distributorId,
         name: data.userName,
