@@ -134,6 +134,7 @@ export const useUserStore = defineStore({
       if (data) {
         userInfo = {
           userId: data.id,
+          id:data.id,
           username: data.name,
           password: data.password,
           realName: data.realName,
