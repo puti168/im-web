@@ -8,7 +8,6 @@ enum Api {
 
 export const getSessionorderList = (params: DemoParams) => {
   params.pageNum = params.page;
-  params.distributorId = '123';
   return defHttp
     .post<DemoListGetResultModel>({
       url: Api.SESSIONORDER_LIST,

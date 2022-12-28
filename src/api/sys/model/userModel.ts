@@ -2,6 +2,7 @@
  * @description: Login interface parameters
  */
 export interface LoginParams {
+  distributorId: string;
   name: string;
   password: string;
 }

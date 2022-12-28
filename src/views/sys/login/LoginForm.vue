@@ -11,6 +11,14 @@
     <FormItem name="userName" class="enter-x">
       <Input
         size="large"
+        v-model:value="formData.distributorId"
+        :placeholder="t('sys.login.distributorId')"
+        class="fix-auto-fill"
+      />
+    </FormItem>
+    <FormItem name="userName" class="enter-x">
+      <Input
+        size="large"
         v-model:value="formData.userName"
         :placeholder="t('sys.login.userName')"
         class="fix-auto-fill"
@@ -52,35 +60,35 @@
         {{ t('sys.login.registerButton') }}
       </Button> -->
     </FormItem>
-      <template v-if="false">
-        <ARow class="enter-x">
-          <ACol :md="8" :xs="24">
-            <Button block @click="setLoginState(LoginStateEnum.MOBILE)">
-              {{ t('sys.login.mobileSignInFormTitle') }}
-            </Button>
-          </ACol>
-          <ACol :md="8" :xs="24" class="!my-2 !md:my-0 xs:mx-0 md:mx-2">
-            <Button block @click="setLoginState(LoginStateEnum.QR_CODE)">
-              {{ t('sys.login.qrSignInFormTitle') }}
-            </Button>
-          </ACol>
-          <ACol :md="6" :xs="24">
-            <Button block @click="setLoginState(LoginStateEnum.REGISTER)">
-              {{ t('sys.login.registerButton') }}
-            </Button>
-          </ACol>
-        </ARow>
+    <template v-if="false">
+      <ARow class="enter-x">
+        <ACol :md="8" :xs="24">
+          <Button block @click="setLoginState(LoginStateEnum.MOBILE)">
+            {{ t('sys.login.mobileSignInFormTitle') }}
+          </Button>
+        </ACol>
+        <ACol :md="8" :xs="24" class="!my-2 !md:my-0 xs:mx-0 md:mx-2">
+          <Button block @click="setLoginState(LoginStateEnum.QR_CODE)">
+            {{ t('sys.login.qrSignInFormTitle') }}
+          </Button>
+        </ACol>
+        <ACol :md="6" :xs="24">
+          <Button block @click="setLoginState(LoginStateEnum.REGISTER)">
+            {{ t('sys.login.registerButton') }}
+          </Button>
+        </ACol>
+      </ARow>
 
-        <Divider class="enter-x">{{ t('sys.login.otherSignIn') }}</Divider>
+      <Divider class="enter-x">{{ t('sys.login.otherSignIn') }}</Divider>
 
-        <div class="flex justify-evenly enter-x" :class="`${prefixCls}-sign-in-way`">
-          <GithubFilled />
-          <WechatFilled />
-          <AlipayCircleFilled />
-          <GoogleCircleFilled />
-          <TwitterCircleFilled />
-        </div>
-      </template>
+      <div class="flex justify-evenly enter-x" :class="`${prefixCls}-sign-in-way`">
+        <GithubFilled />
+        <WechatFilled />
+        <AlipayCircleFilled />
+        <GoogleCircleFilled />
+        <TwitterCircleFilled />
+      </div>
+    </template>
   </Form>
 </template>
 <script lang="ts" setup>
@@ -123,6 +131,7 @@
   const formData = reactive({
     userName: 'demoData',
     pwd: 'demoData',
+    distributorId: '123',
   });
 
   const { validForm } = useFormValid(formRef);
@@ -137,6 +146,7 @@
     try {
       loading.value = true;
       const userInfo = await userStore.login({
+        distributorId: data.distributorId,
         name: data.userName,
         password: data.pwd,
         mode: 'none', //不要默认的错误提示

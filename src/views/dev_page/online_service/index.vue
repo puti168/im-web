@@ -321,7 +321,7 @@
     // //开始接入会改变在线状态;
     onLine.value = true;
   }
-  //当前选中的id; todo
+  //当前选中的id;
   const id = ref();
   const currOrderId = ref();
   let currentName = ref();
@@ -341,6 +341,7 @@
     if (!id.value) return;
     const { pageCount, records } = await queryHistoryRecords({
       cutTime: Date.now(),
+      distributeId: '123',
       pageNo: historyPageNo.value,
       pageSize: 10,
       userId: id.value,
@@ -350,7 +351,6 @@
   }
   const userInfo = reactive({});
   async function queryUserMessageVue() {
-    // todo
     const {
       balance,
       commissionStatus,
@@ -368,6 +368,7 @@
       userId,
       userLocation,
     } = await queryUserMessage({
+      distributeId: '123',
       userId: id.value,
     });
     userInfo.balance = balance;
@@ -428,7 +429,6 @@
     });
   }
   function addData(msg, userNickName, sendType, msgType, time) {
-    // todo
     const newMsg = {
       msgType: 1,
       sendType: 2,
@@ -447,6 +447,7 @@
     chatListData.value.push(newMsg);
     if (!sendType) {
       SocketInstance.send({
+        distributorId: '123',
         msgType: '1',
         orderId: currOrderId.value,
         fromId: userStore.getUserInfo.userId,
@@ -505,6 +506,7 @@
   //开始执行query我的会话列表
   async function queryMychatListVue() {
     const { mlist, pageCount } = await queryMychatList({
+      distributeId: 123,
       pageNo: userListPageNo.value,
       pageSize: 10,
     });
@@ -519,6 +521,7 @@
 
   async function queryWaitListVue() {
     const { wlist, pageCount } = await queryWaitList({
+      distributeId: 123,
       pageNo: userWaitListPageNo.value,
       pageSize: 10,
     });
@@ -526,7 +529,9 @@
     userWaitListPageNoLimit.value = Number(pageCount);
   }
   async function queryCsMWChatCountVue() {
-    const { myChatCount, waitChatCount } = await queryCsMWChatCount();
+    const { myChatCount, waitChatCount } = await queryCsMWChatCount({
+      distributeId: 123,
+    });
     waitCount.value = waitChatCount;
     myCount.value = myChatCount;
   }
@@ -544,7 +549,6 @@
     pageLimitNum: 0,
   });
   async function pageListVue() {
-    // todo
     const data = await pageList({
       type: 1,
       pageNum: quickReplay.pageNum,
@@ -646,6 +650,7 @@
   }
   async function startChat() {
     const data = await matchOrders({
+      distributorId: '123',
       csId: userStore.getUserInfo.userId,
       orderBaseInfos: state.checkedList.map((item) => {
         return {
@@ -663,6 +668,7 @@
   async function startChatItem(item) {
     console.log(item, '----');
     const data = await matchOrders({
+      distributorId: '123',
       csId: userStore.getUserInfo.userId,
       orderBaseInfos: [
         {
@@ -705,12 +711,11 @@
     }
   }
   function startIm() {
-    // todo
     console.log('startIm', 'connect');
     SocketInstance.connect();
     SocketInstance.on('message', (data) => {
       if (data.msgType === 9) {
-        //用户发起关单操作,发送到客服端,清空orderid,刷新列表 todo
+        //用户发起关单操作,发送到客服端,清空orderid,刷新列表
         id.value = null;
         if (currentTab.value === 1) {
           list.splice(0, list.length);
@@ -732,9 +737,15 @@
       } else {
         console.log(currOrderId.value, data.orderId);
         //如果订单id不是当前的,不执行;如果当前的id,执行addData操作;
-        if (currOrderId.value === data.orderId)
+        if (currOrderId.value === data.orderId) {
+          //刷新当前会话item todo
+          chatListData.value.forEach((item) => {
+            if (item.orderId === currOrderId.value) {
+              item.content = data.content;
+            }
+          });
           addData(data.content, data.senderNickName, data.sendType, data.msgType, data.time);
-        else {
+        } else {
           //刷新页面;
           if (currentTab.value === 1) {
             list.splice(0, list.length);
@@ -748,6 +759,7 @@
   }
   async function closeOrderVue() {
     const { op } = await closeOrder({
+      distributorId: 123,
       orderId: currOrderId.value,
     });
     if (op === 1) {
