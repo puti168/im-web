@@ -321,7 +321,7 @@
     // //开始接入会改变在线状态;
     onLine.value = true;
   }
-  //当前选中的id; todo
+  //当前选中的id;
   const id = ref();
   const currOrderId = ref();
   let currentName = ref();
@@ -351,7 +351,6 @@
   }
   const userInfo = reactive({});
   async function queryUserMessageVue() {
-    // todo
     const {
       balance,
       commissionStatus,
@@ -430,7 +429,6 @@
     });
   }
   function addData(msg, userNickName, sendType, msgType, time) {
-    // todo
     const newMsg = {
       msgType: 1,
       sendType: 2,
@@ -551,7 +549,6 @@
     pageLimitNum: 0,
   });
   async function pageListVue() {
-    // todo
     const data = await pageList({
       type: 1,
       pageNum: quickReplay.pageNum,
@@ -714,12 +711,11 @@
     }
   }
   function startIm() {
-    // todo
     console.log('startIm', 'connect');
     SocketInstance.connect();
     SocketInstance.on('message', (data) => {
       if (data.msgType === 9) {
-        //用户发起关单操作,发送到客服端,清空orderid,刷新列表 todo
+        //用户发起关单操作,发送到客服端,清空orderid,刷新列表
         id.value = null;
         if (currentTab.value === 1) {
           list.splice(0, list.length);
@@ -741,9 +737,15 @@
       } else {
         console.log(currOrderId.value, data.orderId);
         //如果订单id不是当前的,不执行;如果当前的id,执行addData操作;
-        if (currOrderId.value === data.orderId)
+        if (currOrderId.value === data.orderId) {
+          //刷新当前会话item todo
+          chatListData.value.forEach((item) => {
+            if (item.orderId === currOrderId.value) {
+              item.content = data.content;
+            }
+          });
           addData(data.content, data.senderNickName, data.sendType, data.msgType, data.time);
-        else {
+        } else {
           //刷新页面;
           if (currentTab.value === 1) {
             list.splice(0, list.length);
