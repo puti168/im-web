@@ -77,7 +77,7 @@ export default {
     rememberMe: '记住我',
     forgetPassword: '忘记密码?',
     otherSignIn: '其他登录方式',
-
+    distributorId: '分销商ID',
     // notify
     loginSuccessTitle: '登录成功',
     loginSuccessDesc: '欢迎回来',
