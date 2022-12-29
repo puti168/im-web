@@ -9,7 +9,7 @@
     <span>密钥：{{ modelRef.secretKey }}</span>
     <a-button class="ml-1" size="small" type="success" @click="copy(modelRef.secretKey)">复制</a-button>
     <div class="title mt-3">密钥二维码 </div>
-    <QrCode :value="`otpauth://totp/null?secret=${modelRef.secretKey}`" class="title" />
+    <QrCode :value="`otpauth://totp/${modelRef.name}?secret=${modelRef.secretKey}`" class="title" />
   </BasicModal>
 </template>
 <script lang="ts">
