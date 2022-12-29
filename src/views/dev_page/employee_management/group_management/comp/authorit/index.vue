@@ -51,11 +51,15 @@
           .then(async (res) => {
             console.log(res);
             if (res) {
-              setListForKey(menuList.value)
-              res.menuList = menuList.value
+              console.log(selectKey,'selectKey');
+              let arr:any = []
+              selectKey.forEach(item => {
+                arr.push({id:item})
+              })
+              // setListForKey(menuList.value)
+              res.menuList = arr
               res.id = id.value;
               console.log(res,'---参数');
-              
               await updateGroup(res);
               console.log(modelRef.value);
               emit('reloadTable');
