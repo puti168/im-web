@@ -3,6 +3,9 @@ import { DemoParams, DemoListGetResultModel } from './model/tableModel';
 import dayjs from 'dayjs';
 
 enum Api {
+  fetchDynamicKey = '/backend/customerservice/fetchDynamicKey',
+
+
   USER_CONFUG_INFO = '/backend/customerserviceconfig/info',
   UPDATE_USER_CONFUG = '/backend/customerserviceconfig/saveOrUpdate',
 
@@ -19,7 +22,13 @@ enum Api {
   UPDATE_PUBLICMSG = '/backend/publicmsg/update',
   DELETE_PUBLICMSG = '/backend/publicmsg/falseDelete',
 }
-
+export const fetchDynamicKey = (params:any) => {
+  return defHttp
+  .post<any>({
+    url: Api.fetchDynamicKey,
+    params
+  })
+}
 export const getUserConfig = () => {
   return defHttp
     .post<any>({

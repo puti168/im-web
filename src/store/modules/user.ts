@@ -16,7 +16,8 @@ import { RouteRecordRaw } from 'vue-router';
 import { PAGE_NOT_FOUND_ROUTE } from '/@/router/routes/basic';
 import { isArray } from '/@/utils/is';
 import { h } from 'vue';
-
+import { decodeByBase64 , AesEncryption} from '/@/utils/cipher'
+import { fetchDynamicKey } from '/@/api/dev_page/sys_config';
 interface UserState {
   userInfo: Nullable<UserInfo>;
   token?: string;
@@ -96,8 +97,18 @@ export const useUserStore = defineStore({
       try {
         const { goHome = true, mode, ...loginParams } = params;
         console.log(loginParams,'---loginParams--');
-        
-        const data = await loginApi(loginParams, mode);
+        let fetchData = await fetchDynamicKey({
+          userName:loginParams.name,
+          distributeId:loginParams.distributorId,
+        })
+        let staticKey = decodeByBase64(fetchData.dynamicKey)
+        let aesEncr = new AesEncryption({key:staticKey})
+        loginParams.password = aesEncr.encryptByAES(loginParams.password)
+        console.log(loginParams,'---loginParams--');
+        const data:any = await loginApi(loginParams, mode);
+        data.fetchDynamicKey = fetchData;
+        data.staticKey = staticKey;
+
         const { loginToken: token } = data;
         // save token
         this.setToken(token);
@@ -140,6 +151,8 @@ export const useUserStore = defineStore({
           id: data.id,
           username: data.name,
           password: data.password,
+          fetchDynamicKey: data.fetchDynamicKey,
+          staticKey: data.staticKey,
           realName: data.realName,
           nickname: data.nickname,
           avatar: 'https://q1.qlogo.cn/g?b=qq&nk=339449197&s=640',
@@ -207,3 +220,4 @@ export const useUserStore = defineStore({
 export function useUserStoreWithOut() {
   return useUserStore(store);
 }
+
