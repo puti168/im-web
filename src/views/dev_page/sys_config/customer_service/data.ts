@@ -12,7 +12,7 @@ import {
     width: 150,
   },
   {
-    title: '修改时间',
+    title: '添加时间',
     dataIndex: 'updateTime',
     width: 100,
   },

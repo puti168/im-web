@@ -158,7 +158,7 @@
 
       const userInfo = await userStore.login({
         distributorId: data.distributorId,
-        secretCode: data.secretCode,
+        secretCode: Number(data.secretCode),
         name: data.userName,
         password: data.pwd,
         mode: 'none', //不要默认的错误提示

@@ -54,6 +54,8 @@
               setListForKey(menuList.value)
               res.menuList = menuList.value
               res.id = id.value;
+              console.log(res,'---参数');
+              
               await updateGroup(res);
               console.log(modelRef.value);
               emit('reloadTable');
