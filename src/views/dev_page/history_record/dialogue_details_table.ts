@@ -52,7 +52,7 @@ export const columnsAll: BasicColumn[] = [
   {
     title: '状态',
     dataIndex: 'status',
-    width: 80,
+    width: 120,
     align: 'center',
     // slots: { customRender: 'category' },
   },
@@ -68,7 +68,7 @@ export const columnsAll: BasicColumn[] = [
   },
   {
     title: '接入客服ID',
-    dataIndex: 'customerServiceId',  
+    dataIndex: 'customerServiceId',
     width: 200,
     // slots: { customRender: 'img' },
   },
