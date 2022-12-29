@@ -50,14 +50,14 @@
           </Checkbox>
         </FormItem>
       </ACol>
-      <ACol :span="12">
+      <!-- <ACol :span="12">
         <FormItem :style="{ 'text-align': 'right' }">
-          <!-- No logic, you need to deal with it yourself -->
+        
           <Button type="link" size="small" @click="setLoginState(LoginStateEnum.RESET_PASSWORD)">
             {{ t('sys.login.forgetPassword') }}
           </Button>
         </FormItem>
-      </ACol>
+      </ACol> -->
     </ARow>
 
     <FormItem class="enter-x">
@@ -100,7 +100,7 @@
   </Form>
 </template>
 <script lang="ts" setup>
-  import { reactive, ref, unref, computed } from 'vue';
+  import { reactive, ref, unref, computed, onMounted } from 'vue';
 
   import { Checkbox, Form, Input, Row, Col, Button, Divider } from 'ant-design-vue';
   import {
@@ -118,6 +118,7 @@
   import { useUserStore } from '/@/store/modules/user';
   import { LoginStateEnum, useLoginState, useFormRules, useFormValid } from './useLogin';
   import { useDesign } from '/@/hooks/web/useDesign';
+
   //import { onKeyStroke } from '@vueuse/core';
 
   const ACol = Col;
@@ -137,9 +138,9 @@
   const rememberMe = ref(false);
 
   const formData = reactive({
-    userName: 'demoData',
-    pwd: 'demoData',
-    distributorId: '123',
+    userName: '',
+    pwd: '',
+    distributorId: '',
     secretCode: '',
   });
 
@@ -149,8 +150,20 @@
 
   const getShow = computed(() => unref(getLoginState) === LoginStateEnum.LOGIN);
 
+  onMounted(() => {
+    let userName = localStorage.getItem('userName');
+    let password = localStorage.getItem('password');
+    let distributorId = localStorage.getItem('distributorId');
+    if (userName) {
+      formData.userName = userName;
+      formData.pwd = password;
+      formData.distributorId = distributorId;
+    }
+  });
+
   async function handleLogin() {
     const data = await validForm();
+
     if (!data) return;
     try {
       loading.value = true;
@@ -169,6 +182,12 @@
           description: `${t('sys.login.loginSuccessDesc')}: ${userInfo.nickname}`,
           duration: 3,
         });
+      }
+
+      if (rememberMe.value) {
+        localStorage.setItem('distributorId', data.distributorId);
+        localStorage.setItem('userName', data.userName);
+        localStorage.setItem('password', data.pwd);
       }
     } catch (error) {
       createErrorModal({
