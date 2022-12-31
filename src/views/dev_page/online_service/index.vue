@@ -248,6 +248,7 @@
   } from '/@/api/dev_page/online_service';
   import { useServiceStore } from '/@/store/modules/online-service';
   import { useUserStore } from '/@/store/modules/user';
+  import { AesEncryption } from '/@/utils/cipher';
   import moment from 'moment';
   import { computed } from 'vue';
   import SocketInstance from '/@/api/im-server/socket-instance';
@@ -255,6 +256,7 @@
 
   const serviceStore = useServiceStore();
   const userStore = useUserStore();
+  const aesEncr = new AesEncryption({ key: userStore.getUserInfo.numberStaticKey });
 
   const waitCount = ref(0);
   const myCount = ref(0);
@@ -342,7 +344,7 @@
     if (!id.value) return;
     const { pageCount, records, cutTime } = await queryHistoryRecords({
       cutTime: preTimeHistory || Date.now(),
-      distributeId: '123',
+      distributeId: userStore.getUserInfo.distributorId,
       pageNo: historyPageNo.value,
       pageSize: 10,
       userId: id.value,
@@ -370,7 +372,7 @@
       userId,
       userLocation,
     } = await queryUserMessage({
-      distributeId: '123',
+      distributeId: userStore.getUserInfo.distributorId,
       userId: id.value,
     });
     userInfo.balance = balance;
@@ -449,12 +451,12 @@
     chatListData.value.push(newMsg);
     if (!sendType) {
       SocketInstance.send({
-        distributorId: '123',
+        distributorId: userStore.getUserInfo.distributorId,
         msgType: '1',
         orderId: currOrderId.value,
         fromId: userStore.getUserInfo.userId,
         sendType: '2',
-        content: msg,
+        content: aesEncr.encryptByAES(msg),
         senderNickName: userStore.getUserInfo.nickname,
         time: Date.now(),
       });
@@ -508,13 +510,14 @@
   //开始执行query我的会话列表
   async function queryMychatListVue() {
     const { mlist, pageCount } = await queryMychatList({
-      distributeId: 123,
+      distributeId: userStore.getUserInfo.distributorId,
       pageNo: userListPageNo.value,
       pageSize: 10,
     });
     list.push(
       ...mlist.map((item) => {
         item.hasClick = false;
+        item.lastContent = aesEncr.decryptByAES(item.lastContent);
         return item;
       }),
     );
@@ -523,7 +526,7 @@
 
   async function queryWaitListVue() {
     const { wlist, pageCount } = await queryWaitList({
-      distributeId: 123,
+      distributeId: userStore.getUserInfo.distributorId,
       pageNo: userWaitListPageNo.value,
       pageSize: 10,
     });
@@ -532,7 +535,7 @@
   }
   async function queryCsMWChatCountVue() {
     const { myChatCount, waitChatCount } = await queryCsMWChatCount({
-      distributeId: 123,
+      distributeId: userStore.getUserInfo.distributorId,
     });
     waitCount.value = waitChatCount;
     myCount.value = myChatCount;
@@ -652,7 +655,7 @@
   }
   async function startChat() {
     const data = await matchOrders({
-      distributorId: '123',
+      distributorId: userStore.getUserInfo.distributorId,
       csId: userStore.getUserInfo.userId,
       orderBaseInfos: state.checkedList.map((item) => {
         return {
@@ -670,7 +673,7 @@
   async function startChatItem(item) {
     console.log(item, '----');
     const data = await matchOrders({
-      distributorId: '123',
+      distributorId: userStore.getUserInfo.distributorId,
       csId: userStore.getUserInfo.userId,
       orderBaseInfos: [
         {
@@ -716,7 +719,7 @@
     console.log('startIm', 'connect');
     SocketInstance.connect();
     SocketInstance.on('message', (data) => {
-      if (data.msgType === 9) {
+      if (data.msgType === 9 || data.msgType === 12) {
         //用户发起关单操作,发送到客服端,清空orderid,刷新列表
         id.value = null;
         if (currentTab.value === 1) {
@@ -740,19 +743,15 @@
         console.log(currOrderId.value, data.orderId);
         //如果订单id不是当前的,不执行;如果当前的id,执行addData操作;
         if (currOrderId.value === data.orderId) {
-          //刷新当前会话item todo
-          console.log(data.orderId, '-------');
           list.forEach((item, index) => {
-            console.log(item, item.orderId, currOrderId.value, '----');
             if (item.orderId === currOrderId.value) {
-              console.log('相等');
               // item.content = data.content;
-              list[index].lastContent = data.content;
+              list[index].lastContent = aesEncr.decryptByAES(data.content);
               // console.log(list[index].content);
               console.log(list[index], '----', list);
             }
           });
-          addData(data.content, data.senderNickName, data.sendType, data.msgType, data.time);
+          addData(aesEncr.decryptByAES(data.content), data.senderNickName, data.sendType, data.msgType, data.time);
         } else {
           //刷新页面;
           if (currentTab.value === 1) {
@@ -767,7 +766,7 @@
   }
   async function closeOrderVue() {
     const { op } = await closeOrder({
-      distributorId: 123,
+      distributorId: userStore.getUserInfo.distributorId,
       orderId: currOrderId.value,
     });
     if (op === 1) {

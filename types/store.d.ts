@@ -39,6 +39,8 @@ export interface UserInfo {
   desc?: string;
   homePath?: string;
   roles: RoleInfo[];
+  numberStaticKey: string;
+  distributorId: string;
 }
 
 export interface ServiceInfo {

@@ -33,12 +33,13 @@
   import { defineComponent, nextTick } from 'vue';
 
   import { BasicTable, useTable, TableAction } from '/@/components/Table';
-  import { getMenuList  , deleteMenu} from '/@/api/demo/system';
+  import { getMenuList, deleteMenu } from '/@/api/demo/system';
 
   import { useDrawer } from '/@/components/Drawer';
   import MenuDrawer from './MenuDrawer.vue';
 
   import { columns, searchFormSchema } from './menu.data';
+  import { saveUSER } from '/@/api/dev_page/employee_management';
 
   export default defineComponent({
     name: 'MenuManagement',
@@ -84,7 +85,7 @@
       }
 
       function handleDelete(record: Recordable) {
-        deleteMenu([record.id])
+        deleteMenu([record.id]);
       }
 
       function handleSuccess() {

@@ -38,6 +38,7 @@ export class AesEncryption {
   }
 
   decryptByAES(cipherText: string) {
+    console.log(this.key, '------key-----');
     return decrypt(cipherText, this.key, this.getOptions).toString(UTF8);
   }
 }

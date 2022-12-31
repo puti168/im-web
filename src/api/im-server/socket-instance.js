@@ -143,7 +143,7 @@ class SocketInstance {
    * 5:前端+后端:新的会话, 新增message_type用于刷新会话列表
    */
   close() {
-    this.socket.close();
+    this.socket && this.socket.close();
   }
 }
 

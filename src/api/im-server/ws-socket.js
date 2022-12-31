@@ -246,7 +246,7 @@ class WsSocket {
    * 关闭连接
    */
   close() {
-    this.connect.close();
+    this.connect && this.connect.close();
   }
 
   /**

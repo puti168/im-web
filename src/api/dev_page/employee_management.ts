@@ -35,19 +35,31 @@ export const getUserPageList = (params: DemoParams) => {
       };
     });
 };
+import { useUserStore } from '/@/store/modules/user';
+import { AesEncryption } from '/@/utils/cipher';
+const userStore = useUserStore();
+const aesEncr = new AesEncryption({ key: userStore.getUserInfo.numberStaticKey });
 export const saveUSER = (params: DemoParams | any) => {
   if (params.langIds) params.langIds = params.langIds.toString();
   if (params.status) params.status = params.status - 0;
+
+  let result = aesEncr.encryptByAES(JSON.stringify(params));
   return defHttp.post<DemoListGetResultModel>({
     url: Api.SAVE_USER,
-    params,
+    params: {
+      body: result,
+    },
   });
 };
 export const updateUSER = (params: DemoParams | any) => {
+  let result = aesEncr.encryptByAES(JSON.stringify(params));
+
   if (params.langIds) params.langIds = params.langIds.toString();
   return defHttp.post<DemoListGetResultModel>({
     url: Api.UPDATE_USER,
-    params,
+    params: {
+      body: result,
+    },
   });
 };
 export const deleteUSER = (params: any[]) =>
@@ -128,8 +140,12 @@ export const getGroupById = (params: DemoParams | any) =>
     // params,
   });
 
-export const updateMyPassword = (params) =>
-  defHttp.post<DemoListGetResultModel>({
+export const updateMyPassword = (params) => {
+  let result = aesEncr.encryptByAES(JSON.stringify(params));
+  return defHttp.post<DemoListGetResultModel>({
     url: Api.UPDATE_PASS_WORD,
-    params,
+    params: {
+      body: result,
+    },
   });
+};

@@ -16,7 +16,7 @@ import { RouteRecordRaw } from 'vue-router';
 import { PAGE_NOT_FOUND_ROUTE } from '/@/router/routes/basic';
 import { isArray } from '/@/utils/is';
 import { h } from 'vue';
-import { decodeByBase64 , AesEncryption} from '/@/utils/cipher'
+import { decodeByBase64, AesEncryption, encryptByBase64 } from '/@/utils/cipher';
 import { fetchDynamicKey } from '/@/api/dev_page/sys_config';
 interface UserState {
   userInfo: Nullable<UserInfo>;
@@ -96,18 +96,22 @@ export const useUserStore = defineStore({
     ): Promise<GetUserInfoModel | null> {
       try {
         const { goHome = true, mode, ...loginParams } = params;
-        console.log(loginParams,'---loginParams--');
+        console.log(loginParams, '---loginParams--');
         let fetchData = await fetchDynamicKey({
-          userName:loginParams.name,
-          distributeId:loginParams.distributorId,
-        })
-        let staticKey = decodeByBase64(fetchData.dynamicKey)
-        let aesEncr = new AesEncryption({key:staticKey})
-        loginParams.password = aesEncr.encryptByAES(loginParams.password)
-        console.log(loginParams,'---loginParams--');
-        const data:any = await loginApi(loginParams, mode);
+          userName: loginParams.name,
+          distributorId: loginParams.distributorId,
+        });
+        let staticKey = decodeByBase64(fetchData.dynamicKey);
+        let aesEncr = new AesEncryption({ key: staticKey });
+        loginParams.password = aesEncr.encryptByAES(loginParams.password);
+        console.log(loginParams, '---loginParams--');
+        const data: any = await loginApi(loginParams, mode);
         data.fetchDynamicKey = fetchData;
-        data.staticKey = staticKey;
+        // data.staticKey = data.staticKey;
+        console.log(data.staticKey, '-----staticKey----');
+        console.log(aesEncr.decryptByAES(data.staticKey), '--decryptByAES--');
+        data.numberStaticKey = aesEncr.decryptByAES(data.staticKey);
+        //处理第二个key
 
         const { loginToken: token } = data;
         // save token
@@ -151,10 +155,12 @@ export const useUserStore = defineStore({
           id: data.id,
           username: data.name,
           password: data.password,
-          fetchDynamicKey: data.fetchDynamicKey,
-          staticKey: data.staticKey,
+          // fetchDynamicKey: data.fetchDynamicKey,
+          // staticKey: data.staticKey,
+          numberStaticKey: data.numberStaticKey,
           realName: data.realName,
           nickname: data.nickname,
+          distributorId: data.distributorId,
           avatar: 'https://q1.qlogo.cn/g?b=qq&nk=339449197&s=640',
           desc: 'tester',
           token: this.getToken,
@@ -220,4 +226,3 @@ export const useUserStore = defineStore({
 export function useUserStoreWithOut() {
   return useUserStore(store);
 }
-
