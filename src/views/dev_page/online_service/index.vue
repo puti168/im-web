@@ -82,7 +82,10 @@
     <div class="chat-middle">
       <div class="chat-right-top">
         <div class="chat-right-top-header">
-          <div class="chat-right-top-header-left">{{ currentName ? currentName + '-' + currentLang : '等待接入' }}</div>
+          <div class="chat-right-top-header-left">
+            <div>{{ currentName ? currentName + '-' + currentLang : '等待接入' }}</div>
+            <div style="font-size: 12px">{{ currOrderId }}</div>
+          </div>
           <div class="chat-right-top-header-right">
             <div class="chat-right-top-header-right-name">{{ userStore.getUserInfo.username }}</div>
             <div class="chat-right-top-header-right-line">
@@ -248,6 +251,7 @@
   } from '/@/api/dev_page/online_service';
   import { useServiceStore } from '/@/store/modules/online-service';
   import { useUserStore } from '/@/store/modules/user';
+  import { useLocaleStore } from '/@/store/modules/locale';
   import { AesEncryption } from '/@/utils/cipher';
   import moment from 'moment';
   import { computed } from 'vue';
@@ -256,6 +260,7 @@
 
   const serviceStore = useServiceStore();
   const userStore = useUserStore();
+  const localeStore = useLocaleStore();
   const aesEncr = new AesEncryption({ key: userStore.getUserInfo.numberStaticKey });
 
   const waitCount = ref(0);
@@ -517,7 +522,7 @@
     list.push(
       ...mlist.map((item) => {
         item.hasClick = false;
-        item.lastContent = aesEncr.decryptByAES(item.lastContent);
+        item.lastContent = item.lastContent ? aesEncr.decryptByAES(item.lastContent) : item.lastContent;
         return item;
       }),
     );
@@ -546,6 +551,7 @@
     queryMychatListVue();
     queryCsMWChatCountVue();
     pageListVue();
+    console.log(localeStore.getLocale, '-------');
   });
 
   const quickReplay = reactive({
