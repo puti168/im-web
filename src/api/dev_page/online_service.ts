@@ -7,6 +7,8 @@ import { DemoListGetResultModel } from '/@/api/demo/model/tableModel';
 import { queryHistoryRecordsEntry } from '/@/api/dev_page/model/online-service/queryHistoryRecordsEntry';
 import { queryUserMessage } from '/@/api/dev_page/model/online-service/queryUserMessage';
 import { pageList } from '/@/api/dev_page/model/online-service/pageList';
+import { detect } from '/@/api/dev_page/model/online-service/detect';
+import { translate } from '/@/api/dev_page/model/online-service/translate';
 import { closeOrder } from '/@/api/dev_page/model/online-service/closeOrder';
 
 enum Api {
@@ -20,6 +22,8 @@ enum Api {
   queryUserDetail = '/backend/chatMessage/queryUserDetail',
   closeOrder = '/backend/chatMessage/closeOrder',
   pageList = '/backend/publicmsg/pageList',
+  detect = '/backend/translation/detect',
+  translate = '/backend/translation/translate',
 }
 
 export const setOnlineStatus = (params: SetOnlineStatusModel) =>
@@ -78,5 +82,15 @@ export const closeOrder = (params: closeOrder) =>
 export const pageList = (params: pageList) =>
   defHttp.post<DemoListGetResultModel>({
     url: Api.pageList,
+    params,
+  });
+export const detect = (params: detect) =>
+  defHttp.post<DemoListGetResultModel>({
+    url: Api.detect,
+    params,
+  });
+export const translate = (params: translate) =>
+  defHttp.post<DemoListGetResultModel>({
+    url: Api.translate,
     params,
   });

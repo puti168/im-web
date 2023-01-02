@@ -121,7 +121,10 @@
                 <span style="margin-right: 10px">{{ getTime(Number(item.crtTime)) }}</span>
                 <span>{{ item.csNickName }}</span>
               </div>
-              <div class="chat-content">{{ item.content }}</div>
+              <div>
+                <div class="chat-content">{{ item.content }}</div>
+                <button v-if="item.sendType === 1" class="translate" @click="toTranslate">翻译</button>
+              </div>
             </div>
           </div>
           <div style="height: 50px; clear: both"></div>
@@ -248,6 +251,7 @@
     queryUserMessage,
     closeOrder,
     pageList,
+    detect,
   } from '/@/api/dev_page/online_service';
   import { useServiceStore } from '/@/store/modules/online-service';
   import { useUserStore } from '/@/store/modules/user';
@@ -288,6 +292,13 @@
   }
   function getTimeHour(time) {
     return moment(time).utcOffset(current_time.value).format('HH:mm:ss');
+  }
+  function toTranslate() {
+    console.log(12312312);
+    //todo
+    detect({
+      message: '测试',
+    });
   }
   async function queryOnlineStatusVue() {
     const { status } = await queryOnlineStatus();
@@ -545,13 +556,17 @@
     waitCount.value = waitChatCount;
     myCount.value = myChatCount;
   }
+  //todo
+  const localLanguage = {
+    en: 'ENU',
+  };
   onMounted(async () => {
     //开始直接接口请求;
     queryOnlineStatusVue();
     queryMychatListVue();
     queryCsMWChatCountVue();
     pageListVue();
-    console.log(localeStore.getLocale, '-------');
+    console.log(localeStore.getLocale, '-------', localLanguage[localeStore.getLocale]);
   });
 
   const quickReplay = reactive({
@@ -980,6 +995,12 @@
       background-color: #f5f5f5;
       border-radius: 10px;
       padding: 10px;
+    }
+    .translate {
+      margin-left: 10px;
+    }
+    .translate:hover {
+      color: #0960bd;
     }
   }
 
