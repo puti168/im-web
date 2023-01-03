@@ -358,7 +358,6 @@
   //id只要改变走接口,请求当前的聊天记录
   async function queryHistoryRecordsVue() {
     if (!id.value) return;
-    console.log(historyPageNo.value, '----preTimeHistory----', preTimeHistory);
     const { pageCount, records, cutTime } = await queryHistoryRecords({
       cutTime: historyPageNo.value === 1 ? Date.now() : preTimeHistory,
       distributeId: userStore.getUserInfo.distributorId,
@@ -436,7 +435,6 @@
   async function getData() {
     let list = await queryHistoryRecordsVue();
     historyPageNo.value++;
-    console.log(list, '-------');
 
     nextTick(() => {
       const el = chatListRef.value;
@@ -490,8 +488,6 @@
     });
   }
   function chatScroll(e) {
-    console.log(historyPageNo.value, '----historyPageNo----');
-    // todo
     if (e.target.scrollTop === 0 && historyPageNo.value > 1) {
       if (historyPageNo.value > historyPageLimit.value) return;
       getData();
