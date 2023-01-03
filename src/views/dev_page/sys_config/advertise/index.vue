@@ -3,8 +3,8 @@
     <BasicTable @register="registerTable" @edit-change="onEditChange">
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
-          <a-button class="mr-1" v-if="record.tid != 0" type="warning" @click="send(record)">编辑</a-button>
-          <a-button class="mr-1" v-else type="warning" @click="sendUpload(record)">编辑</a-button>
+          <a-button class="mr-1" v-if="record.tid == 1" type="warning" @click="sendUpload(record)">编辑</a-button>
+          <a-button class="mr-1" v-else type="warning" @click="send(record)">编辑</a-button>
         </template>
       </template>
     </BasicTable>

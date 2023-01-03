@@ -20,6 +20,8 @@ enum Api {
   SAVE_PUBLICMSG = '/backend/publicmsg/save',
   UPDATE_PUBLICMSG = '/backend/publicmsg/update',
   DELETE_PUBLICMSG = '/backend/publicmsg/delete',
+
+  BNNER_ROTAIO = '/backend/conduct/getBnnerRotaiotnCopy',
 }
 export const fetchDynamicKey = (params: any) => {
   return defHttp.post<any>({
@@ -118,34 +120,38 @@ export const deleteIP = (params: any[]) =>
 const dataSource: any = [
   {
     name: '顶部banner',
-    tid: 0,
-  },
-  {
-    name: '循环文案',
     tid: 1,
   },
   {
-    name: '开场文案',
+    name: '循环文案',
     tid: 2,
   },
+  {
+    name: '开场文案',
+    tid: 3,
+  },
 ];
-export const getSchemeInfo = async (params: any) => {
-  let res0 = await defHttp.post<DemoListGetResultModel>({
-    url: Api.SCHEME_INFO,
-    params: { type: 0 },
+export const getSchemeInfo = async () => {
+  const { map: mapObj } = await defHttp.post({
+    url: Api.BNNER_ROTAIO,
+    params: { types: [1, 2, 3] },
   });
-  dataSource[0] = { ...res0, ...dataSource[0], distributorId: params.distributorId };
-  let res1 = await defHttp.post<DemoListGetResultModel>({
-    url: Api.SCHEME_INFO,
-    params: { distributorId: params.distributorId, type: 1 },
+  // dataSource[0] = { ...res0, ...dataSource[0], distributorId: params.distributorId };
+  // let res1 = await defHttp.post<DemoListGetResultModel>({
+  //   url: Api.SCHEME_INFO,
+  //   params: { type: 1 },
+  // });
+  // dataSource[1] = { ...res1, ...dataSource[1], distributorId: params.distributorId };
+  // let res2 = await defHttp.post<DemoListGetResultModel>({
+  //   url: Api.SCHEME_INFO,
+  //   params: { distributorId: params.distributorId, type: 2 },
+  // });
+  // dataSource[2] = { ...res2, ...dataSource[2], distributorId: params.distributorId };
+  Object.keys(mapObj).forEach((key: any) => {
+    let index = key - 1;
+    dataSource[index] = { ...mapObj[key], ...dataSource[index] };
   });
-  dataSource[1] = { ...res1, ...dataSource[1], distributorId: params.distributorId };
-  let res2 = await defHttp.post<DemoListGetResultModel>({
-    url: Api.SCHEME_INFO,
-    params: { distributorId: params.distributorId, type: 2 },
-  });
-  dataSource[2] = { ...res2, ...dataSource[2], distributorId: params.distributorId };
-
+  console.log(dataSource, 1111);
   return {
     items: dataSource,
     total: 3,
