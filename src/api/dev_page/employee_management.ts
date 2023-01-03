@@ -4,20 +4,20 @@ import { DemoParams, DemoListGetResultModel } from './model/tableModel';
 enum Api {
   USER_LIST = '/backend/customerservice/pageList',
   UPDATE_USER = '/backend/customerservice/update',
-  DELETE_USER = '/backend/customerservice/falseDelete',
+  DELETE_USER = '/backend/customerservice/delete',
   SAVE_USER = '/backend/customerservice/save',
   UPDATE_PASS_WORD = '/backend/customerservice/updateMyPassword',
 
   GROUP_LIST = '/backend/group/pageList',
   SAVE_GROUP = '/backend/group/save',
   UPDATE_GROUP = '/backend/group/update',
-  DELETE_GROUP = '/backend/group/falseDelete',
+  DELETE_GROUP = '/backend/group/delete',
   GET_GROUP_BY_ID = '/backend/group/getById',
 
   IP_LIST = '/backend/accesslist/pageList',
   SAVE_IP = '/backend/accesslist/save',
   UPDATE_IP = '/backend/accesslist/update',
-  DELETE_IP = '/backend/accesslist/falseDelete',
+  DELETE_IP = '/backend/accesslist/delete',
 }
 
 export const getUserPageList = (params: DemoParams) => {
