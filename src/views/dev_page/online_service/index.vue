@@ -355,15 +355,12 @@
     item.hasClick = true;
   }
   let preTimeHistory = 0;
-  watch(id, (curr) => {
-    console.log(curr, '----preTimeHistory----');
-    preTimeHistory = 0;
-  });
   //id只要改变走接口,请求当前的聊天记录
   async function queryHistoryRecordsVue() {
     if (!id.value) return;
+    console.log('----preTimeHistory----', preTimeHistory);
     const { pageCount, records, cutTime } = await queryHistoryRecords({
-      cutTime: preTimeHistory || Date.now(),
+      cutTime: historyPageNo.value === 1 ? Date.now() : preTimeHistory,
       distributeId: userStore.getUserInfo.distributorId,
       pageNo: historyPageNo.value,
       pageSize: 10,
@@ -538,6 +535,9 @@
       pageNo: userListPageNo.value,
       pageSize: 10,
     });
+    if (userListPageNo.value === 1) {
+      list.length = 0;
+    }
     list.push(
       ...mlist.map((item) => {
         item.hasClick = false;
@@ -744,10 +744,19 @@
       queryMychatListVue();
     }
   }
+  function debounce(fn, time) {
+    let timmer = null;
+    return function () {
+      timmer && clearTimeout(timmer);
+      timmer = setTimeout(() => {
+        fn.call(this);
+      }, time);
+    };
+  }
   function startIm() {
-    console.log('startIm', 'connect');
     SocketInstance.connect();
     SocketInstance.on('message', (data) => {
+      //增加防抖
       if (data.msgType === 9 || data.msgType === 12) {
         //用户发起关单操作,发送到客服端,清空orderid,刷新列表
         id.value = null;
@@ -777,7 +786,6 @@
               // item.content = data.content;
               list[index].lastContent = aesEncr.decryptByAES(data.content);
               list[index].lastTime = data.time;
-              // todo
               // console.log(list[index].content);
               console.log(list[index], '----', list);
             }
