@@ -776,6 +776,8 @@
             if (item.orderId === currOrderId.value) {
               // item.content = data.content;
               list[index].lastContent = aesEncr.decryptByAES(data.content);
+              list[index].lastTime = data.time;
+              // todo
               // console.log(list[index].content);
               console.log(list[index], '----', list);
             }
