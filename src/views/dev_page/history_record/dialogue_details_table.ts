@@ -14,13 +14,13 @@ export const columns: BasicColumn[] = [
     // slots: { customRender: 'category' },
   },
   {
-    title: '用户ID',
-    dataIndex: 'userId',
+    title: '用户昵称',
+    dataIndex: 'userNickName',
     width: 120,
   },
   {
-    title: '客服ID',
-    dataIndex: 'customerServiceId',
+    title: '客服昵称',
+    dataIndex: 'csNickName',
     width: 120,
   },
   {
@@ -46,7 +46,7 @@ export const columns: BasicColumn[] = [
 export const columnsAll: BasicColumn[] = [
   {
     title: '单号',
-    dataIndex: 'orderNo',
+    dataIndex: 'id',
     width: 200,
   },
   {
@@ -58,7 +58,7 @@ export const columnsAll: BasicColumn[] = [
   },
   {
     title: '用户信息',
-    dataIndex: 'csNickName',
+    dataIndex: 'userNickName',
     width: 120,
   },
   {
@@ -67,8 +67,8 @@ export const columnsAll: BasicColumn[] = [
     width: 200,
   },
   {
-    title: '接入客服ID',
-    dataIndex: 'customerServiceId',
+    title: '接入客服',
+    dataIndex: 'csNickName',
     width: 200,
     // slots: { customRender: 'img' },
   },

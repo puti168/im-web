@@ -5,7 +5,6 @@ import dayjs from 'dayjs';
 enum Api {
   fetchDynamicKey = '/backend/customerservice/fetchDynamicKey',
 
-
   USER_CONFUG_INFO = '/backend/customerserviceconfig/info',
   UPDATE_USER_CONFUG = '/backend/customerserviceconfig/saveOrUpdate',
 
@@ -15,20 +14,19 @@ enum Api {
   IP_LIST = '/backend/accesslist/pageList',
   SAVE_IP = '/backend/accesslist/save',
   UPDATE_IP = '/backend/accesslist/update',
-  DELETE_IP = '/backend/accesslist/falseDelete',
+  DELETE_IP = '/backend/accesslist/delete',
 
   PUBLICMSG_LIST = '/backend/publicmsg/pageList',
   SAVE_PUBLICMSG = '/backend/publicmsg/save',
   UPDATE_PUBLICMSG = '/backend/publicmsg/update',
-  DELETE_PUBLICMSG = '/backend/publicmsg/falseDelete',
+  DELETE_PUBLICMSG = '/backend/publicmsg/delete',
 }
-export const fetchDynamicKey = (params:any) => {
-  return defHttp
-  .post<any>({
+export const fetchDynamicKey = (params: any) => {
+  return defHttp.post<any>({
     url: Api.fetchDynamicKey,
-    params
-  })
-}
+    params,
+  });
+};
 export const getUserConfig = () => {
   return defHttp
     .post<any>({
