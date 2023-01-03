@@ -355,6 +355,10 @@
     item.hasClick = true;
   }
   let preTimeHistory = 0;
+  watch(id, (curr) => {
+    console.log(curr, '----preTimeHistory----');
+    preTimeHistory = 0;
+  });
   //id只要改变走接口,请求当前的聊天记录
   async function queryHistoryRecordsVue() {
     if (!id.value) return;
@@ -367,7 +371,10 @@
     });
     preTimeHistory = cutTime;
     historyPageLimit.value = Number(pageCount);
-    return records;
+    return records.map((item) => {
+      item.content = item.content && aesEncr.decryptByAES(item.content);
+      return item;
+    });
   }
   const userInfo = reactive({});
   async function queryUserMessageVue() {
@@ -475,6 +482,7 @@
         content: aesEncr.encryptByAES(msg),
         senderNickName: userStore.getUserInfo.nickname,
         time: Date.now(),
+        staticKey: userStore.getUserInfo.numberStaticKey,
       });
     }
 
