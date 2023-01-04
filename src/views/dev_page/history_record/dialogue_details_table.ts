@@ -1,9 +1,12 @@
 import { BasicColumn } from '/@/components/Table';
-
+import dayjs from 'dayjs';
 export const columns: BasicColumn[] = [
   {
     title: '时间',
     dataIndex: 'createTime',
+    customRender: ({text}) => {
+      return text ? dayjs(Number(text)).format('YYYY-MM-DD HH:mm:ss') : '-'
+    },
     width: 120,
   },
   {
