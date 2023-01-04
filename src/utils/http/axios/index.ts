@@ -23,6 +23,10 @@ import axios from 'axios';
 const globSetting = useGlobSetting();
 const urlPrefix = globSetting.urlPrefix;
 const { createMessage, createErrorModal, createSuccessModal } = useMessage();
+import { useLoading } from '/@/components/Loading';
+const [open, close] = useLoading({
+  tip: '加载中...',
+});
 
 /**
  * @description: 数据处理，方便区分多种处理方式
@@ -151,6 +155,7 @@ const transform: AxiosTransform = {
    * @description: 请求拦截器处理
    */
   requestInterceptors: (config, options) => {
+    open();
     // 请求之前处理config
     const token = getToken();
     if (token && (config as Recordable)?.requestOptions?.withToken !== false) {
@@ -169,6 +174,7 @@ const transform: AxiosTransform = {
    * @description: 响应拦截器处理
    */
   responseInterceptors: (res: AxiosResponse<any>) => {
+    close();
     return res;
   },
 

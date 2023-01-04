@@ -366,13 +366,13 @@
       pageSize: 10,
       userId: id.value,
     });
+    historyPageNo.value++;
     preTimeHistory = cutTime;
     historyPageLimit.value = Number(pageCount);
     return records.map((item) => {
       item.content = item.content && aesEncr.decryptByAES(item.content);
       return item;
     });
-    historyPageNo.value++;
   }
   const userInfo = reactive({});
   async function queryUserMessageVue() {
@@ -489,6 +489,8 @@
     });
   }
   function chatScroll(e) {
+    // todo
+    console.log(historyPageNo.value, '-----');
     if (e.target.scrollTop === 0 && historyPageNo.value > 1) {
       if (historyPageNo.value > historyPageLimit.value) return;
       getData();
