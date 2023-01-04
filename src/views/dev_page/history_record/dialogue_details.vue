@@ -65,6 +65,16 @@
     bordered: true,
     showTableSetting: true,
     useSearchForm: true,
+    beforeFetch: (params) => {   
+      
+      if (params.time) {
+        
+        params.startTime = params.time[0]
+        params.endTime = params.time[1]
+        delete params.time;
+      }
+      return params;
+    },
     formConfig: {
       labelWidth: 120,
       schemas: searchFormSchema,

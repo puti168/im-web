@@ -11,4 +11,5 @@ export type ComponentType =
   | 'TimePicker'
   | 'RadioGroup'
   | 'RadioButtonGroup'
+  | 'RadioButtonDate'
   | 'ApiRadioGroup';

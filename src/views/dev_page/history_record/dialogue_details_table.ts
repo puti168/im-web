@@ -96,6 +96,13 @@ export const columnsAll: BasicColumn[] = [
 
 export const searchFormSchema: FormSchema[] = [
   {
+    field: 'time',
+    label: '时间',
+    component: 'RadioButtonDate',
+    defaultValue: [dayjs().startOf('days').format('YYYY-MM-DD HH:mm:ss'), dayjs().endOf('days').format('YYYY-MM-DD HH:mm:ss')],    
+    colProps: { span: 24 },
+  },
+  {
     field: 'orderNo',
     label: '单号',
     component: 'Input',
