@@ -1,3 +1,1 @@
-export interface detect {
-  message: string;
-}
+export interface getLang {}

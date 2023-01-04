@@ -7,7 +7,7 @@ import { DemoListGetResultModel } from '/@/api/demo/model/tableModel';
 import { queryHistoryRecordsEntry } from '/@/api/dev_page/model/online-service/queryHistoryRecordsEntry';
 import { queryUserMessage } from '/@/api/dev_page/model/online-service/queryUserMessage';
 import { pageList } from '/@/api/dev_page/model/online-service/pageList';
-import { detect } from '/@/api/dev_page/model/online-service/detect';
+import { getLang } from '/@/api/dev_page/model/online-service/detect';
 import { translate } from '/@/api/dev_page/model/online-service/translate';
 import { closeOrder } from '/@/api/dev_page/model/online-service/closeOrder';
 
@@ -22,7 +22,7 @@ enum Api {
   queryUserDetail = '/backend/chatMessage/queryUserDetail',
   closeOrder = '/backend/chatMessage/closeOrder',
   pageList = '/backend/publicmsg/pageList',
-  detect = '/backend/translation/detect',
+  getLang = '/backend/translation/getLang',
   translate = '/backend/translation/translate',
 }
 
@@ -84,9 +84,9 @@ export const pageList = (params: pageList) =>
     url: Api.pageList,
     params,
   });
-export const detect = (params: detect) =>
+export const getLang = (params?: getLang) =>
   defHttp.post<DemoListGetResultModel>({
-    url: Api.detect,
+    url: Api.getLang,
     params,
   });
 export const translate = (params: translate) =>

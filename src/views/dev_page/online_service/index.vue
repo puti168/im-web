@@ -251,7 +251,7 @@
     queryUserMessage,
     closeOrder,
     pageList,
-    detect,
+    getLang,
   } from '/@/api/dev_page/online_service';
   import { useServiceStore } from '/@/store/modules/online-service';
   import { useUserStore } from '/@/store/modules/user';
@@ -296,9 +296,7 @@
   function toTranslate() {
     console.log(12312312);
     //todo
-    detect({
-      message: '测试',
-    });
+    getLang();
   }
   async function queryOnlineStatusVue() {
     const { status } = await queryOnlineStatus();
@@ -342,13 +340,16 @@
   //当前选中的id;
   const id = ref();
   const currOrderId = ref();
+  const currlangId = ref();
   let currentName = ref();
   let currentLang = ref();
   const historyPageNo = ref(1);
   const historyPageLimit = ref(1);
   function changeId(item) {
+    //todo
     console.log(item);
     currOrderId.value = item.orderId;
+    currlangId.value = item.langId;
     id.value = item.userId;
     currentName.value = item.nickName;
     currentLang.value = item.lanSimpleCode;
@@ -371,6 +372,7 @@
       item.content = item.content && aesEncr.decryptByAES(item.content);
       return item;
     });
+    historyPageNo.value++;
   }
   const userInfo = reactive({});
   async function queryUserMessageVue() {
@@ -434,7 +436,6 @@
   const chatListRef = ref();
   async function getData() {
     let list = await queryHistoryRecordsVue();
-    historyPageNo.value++;
 
     nextTick(() => {
       const el = chatListRef.value;
@@ -582,7 +583,7 @@
   });
   async function pageListVue() {
     // TODO: 换新接口了在对接
-    return
+    return;
     const data = await pageList({
       type: 1,
       pageNum: quickReplay.pageNum,
@@ -743,15 +744,6 @@
       userListPageNo.value = 1;
       queryMychatListVue();
     }
-  }
-  function debounce(fn, time) {
-    let timmer = null;
-    return function () {
-      timmer && clearTimeout(timmer);
-      timmer = setTimeout(() => {
-        fn.call(this);
-      }, time);
-    };
   }
   function startIm() {
     SocketInstance.connect();
