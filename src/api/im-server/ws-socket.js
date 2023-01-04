@@ -62,6 +62,7 @@ class WsSocket {
     this.urlCallBack = urlCallBack;
     // 定义 WebSocket 原生方法
     this.events = Object.assign({}, this.defaultEvent, events);
+    this.count = 0;
 
     this.on('connect', (data) => {
       this.config.heartbeat.pingInterval = data.ping_interval * 1000;
@@ -113,8 +114,9 @@ class WsSocket {
     clearTimeout(this.config.reconnect.setTimeout);
 
     this.config.reconnect.setTimeout = setTimeout(() => {
+      if (this.count > 3) return;
       this.connection();
-
+      this.count++;
       console.log(`网络连接已断开，正在尝试重新连接...`);
     }, this.config.reconnect.time);
   }
@@ -224,8 +226,6 @@ class WsSocket {
 
   ping() {
     // todo
-    // const orderId = store.getters.getOrderId;
-    // const userId = store.getters.getUserId;
     const userStore = useUserStore();
     const fromId = userStore.getUserInfo.userId;
     console.log(userStore.getUserInfo);
