@@ -8,17 +8,17 @@ import {
  export const columns: BasicColumn[] = [
   {
     title: '内容',
-    dataIndex: 'remark1',
+    dataIndex: 'content',
     width: 150,
   },
   {
     title: '添加时间',
-    dataIndex: 'updateTime',
+    dataIndex: 'addtime',
     width: 150,
   },
   {
     title: '操作人',
-    dataIndex: 'updateUser',
+    dataIndex: 'creator',
     width: 150,
   }
 ];

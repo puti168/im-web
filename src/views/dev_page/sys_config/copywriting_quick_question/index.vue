@@ -15,52 +15,59 @@
   </PageWrapper>
 </template>
 <script lang="ts" setup>
-import { PageWrapper } from '/@/components/Page';
-import { BasicTable, useTable } from '/@/components/Table';
-import { getPulbicMsgList , deletePulbicMsg } from '/@/api/dev_page/sys_config';
-import { columns } from './data';
-import { useModal } from '/@/components/Modal'
-import Modal4 from './comp/Modal4.vue';
-import { PopConfirmButton } from '/@/components/Button';
-import { useMessage } from '/@/hooks/web/useMessage';
+  import { PageWrapper } from '/@/components/Page';
+  import { BasicTable, useTable } from '/@/components/Table';
+  import { getQuestionsAndReply, deletePulbicMsg } from '/@/api/dev_page/sys_config';
+  import { columns } from './data';
+  import { useModal } from '/@/components/Modal';
+  import Modal4 from './comp/Modal4.vue';
+  import { PopConfirmButton } from '/@/components/Button';
+  import { useMessage } from '/@/hooks/web/useMessage';
 
-const [registerTable,{reload}] = useTable({
-  api: getPulbicMsgList,
-  searchInfo:{
-    type:0
-  },
-  columns: columns,
-  bordered: true,
-  showTableSetting: true,
-  // showIndexColumn: false,
-  actionColumn: {
-    width: 220,
-    title: '操作',
-    dataIndex: 'action',
-    // slots: { customRender: 'action' },
-  },
-});
-const [register4, { openModal: openModal4 }] = useModal();
+  const [registerTable, { reload }] = useTable({
+    api: getData,
+    searchInfo: {
+      type: 4,
+    },
+    columns: columns,
+    bordered: true,
+    showTableSetting: true,
+    // showIndexColumn: false,
+    actionColumn: {
+      width: 220,
+      title: '操作',
+      dataIndex: 'action',
+      // slots: { customRender: 'action' },
+    },
+  });
 
+  const [register4, { openModal: openModal4 }] = useModal();
 
-function send(record: any) {
-  openModal4(true, record);
-}
-
-
-let { createMessage } = useMessage()
-async function deleteById(id) {
-  await deletePulbicMsg([id])
-  createMessage.success('删除成功' + id)
-  reload();
-}
-function onEditChange({ column, value, record }) {
-  // 本例
-  if (column.dataIndex === 'id') {
-    record.editValueRefs.name4.value = `${value}`;
+  function getData(params: any) {
+    return getQuestionsAndReply(params).then((res) => {
+      console.log(res);
+      return {
+        items: res.list,
+        total: res.total,
+      };
+    });
   }
-  console.log(column, value, record);
-}
 
+  function send(record: any) {
+    openModal4(true, record);
+  }
 
+  let { createMessage } = useMessage();
+  async function deleteById(id) {
+    await deletePulbicMsg([id]);
+    createMessage.success('删除成功' + id);
+    reload();
+  }
+  function onEditChange({ column, value, record }) {
+    // 本例
+    if (column.dataIndex === 'id') {
+      record.editValueRefs.name4.value = `${value}`;
+    }
+    console.log(column, value, record);
+  }
 </script>

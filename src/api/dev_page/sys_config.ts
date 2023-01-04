@@ -22,6 +22,8 @@ enum Api {
   DELETE_PUBLICMSG = '/backend/publicmsg/delete',
 
   BNNER_ROTAIO = '/backend/conduct/getBnnerRotaiotnCopy',
+  QA_REPLAT = '/backend/conduct/getQuestionsAndReply',
+  SAVE_REPLAY = '/backend/conduct/save',
 }
 export const fetchDynamicKey = (params: any) => {
   return defHttp.post<any>({
@@ -151,14 +153,28 @@ export const getSchemeInfo = async () => {
     let index = key - 1;
     dataSource[index] = { ...mapObj[key], ...dataSource[index] };
   });
-  console.log(dataSource, 1111);
   return {
     items: dataSource,
     total: 3,
   };
 };
-export const updateSchemeMsd = (params: DemoParams) =>
+export const updateSchemeMsd = (params: DemoParams) => {
   defHttp.post<DemoListGetResultModel>({
     url: Api.UPDATE_SCHEME,
     params,
   });
+};
+
+export const getQuestionsAndReply = (params: DemoParams) => {
+  return defHttp.post<DemoListGetResultModel>({
+    url: Api.QA_REPLAT,
+    params,
+  });
+};
+
+export const saveQuestionsAndReply = (params: DemoParams) => {
+  defHttp.post<DemoListGetResultModel>({
+    url: Api.QA_REPLAT,
+    params,
+  });
+};
