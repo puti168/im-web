@@ -8,12 +8,12 @@ export const columns: BasicColumn[] = [
   },
   {
     title: '添加时间',
-    dataIndex: 'createTime',
+    dataIndex: 'addtime',
     width: 150,
   },
   {
     title: '操作人',
-    dataIndex: 'createUser',
+    dataIndex: 'creator',
     width: 150,
   },
 ];

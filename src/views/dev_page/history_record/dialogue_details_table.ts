@@ -1,9 +1,12 @@
-import { BasicColumn } from '/@/components/Table';
-
+import { BasicColumn, FormSchema } from '/@/components/Table';
+import dayjs from 'dayjs';
 export const columns: BasicColumn[] = [
   {
     title: '时间',
     dataIndex: 'createTime',
+    customRender: ({text}) => {
+      return text ? dayjs(Number(text)).format('YYYY-MM-DD HH:mm:ss') : '-'
+    },
     width: 120,
   },
   {
@@ -88,4 +91,14 @@ export const columnsAll: BasicColumn[] = [
   // 1.用户结束对话；
   // 2.客服结束对话；
   // 3.等待时间过长，系统结束对话；
+];
+
+
+export const searchFormSchema: FormSchema[] = [
+  {
+    field: 'orderNo',
+    label: '单号',
+    component: 'Input',
+    colProps: { span: 8 },
+  },
 ];

@@ -46,7 +46,7 @@
 <script lang="ts" setup>
   import { BasicTable, useTable, TableImg } from '/@/components/Table';
   import { getSessionorderList, getSessionorderListMsg } from '/@/api/dev_page/history_record';
-  import { columns, columnsAll } from './dialogue_details_table';
+  import { columns, columnsAll, searchFormSchema } from './dialogue_details_table';
   import { ref } from 'vue';
   const statusName = {
     1: '等待中',
@@ -64,7 +64,13 @@
 
     bordered: true,
     showTableSetting: true,
+    useSearchForm: true,
+    formConfig: {
+      labelWidth: 120,
+      schemas: searchFormSchema,
+    },
   });
+
   let sessionOrderId = ref<string>('112333');
   const [registerTableMsg] = useTable({
     api: getSessionorderListMsg,
