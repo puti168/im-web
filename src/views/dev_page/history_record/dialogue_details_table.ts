@@ -20,11 +20,17 @@ export const columns: BasicColumn[] = [
     title: '用户昵称',
     dataIndex: 'userNickName',
     width: 120,
+    customRender: (opts) => {
+      return opts.record.sendType === 2 ? '' : opts.record.userNickName;
+    },
   },
   {
     title: '客服昵称',
     dataIndex: 'csNickName',
     width: 120,
+    customRender: (opts) => {
+      return opts.record.sendType === 1 ? '' : opts.record.csNickName;
+    },
   },
   {
     title: '内容',
@@ -95,6 +101,7 @@ export const columnsAll: BasicColumn[] = [
 
 
 export const searchFormSchema: FormSchema[] = [
+  // todo: 补充上时间过滤条件
   {
     field: 'time',
     label: '时间',
@@ -105,6 +112,12 @@ export const searchFormSchema: FormSchema[] = [
   {
     field: 'orderNo',
     label: '单号',
+    component: 'Input',
+    colProps: { span: 8 },
+  },
+  {
+    field: 'name',
+    label: '接入客服',
     component: 'Input',
     colProps: { span: 8 },
   },

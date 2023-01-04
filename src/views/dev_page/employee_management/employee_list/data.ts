@@ -3,6 +3,7 @@ import {
   FormSchema,
 } from '/@/components/Table';
 import { getGroupPageList } from '/@/api/dev_page/employee_management';
+import { getLangList } from '/@/api/dev_page/history_record';
 
 
 export const columns: BasicColumn[] = [
@@ -20,7 +21,7 @@ export const columns: BasicColumn[] = [
     width: 50,
   }, {
     title: '所属组别',
-    dataIndex: 'groupId',
+    dataIndex: 'groupName',
     width: 120,
   }, {
     title: '最后登录时间',
@@ -166,19 +167,17 @@ export const schemas: FormSchema[] = [
   },
   {
     field: 'langIds',
-    component: 'Select',
+    component: 'ApiSelect',
     componentProps: {
-      mode:'multiple',
-      options: [{
-        label: '中文',
-        value: "0",
-        key: 'VIP0',
-      },
-      {
-        label: '英语',
-        value: "1",
-        key: 'VIP1',
-      },]
+      api: getLangList,
+      params: {},
+      resultField: 'items',
+      // use name as label
+      labelField: 'descZh',
+      // use id as value
+      valueField: 'id',
+      mode: 'multiple',
+      immediate: true,
     },
     rules: [
       {

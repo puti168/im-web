@@ -82,12 +82,14 @@
   });
 
   let sessionOrderId = ref<string>('112333');
+  let langId = ref<string>('1');
   const [registerTableMsg] = useTable({
     api: getSessionorderListMsg,
     columns: columns,
     searchInfo: {
       sessionOrderId: sessionOrderId,
       sortByTime: 1,
+      langId,
     },
     bordered: true,
     showTableSetting: true,
@@ -96,5 +98,6 @@
   function clickNumber(item: any) {
     isMessage.value = true;
     sessionOrderId.value = item.id;
+    langId.value = item.langId;
   }
 </script>
