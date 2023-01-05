@@ -123,7 +123,7 @@
               </div>
               <div>
                 <div class="chat-content">{{ item.content }}</div>
-                <button v-if="item.sendType === 1" class="translate" @click="toTranslate">翻译</button>
+                <button v-if="item.sendType === 1" class="translate" @click="toTranslate(item.content)">翻译</button>
               </div>
             </div>
           </div>
@@ -252,6 +252,7 @@
     closeOrder,
     pageList,
     getLang,
+    translate,
   } from '/@/api/dev_page/online_service';
   import { useServiceStore } from '/@/store/modules/online-service';
   import { useUserStore } from '/@/store/modules/user';
@@ -292,11 +293,6 @@
   }
   function getTimeHour(time) {
     return moment(time).utcOffset(current_time.value).format('HH:mm:ss');
-  }
-  function toTranslate() {
-    console.log(12312312);
-    //todo
-    getLang();
   }
   async function queryOnlineStatusVue() {
     const { status } = await queryOnlineStatus();
@@ -354,6 +350,24 @@
     currentName.value = item.nickName;
     currentLang.value = item.lanSimpleCode;
     item.hasClick = true;
+  }
+  const langState = reactive({
+    langList: ref([]),
+    lanSimpleCode: 'ENU',
+  });
+  async function toTranslate(message) {
+    if (langState.langList.length === 0) {
+      //执行translate操作
+      langState.langList.push(await getLang());
+    }
+    const test = Object.keys(langState.langList[0]).filter((item) => {
+      return langState.langList[0][item].id === currlangId.value;
+    });
+    translate({
+      message,
+      sourceLanguage: langState.langList[0][test].lanSimpleCode,
+      targetLanguage: 'ENU',
+    });
   }
   let preTimeHistory = 0;
   //id只要改变走接口,请求当前的聊天记录
