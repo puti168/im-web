@@ -1,6 +1,7 @@
 import { defHttp } from '/@/utils/http/axios';
 import { DemoParams, DemoListGetResultModel } from './model/tableModel';
 import dayjs from 'dayjs';
+import { BasicPageParams } from '../model/baseModel';
 
 enum Api {
   fetchDynamicKey = '/backend/customerservice/fetchDynamicKey',
@@ -21,9 +22,11 @@ enum Api {
   UPDATE_PUBLICMSG = '/backend/publicmsg/update',
   DELETE_PUBLICMSG = '/backend/publicmsg/delete',
 
-  BNNER_ROTAIO = '/backend/conduct/getBnnerRotaiotnCopy',
+  BNNER_ROTAIO = '/backend/conduct/getBannerRotationCopy',
   QA_REPLAT = '/backend/conduct/getQuestionsAndReply',
   SAVE_REPLAY = '/backend/conduct/save',
+  UPDATE_REPLAY = '/backend/conduct/update',
+  DELETE_REPLAY = '/backend/conduct/delete',
 }
 export const fetchDynamicKey = (params: any) => {
   return defHttp.post<any>({
@@ -37,7 +40,7 @@ export const getUserConfig = () => {
       url: Api.USER_CONFUG_INFO,
     })
     .then((res: any) => {
-      let data: any = [];
+      const data: any = [];
       data[0] = {
         tid: 0,
         name: '优先匹配',
@@ -150,7 +153,7 @@ export const getSchemeInfo = async () => {
   // });
   // dataSource[2] = { ...res2, ...dataSource[2], distributorId: params.distributorId };
   Object.keys(mapObj).forEach((key: any) => {
-    let index = key - 1;
+    const index = key - 1;
     dataSource[index] = { ...mapObj[key], ...dataSource[index] };
   });
   return {
@@ -165,16 +168,71 @@ export const updateSchemeMsd = (params: DemoParams) => {
   });
 };
 
-export const getQuestionsAndReply = (params: DemoParams) => {
-  return defHttp.post<DemoListGetResultModel>({
-    url: Api.QA_REPLAT,
+/**
+ * @type 4: 快捷提问，5: 快捷回复
+ */
+interface GetQuestionsAndReplayParams extends Pick<BasicPageParams, 'pageNum' | 'pageSize'> {
+  type: 4 | 5;
+}
+interface GetQuestionsAndReplayResponse {
+  curPageNum: number;
+  list: any[];
+  pageCount: number;
+  total: number;
+}
+export interface QuestionReplyContent {
+  title: string;
+  content: string;
+  creator: string;
+  id: string;
+  langId: number;
+  childList: QuestionReplyContent[];
+}
+export const getQuestionsAndReply = (params: GetQuestionsAndReplayParams) => {
+  return defHttp
+    .post<GetQuestionsAndReplayResponse>({
+      url: Api.QA_REPLAT,
+      params,
+    })
+    .then((res) => {
+      return {
+        items: res.list,
+        total: res.total,
+      };
+    });
+};
+
+interface SaveQuestionAndReplyParams {
+  data: {
+    title: string;
+    content: string;
+    langId: number;
+  }[];
+  type: 4 | 5;
+}
+export const saveQuestionsAndReply = (params: SaveQuestionAndReplyParams) => {
+  return defHttp.post<void>({
+    url: Api.SAVE_REPLAY,
     params,
   });
 };
 
-export const saveQuestionsAndReply = (params: DemoParams) => {
-  defHttp.post<DemoListGetResultModel>({
-    url: Api.QA_REPLAT,
+interface UpdateQuestionAndReplyParams extends SaveQuestionAndReplyParams {
+  mainId: string;
+}
+export const updateQuestionsAndReply = (params: UpdateQuestionAndReplyParams) => {
+  return defHttp.post<void>({
+    url: Api.UPDATE_REPLAY,
+    params,
+  });
+};
+
+interface DeleteQuestionAndReplyParams {
+  ids: string[];
+}
+export const deleteQuestionsAndReply = (params: DeleteQuestionAndReplyParams) => {
+  return defHttp.post<void>({
+    url: Api.DELETE_REPLAY,
     params,
   });
 };
