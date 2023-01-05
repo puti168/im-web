@@ -123,8 +123,11 @@
               </div>
               <div>
                 <div class="chat-content">{{ item.content }}</div>
-                <button v-if="item.sendType === 1" class="translate" @click="toTranslate(item.content)">翻译</button>
+                <button v-if="item.sendType === 1" class="translate" @click="toTranslate(item.content, item)"
+                  >翻译</button
+                >
               </div>
+              <div class="chat-content" v-if="item.isTrans">{{ item.trans }}</div>
             </div>
           </div>
           <div style="height: 50px; clear: both"></div>
@@ -242,8 +245,9 @@
         v-model:value="langState.lanSimpleCode"
         :size="size"
         style="width: 200px"
+        placeholder="12312312"
         :options="langState.langList.map((item) => ({ value: item.descZh }))"
-        @change="seleceChange"
+        @select="seleceChange"
       >
       </a-select>
     </div>
@@ -366,31 +370,41 @@
     lanSimpleCode: '英语',
     showDialog: false,
     target: '',
+    currMessage: '',
   });
-  function seleceChange() {
-    langState.showDialog = false;
-    // langState.target = langState.
+  let currItem = null;
+  async function seleceChange() {
+    if (currItem) {
+      langState.showDialog = false;
+      // langState.target = langState.
+
+      const source = langState.langList.filter((item) => {
+        return item.id === currlangId.value;
+      })[0];
+      const target = langState.langList.filter((item) => item.descZh === langState.lanSimpleCode)[0];
+
+      const data = await translate({
+        message: langState.currMessage,
+        sourceLanguage: source.lanSimpleCode,
+        targetLanguage: target.lanSimpleCode,
+      });
+      currItem.trans = data;
+      currItem.isTrans = true;
+    }
   }
   //todo
-  async function toTranslate(message) {
+  async function toTranslate(message, item) {
     if (langState.langList.length === 0) {
       const langTemp = await getLang();
       Object.keys(langTemp).forEach((item) => {
         langState.langList.push(langTemp[item]);
       });
     }
+    currItem = item;
     //弹出选择框;
     langState.showDialog = true;
-
-    const source = langState.langList.filter((item) => {
-      return item.id === currlangId.value;
-    })[0];
-
-    // translate({
-    //   message,
-    //   sourceLanguage: source.lanSimpleCode,
-    //   targetLanguage: 'ENU',
-    // });
+    langState.lanSimpleCode = '英语';
+    langState.currMessage = message;
   }
   let preTimeHistory = 0;
   //id只要改变走接口,请求当前的聊天记录
