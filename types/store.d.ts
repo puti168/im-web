@@ -41,6 +41,7 @@ export interface UserInfo {
   roles: RoleInfo[];
   numberStaticKey: string;
   distributorId: string;
+  langIds: string;
 }
 
 export interface ServiceInfo {
