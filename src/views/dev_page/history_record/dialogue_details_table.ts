@@ -4,8 +4,8 @@ export const columns: BasicColumn[] = [
   {
     title: '时间',
     dataIndex: 'createTime',
-    customRender: ({text}) => {
-      return text ? dayjs(Number(text)).format('YYYY-MM-DD HH:mm:ss') : '-'
+    customRender: ({ text }) => {
+      return text ? dayjs(Number(text)).format('YYYY-MM-DD HH:mm:ss') : '-';
     },
     width: 120,
   },
@@ -99,14 +99,16 @@ export const columnsAll: BasicColumn[] = [
   // 3.等待时间过长，系统结束对话；
 ];
 
-
 export const searchFormSchema: FormSchema[] = [
   // todo: 补充上时间过滤条件
   {
     field: 'time',
     label: '时间',
     component: 'RadioButtonDate',
-    defaultValue: [dayjs().startOf('days').format('YYYY-MM-DD HH:mm:ss'), dayjs().endOf('days').format('YYYY-MM-DD HH:mm:ss')],    
+    defaultValue: [
+      dayjs().startOf('days').format('YYYY-MM-DD HH:mm:ss'),
+      dayjs().endOf('days').format('YYYY-MM-DD HH:mm:ss'),
+    ],
     colProps: { span: 24 },
   },
   {
