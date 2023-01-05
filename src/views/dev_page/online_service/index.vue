@@ -235,6 +235,18 @@
         </div>
       </div>
     </div>
+    <!--    todo-->
+    <div class="lang-select" v-show="langState.showDialog">
+      <a-select
+        class="select"
+        v-model:value="langState.lanSimpleCode"
+        :size="size"
+        style="width: 200px"
+        :options="langState.langList.map((item) => ({ value: item.descZh }))"
+        @change="seleceChange"
+      >
+      </a-select>
+    </div>
   </PageWrapper>
 </template>
 <script lang="ts" setup>
@@ -342,8 +354,6 @@
   const historyPageNo = ref(1);
   const historyPageLimit = ref(1);
   function changeId(item) {
-    //todo
-    console.log(item);
     currOrderId.value = item.orderId;
     currlangId.value = item.langId;
     id.value = item.userId;
@@ -353,21 +363,34 @@
   }
   const langState = reactive({
     langList: ref([]),
-    lanSimpleCode: 'ENU',
+    lanSimpleCode: '英语',
+    showDialog: false,
+    target: '',
   });
+  function seleceChange() {
+    langState.showDialog = false;
+    // langState.target = langState.
+  }
+  //todo
   async function toTranslate(message) {
     if (langState.langList.length === 0) {
-      //执行translate操作
-      langState.langList.push(await getLang());
+      const langTemp = await getLang();
+      Object.keys(langTemp).forEach((item) => {
+        langState.langList.push(langTemp[item]);
+      });
     }
-    const test = Object.keys(langState.langList[0]).filter((item) => {
-      return langState.langList[0][item].id === currlangId.value;
-    });
-    translate({
-      message,
-      sourceLanguage: langState.langList[0][test].lanSimpleCode,
-      targetLanguage: 'ENU',
-    });
+    //弹出选择框;
+    langState.showDialog = true;
+
+    const source = langState.langList.filter((item) => {
+      return item.id === currlangId.value;
+    })[0];
+
+    // translate({
+    //   message,
+    //   sourceLanguage: source.lanSimpleCode,
+    //   targetLanguage: 'ENU',
+    // });
   }
   let preTimeHistory = 0;
   //id只要改变走接口,请求当前的聊天记录
@@ -467,34 +490,36 @@
     });
   }
   function addData(msg, userNickName, sendType, msgType, time) {
-    const newMsg = {
-      msgType: 1,
-      sendType: 2,
-      userNickName,
-      crtTime: Date.now(),
-    };
-    newMsg.content = msg;
-    if (sendType) {
-      newMsg.msgType = msgType;
-      newMsg.sendType = sendType;
-      newMsg.crtTime = time;
-    }
+    if (msg && msg.trim() && aesEncr.encryptByAES(msg)) {
+      const newMsg = {
+        msgType: 1,
+        sendType: 2,
+        userNickName,
+        crtTime: Date.now(),
+      };
+      newMsg.content = msg;
+      if (sendType) {
+        newMsg.msgType = msgType;
+        newMsg.sendType = sendType;
+        newMsg.crtTime = time;
+      }
 
-    newMsg.csNickName = userStore.getUserInfo.nickname;
-    console.log(newMsg, '---newMsg----');
-    chatListData.value.push(newMsg);
-    if (!sendType) {
-      SocketInstance.send({
-        distributorId: userStore.getUserInfo.distributorId,
-        msgType: '1',
-        orderId: currOrderId.value,
-        fromId: userStore.getUserInfo.userId,
-        sendType: '2',
-        content: aesEncr.encryptByAES(msg),
-        senderNickName: userStore.getUserInfo.nickname,
-        time: Date.now(),
-        staticKey: userStore.getUserInfo.numberStaticKey,
-      });
+      newMsg.csNickName = userStore.getUserInfo.nickname;
+      console.log(newMsg, '---newMsg----');
+      chatListData.value.push(newMsg);
+      if (!sendType) {
+        SocketInstance.send({
+          distributorId: userStore.getUserInfo.distributorId,
+          msgType: '1',
+          orderId: currOrderId.value,
+          fromId: userStore.getUserInfo.userId,
+          sendType: '2',
+          content: aesEncr.encryptByAES(msg),
+          senderNickName: userStore.getUserInfo.nickname,
+          time: Date.now(),
+          staticKey: userStore.getUserInfo.numberStaticKey,
+        });
+      }
     }
 
     nextTick(() => {
@@ -503,7 +528,6 @@
     });
   }
   function chatScroll(e) {
-    // todo
     console.log(historyPageNo.value, '-----');
     if (e.target.scrollTop === 0 && historyPageNo.value > 1) {
       if (historyPageNo.value > historyPageLimit.value) return;
@@ -579,7 +603,6 @@
     waitCount.value = waitChatCount;
     myCount.value = myChatCount;
   }
-  //todo
   const localLanguage = {
     en: 'ENU',
   };
@@ -1180,6 +1203,21 @@
           color: #0960bd;
         }
       }
+    }
+  }
+
+  .lang-select {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(240 242 245 / 40%);
+
+    .select {
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 200px;
     }
   }
 </style>
