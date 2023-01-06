@@ -36,15 +36,15 @@
       },
     },
     setup(props, { emit }) {
-      const { supportLangs } = useUserStore();
+      const { supportLangs, defaultLang = 1 } = useUserStore();
       const { createMessage } = useMessage();
       // 传过来的值
       const modelRef = reactive<Recordable>({});
-      const activeKey = ref<number>(1);
+      const activeKey = ref<number>(defaultLang);
       const contentId = ref<string>('');
 
       const langTabs = computed(() => {
-        return supportLangs.filter((item) => item.id !== 1);
+        return supportLangs.filter((item) => item.id !== defaultLang);
       });
 
       const formSchema = computed<FormSchema[]>(() => [
@@ -148,14 +148,18 @@
       function handleOK() {
         validate()
           .then(async () => {
-            if (!modelRef[1] || !modelRef[1].title || !modelRef[1].content) {
+            const requiredLang = modelRef[defaultLang];
+            if (!requiredLang || !requiredLang.title || !requiredLang.content) {
               createMessage.warning('请填写默认语言！');
             } else {
-              const data = Object.keys(modelRef).map((item) => ({
-                langId: +item,
-                title: modelRef[item].title,
-                content: modelRef[item].content,
-              }));
+              const data = supportLangs.map((lang) => {
+                const value = modelRef[lang.id];
+                return {
+                  langId: lang.id,
+                  title: value ? value.title : '',
+                  content: value ? value.content : '',
+                };
+              });
               try {
                 if (contentId.value) {
                   await updateQuestionsAndReply({
