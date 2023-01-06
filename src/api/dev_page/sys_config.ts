@@ -1,6 +1,7 @@
 import { defHttp } from '/@/utils/http/axios';
 import { DemoParams, DemoListGetResultModel } from './model/tableModel';
 import dayjs from 'dayjs';
+import { BasicPageParams } from '../model/baseModel';
 
 enum Api {
   fetchDynamicKey = '/backend/customerservice/fetchDynamicKey',
@@ -21,9 +22,11 @@ enum Api {
   UPDATE_PUBLICMSG = '/backend/publicmsg/update',
   DELETE_PUBLICMSG = '/backend/publicmsg/delete',
 
-  BNNER_ROTAIO = '/backend/conduct/getBnnerRotaiotnCopy',
+  BNNER_ROTAIO = '/backend/conduct/getBannerRotationCopy',
   QA_REPLAT = '/backend/conduct/getQuestionsAndReply',
   SAVE_REPLAY = '/backend/conduct/save',
+  UPDATE_REPLAY = '/backend/conduct/update',
+  DELETE_REPLAY = '/backend/conduct/delete',
 }
 export const fetchDynamicKey = (params: any) => {
   return defHttp.post<any>({
@@ -37,7 +40,7 @@ export const getUserConfig = () => {
       url: Api.USER_CONFUG_INFO,
     })
     .then((res: any) => {
-      let data: any = [];
+      const data: any = [];
       data[0] = {
         tid: 0,
         name: '优先匹配',
@@ -119,62 +122,93 @@ export const deleteIP = (params: any[]) =>
     params,
   });
 
-const dataSource: any = [
-  {
-    name: '顶部banner',
-    tid: 1,
-  },
-  {
-    name: '循环文案',
-    tid: 2,
-  },
-  {
-    name: '开场文案',
-    tid: 3,
-  },
-];
-export const getSchemeInfo = async () => {
-  const { map: mapObj } = await defHttp.post({
+/**
+ * @type 4: 快捷提问，5: 快捷回复
+ */
+interface GetQuestionsAndReplayParams extends Pick<BasicPageParams, 'pageNum' | 'pageSize'> {
+  type: 4 | 5;
+}
+interface GetQuestionsAndReplayResponse {
+  curPageNum: number;
+  list: any[];
+  pageCount: number;
+  total: number;
+}
+export interface QuestionReplyContent {
+  title: string;
+  content: string;
+  creator: string;
+  id: string;
+  langId: number;
+  childList: QuestionReplyContent[];
+}
+export const getQuestionsAndReply = (params: GetQuestionsAndReplayParams) => {
+  return defHttp
+    .post<GetQuestionsAndReplayResponse>({
+      url: Api.QA_REPLAT,
+      params,
+    })
+    .then((res) => {
+      return {
+        items: res.list,
+        total: res.total,
+      };
+    });
+};
+
+interface SaveQuestionAndReplyParams {
+  data: {
+    title?: string;
+    content: string;
+    langId: number;
+  }[];
+  type: number;
+}
+export const saveQuestionsAndReply = (params: SaveQuestionAndReplyParams) => {
+  return defHttp.post<void>({
+    url: Api.SAVE_REPLAY,
+    params: {
+      ...params,
+      mainId: -1,
+    },
+  });
+};
+
+interface UpdateQuestionAndReplyParams extends SaveQuestionAndReplyParams {
+  mainId: string;
+}
+export const updateQuestionsAndReply = (params: UpdateQuestionAndReplyParams) => {
+  return defHttp.post<void>({
+    url: Api.UPDATE_REPLAY,
+    params,
+  });
+};
+
+interface DeleteQuestionAndReplyParams {
+  ids: string[];
+}
+export const deleteQuestionsAndReply = (params: DeleteQuestionAndReplyParams) => {
+  return defHttp.post<void>({
+    url: Api.DELETE_REPLAY,
+    params,
+  });
+};
+
+interface GetBannerRotationResponse {
+  map: {
+    [key: number]: QuestionReplyContent;
+  };
+}
+export const getBannerRotation = () => {
+  return defHttp.post<GetBannerRotationResponse>({
     url: Api.BNNER_ROTAIO,
     params: { types: [1, 2, 3] },
   });
-  // dataSource[0] = { ...res0, ...dataSource[0], distributorId: params.distributorId };
-  // let res1 = await defHttp.post<DemoListGetResultModel>({
-  //   url: Api.SCHEME_INFO,
-  //   params: { type: 1 },
-  // });
-  // dataSource[1] = { ...res1, ...dataSource[1], distributorId: params.distributorId };
-  // let res2 = await defHttp.post<DemoListGetResultModel>({
-  //   url: Api.SCHEME_INFO,
-  //   params: { distributorId: params.distributorId, type: 2 },
-  // });
-  // dataSource[2] = { ...res2, ...dataSource[2], distributorId: params.distributorId };
-  Object.keys(mapObj).forEach((key: any) => {
-    let index = key - 1;
-    dataSource[index] = { ...mapObj[key], ...dataSource[index] };
-  });
-  return {
-    items: dataSource,
-    total: 3,
-  };
 };
+
 export const updateSchemeMsd = (params: DemoParams) => {
   defHttp.post<DemoListGetResultModel>({
     url: Api.UPDATE_SCHEME,
-    params,
-  });
-};
-
-export const getQuestionsAndReply = (params: DemoParams) => {
-  return defHttp.post<DemoListGetResultModel>({
-    url: Api.QA_REPLAT,
-    params,
-  });
-};
-
-export const saveQuestionsAndReply = (params: DemoParams) => {
-  defHttp.post<DemoListGetResultModel>({
-    url: Api.QA_REPLAT,
     params,
   });
 };

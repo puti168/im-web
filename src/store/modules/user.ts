@@ -7,7 +7,7 @@ import { PageEnum } from '/@/enums/pageEnum';
 import { ROLES_KEY, TOKEN_KEY, USER_INFO_KEY } from '/@/enums/cacheEnum';
 import { getAuthCache, setAuthCache } from '/@/utils/auth';
 import { GetUserInfoModel, LoginParams } from '/@/api/sys/model/userModel';
-import { doLogout, getUserInfo, loginApi } from '/@/api/sys/user';
+import { loginApi } from '/@/api/sys/user';
 import { useI18n } from '/@/hooks/web/useI18n';
 import { useMessage } from '/@/hooks/web/useMessage';
 import { router } from '/@/router';
@@ -16,14 +16,18 @@ import { RouteRecordRaw } from 'vue-router';
 import { PAGE_NOT_FOUND_ROUTE } from '/@/router/routes/basic';
 import { isArray } from '/@/utils/is';
 import { h } from 'vue';
-import { decodeByBase64, AesEncryption, encryptByBase64 } from '/@/utils/cipher';
+import { decodeByBase64, AesEncryption } from '/@/utils/cipher';
 import { fetchDynamicKey } from '/@/api/dev_page/sys_config';
+import { getCacheLangList, LangData } from '/@/api/sys/lang';
 interface UserState {
   userInfo: Nullable<UserInfo>;
   token?: string;
   roleList: RoleEnum[];
   sessionTimeout?: boolean;
   lastUpdateTime: number;
+  defaultLang: number;
+  supportLangIds: number[];
+  supportLangs: LangData[];
 }
 
 export const useUserStore = defineStore({
@@ -39,6 +43,9 @@ export const useUserStore = defineStore({
     sessionTimeout: false,
     // Last fetch time
     lastUpdateTime: 0,
+    defaultLang: 1,
+    supportLangIds: [],
+    supportLangs: [],
   }),
   getters: {
     getUserInfo(): UserInfo {
@@ -97,12 +104,12 @@ export const useUserStore = defineStore({
       try {
         const { goHome = true, mode, ...loginParams } = params;
         console.log(loginParams, '---loginParams--');
-        let fetchData = await fetchDynamicKey({
+        const fetchData = await fetchDynamicKey({
           userName: loginParams.name,
           distributorId: loginParams.distributorId,
         });
-        let staticKey = decodeByBase64(fetchData.dynamicKey);
-        let aesEncr = new AesEncryption({ key: staticKey });
+        const staticKey = decodeByBase64(fetchData.dynamicKey);
+        const aesEncr = new AesEncryption({ key: staticKey });
         loginParams.password = aesEncr.encryptByAES(loginParams.password);
         console.log(loginParams, '---loginParams--');
         const data: any = await loginApi(loginParams, mode);
@@ -171,6 +178,7 @@ export const useUserStore = defineStore({
               value: 'test',
             },
           ],
+          langIds: data.langIds,
         };
       } else {
         userInfo = this.userInfo || {};
@@ -185,7 +193,18 @@ export const useUserStore = defineStore({
       }
       console.log(userInfo, '---userInfo---');
       this.setUserInfo(userInfo);
+      this.initUserSupportLang(userInfo);
       return userInfo;
+    },
+    async initUserSupportLang(info: UserInfo) {
+      const { langIds } = info;
+      this.supportLangIds = (langIds || '').split(',').map(Number);
+      getCacheLangList().then((res) => {
+        const supportLangs = this.supportLangIds.map((langId) => {
+          return res[langId];
+        });
+        this.supportLangs = supportLangs;
+      });
     },
     /**
      * @description: logout

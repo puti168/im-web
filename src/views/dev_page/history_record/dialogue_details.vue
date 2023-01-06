@@ -29,6 +29,9 @@
               4: '语音',
               5: '心跳消息',
               6: '通知用户匹配成功',
+              8: '系统消息',
+              9: '系统消息',
+              12: '系统消息',
             }[Number(text)]
           }}
         </template>
@@ -36,8 +39,16 @@
           <!-- {{ dayjs(text).format('YYYY-MM-DD HH:mm:ss') }} -->
           {{ text }}
         </template>
-        <template v-if="column.key === 'content' && record.msgType == 2">
-          <TableImg :size="60" :simpleShow="true" :imgList="text" />
+        <template v-if="column.key === 'content'">
+          <template v-if="record.msgType == 2">
+            <TableImg :size="60" :simpleShow="true" :imgList="text" />
+          </template>
+          <template v-else-if="contentDetail[record.msgType]">
+            {{ contentDetail[record.msgType] }}
+          </template>
+          <template v-else>
+            {{ record.content }}
+          </template>
         </template>
       </template>
     </BasicTable>
@@ -56,6 +67,9 @@
     5: '会话结束，客户关闭',
     6: '用户超过一个小时未回复关闭订单',
     7: '多次创建会话，历史会话关闭',
+  };
+
+  const contentDetail = {
     8: '客服结束对话',
     9: '用户结束对话',
     12: '等待时间过长，系统结束对话',
