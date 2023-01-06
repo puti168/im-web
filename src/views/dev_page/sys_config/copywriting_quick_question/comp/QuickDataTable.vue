@@ -116,7 +116,6 @@
         if (el) {
           new Sortable(el as HTMLElement, {
             handle: '.table-raw-drag-btn',
-            ghostClass: 'blue-background-class',
             animation: 150,
             onEnd({ newIndex, oldIndex }) {
               if (newIndex !== oldIndex) {
