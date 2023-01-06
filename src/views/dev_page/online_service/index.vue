@@ -123,8 +123,11 @@
               </div>
               <div>
                 <div class="chat-content">{{ item.content }}</div>
-                <button v-if="item.sendType === 1" class="translate" @click="toTranslate">翻译</button>
+                <button v-if="item.sendType === 1" class="translate" @click="toTranslate(item.content, item)"
+                  >翻译</button
+                >
               </div>
+              <div class="chat-content" v-if="item.isTrans">{{ item.trans }}</div>
             </div>
           </div>
           <div style="height: 50px; clear: both"></div>
@@ -235,6 +238,19 @@
         </div>
       </div>
     </div>
+    <!--    todo-->
+    <div class="lang-select" v-show="langState.showDialog">
+      <a-select
+        class="select"
+        v-model:value="langState.lanSimpleCode"
+        :size="size"
+        style="width: 200px"
+        placeholder="12312312"
+        :options="langState.langList.map((item) => ({ value: item.descZh }))"
+        @select="seleceChange"
+      >
+      </a-select>
+    </div>
   </PageWrapper>
 </template>
 <script lang="ts" setup>
@@ -252,6 +268,7 @@
     closeOrder,
     pageList,
     getLang,
+    translate,
   } from '/@/api/dev_page/online_service';
   import { useServiceStore } from '/@/store/modules/online-service';
   import { useUserStore } from '/@/store/modules/user';
@@ -292,11 +309,6 @@
   }
   function getTimeHour(time) {
     return moment(time).utcOffset(current_time.value).format('HH:mm:ss');
-  }
-  function toTranslate() {
-    console.log(12312312);
-    //todo
-    getLang();
   }
   async function queryOnlineStatusVue() {
     const { status } = await queryOnlineStatus();
@@ -346,14 +358,53 @@
   const historyPageNo = ref(1);
   const historyPageLimit = ref(1);
   function changeId(item) {
-    //todo
-    console.log(item);
     currOrderId.value = item.orderId;
     currlangId.value = item.langId;
     id.value = item.userId;
     currentName.value = item.nickName;
     currentLang.value = item.lanSimpleCode;
     item.hasClick = true;
+  }
+  const langState = reactive({
+    langList: ref([]),
+    lanSimpleCode: '英语',
+    showDialog: false,
+    target: '',
+    currMessage: '',
+  });
+  let currItem = null;
+  async function seleceChange() {
+    if (currItem) {
+      langState.showDialog = false;
+      // langState.target = langState.
+
+      const source = langState.langList.filter((item) => {
+        return item.id === currlangId.value;
+      })[0];
+      const target = langState.langList.filter((item) => item.descZh === langState.lanSimpleCode)[0];
+
+      const data = await translate({
+        message: langState.currMessage,
+        sourceLanguage: source.lanSimpleCode,
+        targetLanguage: target.lanSimpleCode,
+      });
+      currItem.trans = data;
+      currItem.isTrans = true;
+    }
+  }
+  //todo
+  async function toTranslate(message, item) {
+    if (langState.langList.length === 0) {
+      const langTemp = await getLang();
+      Object.keys(langTemp).forEach((item) => {
+        langState.langList.push(langTemp[item]);
+      });
+    }
+    currItem = item;
+    //弹出选择框;
+    langState.showDialog = true;
+    langState.lanSimpleCode = '英语';
+    langState.currMessage = message;
   }
   let preTimeHistory = 0;
   //id只要改变走接口,请求当前的聊天记录
@@ -453,34 +504,36 @@
     });
   }
   function addData(msg, userNickName, sendType, msgType, time) {
-    const newMsg = {
-      msgType: 1,
-      sendType: 2,
-      userNickName,
-      crtTime: Date.now(),
-    };
-    newMsg.content = msg;
-    if (sendType) {
-      newMsg.msgType = msgType;
-      newMsg.sendType = sendType;
-      newMsg.crtTime = time;
-    }
+    if (msg && msg.trim() && aesEncr.encryptByAES(msg)) {
+      const newMsg = {
+        msgType: 1,
+        sendType: 2,
+        userNickName,
+        crtTime: Date.now(),
+      };
+      newMsg.content = msg;
+      if (sendType) {
+        newMsg.msgType = msgType;
+        newMsg.sendType = sendType;
+        newMsg.crtTime = time;
+      }
 
-    newMsg.csNickName = userStore.getUserInfo.nickname;
-    console.log(newMsg, '---newMsg----');
-    chatListData.value.push(newMsg);
-    if (!sendType) {
-      SocketInstance.send({
-        distributorId: userStore.getUserInfo.distributorId,
-        msgType: '1',
-        orderId: currOrderId.value,
-        fromId: userStore.getUserInfo.userId,
-        sendType: '2',
-        content: aesEncr.encryptByAES(msg),
-        senderNickName: userStore.getUserInfo.nickname,
-        time: Date.now(),
-        staticKey: userStore.getUserInfo.numberStaticKey,
-      });
+      newMsg.csNickName = userStore.getUserInfo.nickname;
+      console.log(newMsg, '---newMsg----');
+      chatListData.value.push(newMsg);
+      if (!sendType) {
+        SocketInstance.send({
+          distributorId: userStore.getUserInfo.distributorId,
+          msgType: '1',
+          orderId: currOrderId.value,
+          fromId: userStore.getUserInfo.userId,
+          sendType: '2',
+          content: aesEncr.encryptByAES(msg),
+          senderNickName: userStore.getUserInfo.nickname,
+          time: Date.now(),
+          staticKey: userStore.getUserInfo.numberStaticKey,
+        });
+      }
     }
 
     nextTick(() => {
@@ -489,7 +542,6 @@
     });
   }
   function chatScroll(e) {
-    // todo
     console.log(historyPageNo.value, '-----');
     if (e.target.scrollTop === 0 && historyPageNo.value > 1) {
       if (historyPageNo.value > historyPageLimit.value) return;
@@ -565,7 +617,6 @@
     waitCount.value = waitChatCount;
     myCount.value = myChatCount;
   }
-  //todo
   const localLanguage = {
     en: 'ENU',
   };
@@ -1166,6 +1217,21 @@
           color: #0960bd;
         }
       }
+    }
+  }
+
+  .lang-select {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(240 242 245 / 40%);
+
+    .select {
+      position: absolute;
+      top: 20%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 200px;
     }
   }
 </style>
