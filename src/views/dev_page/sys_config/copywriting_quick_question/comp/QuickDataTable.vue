@@ -1,10 +1,17 @@
 <template>
   <PageWrapper :title="title" contentBackground contentClass="p-2">
-    <BasicTable @register="registerTable">
+    <BasicTable class="copywriting-quick-table" @register="registerTable">
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
           <a-button class="mr-1" type="warning" @click="openModel(record)">编辑</a-button>
-          <PopConfirmButton type="danger" @confirm="deleteById(record.id)" title="确认删除？">删除</PopConfirmButton>
+          <span class="mr-1">
+            <PopConfirmButton type="danger" @confirm="deleteById(record.id)" title="确认删除？">
+              删除
+            </PopConfirmButton>
+          </span>
+          <a-button class="table-raw-drag-btn mr-1" shape="circle">
+            <DragOutlined />
+          </a-button>
         </template>
       </template>
       <template #toolbar>
@@ -16,14 +23,22 @@
 </template>
 
 <script lang="ts">
+  import { DragOutlined } from '@ant-design/icons-vue';
   import { PageWrapper } from '/@/components/Page';
   import { BasicTable, useTable } from '/@/components/Table';
-  import { getQuestionsAndReply, deleteQuestionsAndReply, QuestionReplyContent } from '/@/api/dev_page/sys_config';
+  import {
+    getQuestionsAndReply,
+    deleteQuestionsAndReply,
+    QuestionReplyContent,
+    updateQuestionReplySort,
+  } from '/@/api/dev_page/sys_config';
   import { useModal } from '/@/components/Modal';
   import FormModal from './FormModal.vue';
   import { PopConfirmButton } from '/@/components/Button';
   import { useMessage } from '/@/hooks/web/useMessage';
-  import { defineComponent } from 'vue';
+  import { defineComponent, onMounted } from 'vue';
+  import Sortable from 'sortablejs';
+  import { formateTime } from '/@/utils/date-formate';
 
   export default defineComponent({
     name: 'QuickQuestion',
@@ -32,6 +47,7 @@
       BasicTable,
       FormModal,
       PopConfirmButton,
+      DragOutlined,
     },
     props: {
       type: {
@@ -43,7 +59,7 @@
     setup(props) {
       const { createMessage } = useMessage();
 
-      const [registerTable, { reload }] = useTable({
+      const [registerTable, { reload, getDataSource }] = useTable({
         api: getQuestionsAndReply,
         searchInfo: {
           type: props.type,
@@ -61,6 +77,9 @@
             title: '添加时间',
             dataIndex: 'addtime',
             width: 150,
+            customRender: ({ record }) => {
+              return formateTime(record.addtime);
+            },
           },
           {
             title: '操作人',
@@ -91,6 +110,36 @@
           setTimeout(reload, 1000);
         });
       }
+
+      function initDragSortable() {
+        const el = document.querySelector('.copywriting-quick-table .ant-table-tbody');
+        if (el) {
+          new Sortable(el as HTMLElement, {
+            handle: '.table-raw-drag-btn',
+            ghostClass: 'blue-background-class',
+            animation: 150,
+            onEnd({ newIndex, oldIndex }) {
+              if (newIndex !== oldIndex) {
+                const dataSource = getDataSource();
+                const dragRow = dataSource[(oldIndex || 1) - 1];
+                const insertBeforeRow = dataSource[(newIndex || 1) - 1];
+                console.log(oldIndex, dragRow);
+                console.log(newIndex, insertBeforeRow);
+                updateQuestionReplySort({
+                  type: props.type,
+                  startSortId: dragRow.id,
+                  endSortId: insertBeforeRow.id,
+                }).then(() => {
+                  createMessage.success('操作成功');
+                  setTimeout(reload, 1000);
+                });
+              }
+            },
+          });
+        }
+      }
+
+      onMounted(initDragSortable);
 
       return {
         reload,

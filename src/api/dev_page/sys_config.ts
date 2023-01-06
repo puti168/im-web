@@ -27,6 +27,7 @@ enum Api {
   SAVE_REPLAY = '/backend/conduct/save',
   UPDATE_REPLAY = '/backend/conduct/update',
   DELETE_REPLAY = '/backend/conduct/delete',
+  UPDATE_REPLAY_SORT = '/backend/conduct/updateSort',
 }
 export const fetchDynamicKey = (params: any) => {
   return defHttp.post<any>({
@@ -190,6 +191,18 @@ interface DeleteQuestionAndReplyParams {
 export const deleteQuestionsAndReply = (params: DeleteQuestionAndReplyParams) => {
   return defHttp.post<void>({
     url: Api.DELETE_REPLAY,
+    params,
+  });
+};
+
+interface UpdateReplySortParams {
+  endSortId: string;
+  startSortId: string;
+  type: number;
+}
+export const updateQuestionReplySort = (params: UpdateReplySortParams) => {
+  return defHttp.post<void>({
+    url: Api.UPDATE_REPLAY_SORT,
     params,
   });
 };

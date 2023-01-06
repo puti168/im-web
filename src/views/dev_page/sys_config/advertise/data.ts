@@ -1,4 +1,5 @@
 import { BasicColumn, FormSchema } from '/@/components/Table';
+import { formateTime } from '/@/utils/date-formate';
 
 export const columns: BasicColumn[] = [
   {
@@ -10,6 +11,9 @@ export const columns: BasicColumn[] = [
     title: '添加时间',
     dataIndex: 'addtime',
     width: 150,
+    customRender: ({ record }) => {
+      return formateTime(record.addtime);
+    },
   },
   {
     title: '操作人',
