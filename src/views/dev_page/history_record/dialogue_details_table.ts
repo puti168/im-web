@@ -26,10 +26,10 @@ export const columns: BasicColumn[] = [
   },
   {
     title: '接入客服',
-    dataIndex: 'csNickName',
+    dataIndex: 'csName',
     width: 120,
     customRender: (opts) => {
-      return opts.record.sendType === 1 ? '' : opts.record.csNickName;
+      return opts.record.sendType === 1 ? '' : opts.record.csName;
     },
   },
   {
@@ -77,7 +77,7 @@ export const columnsAll: BasicColumn[] = [
   },
   {
     title: '接入客服',
-    dataIndex: 'csNickName',
+    dataIndex: 'csName',
     width: 200,
     // slots: { customRender: 'img' },
   },

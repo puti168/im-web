@@ -9,6 +9,7 @@ enum Api {
   GetUserInfo = '/getUserInfo',
   GetPermCode = '/getPermCode',
   TestRetry = '/testRetry',
+  GetBaseInfo = '/backend/customerserviceconfig/getCsParmCfgList',
 }
 
 /**
@@ -52,4 +53,18 @@ export function testRetry() {
       },
     },
   );
+}
+
+export interface GetUserBaseInfoResponse {
+  langIds: string;
+  mainLangId: number;
+}
+export function getUserBaseInfo() {
+  return defHttp.post<GetUserBaseInfoResponse>({
+    url: Api.GetBaseInfo,
+    params: {
+      pageNo: 1,
+      pageSize: 100,
+    },
+  });
 }
