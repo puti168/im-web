@@ -11,8 +11,8 @@ export function formateTimeDate(time: number): string {
 }
 
 function init() {
-  const offset = new Date() + ''; //将时间格式转为字符串
+  const offset = new Date() + '';
   let offsetGMT = offset.indexOf('GMT');
   let offsetGMTSub = offset.substring(offsetGMT + 3, offsetGMT + 8);
-  return offsetGMTSub; //给了你定义的一个字段，在拿到数据后使用
+  return offsetGMTSub;
 }
