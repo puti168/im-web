@@ -122,52 +122,6 @@ export const deleteIP = (params: any[]) =>
     params,
   });
 
-const dataSource: any = [
-  {
-    name: '顶部banner',
-    tid: 1,
-  },
-  {
-    name: '循环文案',
-    tid: 2,
-  },
-  {
-    name: '开场文案',
-    tid: 3,
-  },
-];
-export const getSchemeInfo = async () => {
-  const { map: mapObj } = await defHttp.post({
-    url: Api.BNNER_ROTAIO,
-    params: { types: [1, 2, 3] },
-  });
-  // dataSource[0] = { ...res0, ...dataSource[0], distributorId: params.distributorId };
-  // let res1 = await defHttp.post<DemoListGetResultModel>({
-  //   url: Api.SCHEME_INFO,
-  //   params: { type: 1 },
-  // });
-  // dataSource[1] = { ...res1, ...dataSource[1], distributorId: params.distributorId };
-  // let res2 = await defHttp.post<DemoListGetResultModel>({
-  //   url: Api.SCHEME_INFO,
-  //   params: { distributorId: params.distributorId, type: 2 },
-  // });
-  // dataSource[2] = { ...res2, ...dataSource[2], distributorId: params.distributorId };
-  Object.keys(mapObj).forEach((key: any) => {
-    const index = key - 1;
-    dataSource[index] = { ...mapObj[key], ...dataSource[index] };
-  });
-  return {
-    items: dataSource,
-    total: 3,
-  };
-};
-export const updateSchemeMsd = (params: DemoParams) => {
-  defHttp.post<DemoListGetResultModel>({
-    url: Api.UPDATE_SCHEME,
-    params,
-  });
-};
-
 /**
  * @type 4: 快捷提问，5: 快捷回复
  */
@@ -204,16 +158,19 @@ export const getQuestionsAndReply = (params: GetQuestionsAndReplayParams) => {
 
 interface SaveQuestionAndReplyParams {
   data: {
-    title: string;
+    title?: string;
     content: string;
     langId: number;
   }[];
-  type: 4 | 5;
+  type: number;
 }
 export const saveQuestionsAndReply = (params: SaveQuestionAndReplyParams) => {
   return defHttp.post<void>({
     url: Api.SAVE_REPLAY,
-    params,
+    params: {
+      ...params,
+      mainId: -1,
+    },
   });
 };
 
@@ -233,6 +190,25 @@ interface DeleteQuestionAndReplyParams {
 export const deleteQuestionsAndReply = (params: DeleteQuestionAndReplyParams) => {
   return defHttp.post<void>({
     url: Api.DELETE_REPLAY,
+    params,
+  });
+};
+
+interface GetBannerRotationResponse {
+  map: {
+    [key: number]: QuestionReplyContent;
+  };
+}
+export const getBannerRotation = () => {
+  return defHttp.post<GetBannerRotationResponse>({
+    url: Api.BNNER_ROTAIO,
+    params: { types: [1, 2, 3] },
+  });
+};
+
+export const updateSchemeMsd = (params: DemoParams) => {
+  defHttp.post<DemoListGetResultModel>({
+    url: Api.UPDATE_SCHEME,
     params,
   });
 };

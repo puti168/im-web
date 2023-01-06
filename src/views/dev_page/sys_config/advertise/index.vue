@@ -8,51 +8,99 @@
         </template>
       </template>
     </BasicTable>
-    <Modal4 @register="register4" @reloadTable="reload" />
-    <UploadModal @register="registerUploadModal" @reloadTable="reload" />
+    <RegisterModel @register="register4" @reload-table="reload" />
+    <UploadModal @register="registerUploadModal" @reload-table="reload" />
   </PageWrapper>
 </template>
-<script lang="ts" setup>
+
+<script lang="ts">
+  import { defineComponent } from 'vue';
   import { PageWrapper } from '/@/components/Page';
   import { BasicTable, useTable } from '/@/components/Table';
   import { columns } from './data';
   import { useModal } from '/@/components/Modal';
-  import Modal4 from './comp/Modal4.vue';
-  import { getSchemeInfo } from '/@/api/dev_page/sys_config';
+  import { getBannerRotation } from '/@/api/dev_page/sys_config';
   import UploadModal from './comp/UploadModal.vue';
+  import RegisterModel from './comp/RegisterModel.vue';
 
-  const [registerTable, { reload }] = useTable({
-    api: getSchemeInfo,
-    columns: columns,
-    bordered: true,
-    showTableSetting: true,
-    searchInfo: {
-      distributorId: 123,
+  export default defineComponent({
+    name: 'AdvertiseSetting',
+    components: {
+      RegisterModel,
+      PageWrapper,
+      BasicTable,
+      UploadModal,
     },
-    // showIndexColumn: false,
-    actionColumn: {
-      width: 220,
-      title: '操作',
-      dataIndex: 'action',
-      // slots: { customRender: 'action' },
+    setup() {
+      const [registerTable, { reload }] = useTable({
+        api: getData,
+        columns: columns,
+        bordered: true,
+        showTableSetting: true,
+        // showIndexColumn: false,
+        actionColumn: {
+          width: 220,
+          title: '操作',
+          dataIndex: 'action',
+          // slots: { customRender: 'action' },
+        },
+      });
+      const [register4, { openModal: openModal4 }] = useModal();
+
+      const [registerUploadModal, { openModal: openUploadModal }] = useModal();
+
+      function getData() {
+        const sourceMap = [
+          {
+            name: '顶部banner',
+            tid: 1,
+          },
+          {
+            name: '循环文案',
+            tid: 2,
+          },
+          {
+            name: '开场文案',
+            tid: 3,
+          },
+        ];
+        return getBannerRotation().then((res) => {
+          const map = res.map || {};
+          Object.keys(map).forEach((key: string) => {
+            const index = +key - 1;
+            sourceMap[index] = { ...map[key], ...sourceMap[index] };
+          });
+          return {
+            items: sourceMap,
+            total: 3,
+          };
+        });
+      }
+
+      function send(record: any) {
+        openModal4(true, record);
+      }
+      function sendUpload(record: any) {
+        openUploadModal(true, record);
+      }
+
+      function onEditChange({ column, value, record }) {
+        // 本例
+        if (column.dataIndex === 'id') {
+          record.editValueRefs.name4.value = `${value}`;
+        }
+        console.log(column, value, record);
+      }
+
+      return {
+        registerTable,
+        register4,
+        registerUploadModal,
+        send,
+        reload,
+        sendUpload,
+        onEditChange,
+      };
     },
   });
-  const [register4, { openModal: openModal4 }] = useModal();
-
-  const [registerUploadModal, { openModal: openUploadModal }] = useModal();
-
-  function send(record: any) {
-    openModal4(true, record);
-  }
-  function sendUpload(record: any) {
-    openUploadModal(true, record);
-  }
-
-  function onEditChange({ column, value, record }) {
-    // 本例
-    if (column.dataIndex === 'id') {
-      record.editValueRefs.name4.value = `${value}`;
-    }
-    console.log(column, value, record);
-  }
 </script>

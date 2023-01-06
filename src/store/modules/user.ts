@@ -25,6 +25,7 @@ interface UserState {
   roleList: RoleEnum[];
   sessionTimeout?: boolean;
   lastUpdateTime: number;
+  defaultLang: number;
   supportLangIds: number[];
   supportLangs: LangData[];
 }
@@ -42,6 +43,7 @@ export const useUserStore = defineStore({
     sessionTimeout: false,
     // Last fetch time
     lastUpdateTime: 0,
+    defaultLang: 1,
     supportLangIds: [],
     supportLangs: [],
   }),
