@@ -25,7 +25,7 @@ export const columns: BasicColumn[] = [
     },
   },
   {
-    title: '客服昵称',
+    title: '接入客服',
     dataIndex: 'csNickName',
     width: 120,
     customRender: (opts) => {
@@ -112,7 +112,7 @@ export const searchFormSchema: FormSchema[] = [
     colProps: { span: 24 },
   },
   {
-    field: 'orderNo',
+    field: 'id',
     label: '单号',
     component: 'Input',
     colProps: { span: 8 },
