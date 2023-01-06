@@ -7,7 +7,7 @@ import { PageEnum } from '/@/enums/pageEnum';
 import { ROLES_KEY, TOKEN_KEY, USER_INFO_KEY } from '/@/enums/cacheEnum';
 import { getAuthCache, setAuthCache } from '/@/utils/auth';
 import { GetUserInfoModel, LoginParams } from '/@/api/sys/model/userModel';
-import { loginApi } from '/@/api/sys/user';
+import { getUserBaseInfo, loginApi } from '/@/api/sys/user';
 import { useI18n } from '/@/hooks/web/useI18n';
 import { useMessage } from '/@/hooks/web/useMessage';
 import { router } from '/@/router';
@@ -193,17 +193,21 @@ export const useUserStore = defineStore({
       }
       console.log(userInfo, '---userInfo---');
       this.setUserInfo(userInfo);
-      this.initUserSupportLang(userInfo);
+      this.initUserSupportLang();
       return userInfo;
     },
-    async initUserSupportLang(info: UserInfo) {
-      const { langIds } = info;
-      this.supportLangIds = (langIds || '').split(',').map(Number);
-      getCacheLangList().then((res) => {
-        const supportLangs = this.supportLangIds.map((langId) => {
-          return res[langId];
+    async initUserSupportLang() {
+      getUserBaseInfo().then((res) => {
+        const { langIds, mainLangId } = res;
+        this.supportLangIds = (langIds || '').split(',').map(Number);
+        this.defaultLang = mainLangId;
+
+        getCacheLangList().then((res) => {
+          const supportLangs = this.supportLangIds.map((langId) => {
+            return res[langId];
+          });
+          this.supportLangs = supportLangs;
         });
-        this.supportLangs = supportLangs;
       });
     },
     /**
