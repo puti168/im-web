@@ -675,7 +675,7 @@
   const searchValue = ref('');
   const showSend = ref(false);
   function search() {
-    if (!currOrderId.value) return;
+    if (!currOrderId.value || !searchValue.value) return;
     quickReplay.pageNum = 0;
     payListData.value = [];
     // todo
