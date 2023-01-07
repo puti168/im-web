@@ -22,6 +22,7 @@ enum Api {
   UPDATE_PUBLICMSG = '/backend/publicmsg/update',
   DELETE_PUBLICMSG = '/backend/publicmsg/delete',
 
+  /** 文案设置/广告设置接口 */
   BNNER_ROTAIO = '/backend/conduct/getBannerRotationCopy',
   QA_REPLAT = '/backend/conduct/getQuestionsAndReply',
   SAVE_REPLAY = '/backend/conduct/save',
@@ -31,6 +32,14 @@ enum Api {
   GET_OTHER_LANG = '/backend/conduct/getOtherLangData',
   UPDATE_ENABLE = '/backend/conduct/updateEnable',
   UPLOAD_IMAGE = '/backend/fileinfo/uploadImage',
+
+  /** 客服配置接口 */
+  GET_AGENT_SET_LIST = '/backend/customerserviceconfig/getSysCfgParms',
+  GET_RULE_LIST = '/backend/customerserviceconfig/getRuleListByParam',
+  ADD_AGENT_RULE = '/backend/customerserviceconfig/addCsRule',
+  UPDATE_AGENT_RULE = '/backend/customerserviceconfig/updateCsRule',
+  REMOVE_AGENT_RULE = '/backend/customerserviceconfig/delCsRule',
+  GET_RULE_DETAIL = '/backend/customerserviceconfig/getRuleDetail',
 }
 export const fetchDynamicKey = (params: any) => {
   return defHttp.post<any>({
@@ -242,10 +251,11 @@ export const getBannerRotation = (params: GetBannerRotationParams) => {
 interface UpdateRotationEnableParams {
   id: string;
   type: number;
+  isEnable: 0 | 1;
 }
 
 export function updateRotationEnable(params: UpdateRotationEnableParams) {
-  return defHttp.post<GetBannerRotationResponse>({
+  return defHttp.post<void>({
     url: Api.UPDATE_ENABLE,
     params,
   });
@@ -267,6 +277,101 @@ interface UploadBannerImageResponse {
 export const uploadBannerImage = (params) => {
   return defHttp.post<UploadBannerImageResponse>({
     url: Api.UPLOAD_IMAGE,
+    params,
+  });
+}
+
+interface AgentSettingInfo {
+  desc: string;
+  opTime: string;
+  operName: string;
+  paramId: number;
+  valueRange: any;
+}
+interface GetAgentSettingListResponse {
+  curPageNo: number;
+  pageCount: string;
+  paramInfoList: AgentSettingInfo[];
+  total: string;
+}
+export const getAgentSettingList = (params: Pick<BasicPageParams, 'pageNum' | 'pageSize'>) => {
+  return defHttp.post<GetAgentSettingListResponse>({
+    url: Api.GET_AGENT_SET_LIST,
+    params,
+  }).then((res) => {
+    return {
+      items: res.paramInfoList,
+      total: +res.total,
+    };
+  });
+}
+
+interface GetRuleListParams extends Pick<BasicPageParams, 'pageNum' | 'pageSize'> {
+  pageNo: number;
+  pageSize: number;
+  paramId: number;
+}
+
+export const getAgentSettingRuleList = (params: GetRuleListParams) => {
+  return defHttp.post({
+    url: Api.GET_RULE_LIST,
+    params
+  }).then((res) => ({
+    items: res.mlist,
+    total: +res.total,
+  }));
+}
+
+interface AddAgentRuleParams {
+  groupIds: string[];
+  paramId: number;
+  ruleName: string;
+  value: string;
+}
+
+export const addAgentRule = (params: AddAgentRuleParams) => {
+  return defHttp.post<void>({
+    url: Api.ADD_AGENT_RULE,
+    params
+  });
+}
+
+interface UpdateAgentRuleParams {
+  groupIds: string[];
+  ruleId: number;
+  name: string;
+  paramVal: string;
+}
+
+export const updateAgentRule = (params: UpdateAgentRuleParams) => {
+  return defHttp.post<void>({
+    url: Api.UPDATE_AGENT_RULE,
+    params
+  });
+}
+
+
+export const removeAgentRule = (params: { ruleId: number }) => {
+  return defHttp.post<void>({
+    url: Api.REMOVE_AGENT_RULE,
+    params,
+  });
+}
+
+interface GetAgentDetailResponse {
+  detailInfo: {
+    name: string;
+    opTime: number;
+    operName: string;
+    paramVal: string;
+    ruleId: number;
+    groupInfos: { groupId: string; name: string }[];
+  };
+}
+
+export const getAgentRuleDetail = (params: { ruleId: number }) => {
+  return defHttp.post<GetAgentDetailResponse>({
+    url: Api.GET_RULE_DETAIL,
     params,
   });
 }
