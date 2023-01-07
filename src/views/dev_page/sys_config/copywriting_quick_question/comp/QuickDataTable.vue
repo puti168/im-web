@@ -18,7 +18,7 @@
         <a-button type="success" @click="openModel()">新增</a-button>
       </template>
     </BasicTable>
-    <FormModal :type="type" @register="registerModel" @reload-table="reload" />
+    <FormModal :type="type" @register="registerModel" @reload-table="delayReload" />
   </PageWrapper>
 </template>
 
@@ -59,7 +59,7 @@
     setup(props) {
       const { createMessage } = useMessage();
 
-      const [registerTable, { reload, getDataSource }] = useTable({
+      const [registerTable, { reload }] = useTable({
         api: getQuestionsAndReply,
         searchInfo: {
           type: props.type,
@@ -104,10 +104,14 @@
         openRegisterModal(true, record);
       }
 
+      function delayReload() {
+        setTimeout(reload, 1000);
+      }
+
       function deleteById(id: string) {
         deleteQuestionsAndReply({ ids: [id] }).then(() => {
           createMessage.success('删除成功' + id);
-          setTimeout(reload, 1000);
+          delayReload();
         });
       }
 
@@ -119,18 +123,13 @@
             animation: 150,
             onEnd({ newIndex, oldIndex }) {
               if (newIndex !== oldIndex) {
-                const dataSource = getDataSource();
-                const dragRow = dataSource[(oldIndex || 1) - 1];
-                const insertBeforeRow = dataSource[(newIndex || 1) - 1];
-                console.log(oldIndex, dragRow);
-                console.log(newIndex, insertBeforeRow);
                 updateQuestionReplySort({
                   type: props.type,
-                  startSortId: dragRow.id,
-                  endSortId: insertBeforeRow.id,
+                  startSortId: oldIndex!,
+                  endSortId: newIndex!,
                 }).then(() => {
                   createMessage.success('操作成功');
-                  setTimeout(reload, 1000);
+                  delayReload();
                 });
               }
             },
@@ -141,7 +140,7 @@
       onMounted(initDragSortable);
 
       return {
-        reload,
+        delayReload,
         registerTable,
         registerModel,
         deleteById,

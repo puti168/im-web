@@ -177,9 +177,7 @@
                 }
 
                 closeModal();
-                setTimeout(() => {
-                  emit('reloadTable');
-                }, 1000);
+                emit('reloadTable');
               } catch {}
             }
           })
