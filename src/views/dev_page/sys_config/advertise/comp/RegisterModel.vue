@@ -6,26 +6,50 @@
     @visible-change="handleVisibleChange"
     @ok="handleOK"
   >
-    <div class="pr-3px">
-      <Tabs v-model:activeKey="activeKey" @change="handleChangeTabs" type="card">
-        <TabPane :key="defaultLang" tab="默认语言" />
-        <TabPane v-for="item in langTabs" :key="item.id" :tab="item.descZh" />
-      </Tabs>
-      <BasicForm @register="registerForm" :model="modelRef[activeKey]" @field-value-change="onFieldChange" />
+    <div v-loading="otherDataLoading" class="pr-3px">
+      <BasicForm :model="modelRef" @register="confgFormRegister" @field-value-change="onConfigDataChange" />
+      <template v-if="modelRef.type === 1">
+        <UploadImageForm ref="uploadRef" />
+      </template>
+      <template v-else>
+        <TextContentForm ref="contentRef" v-model="modelValue" />
+      </template>
     </div>
   </BasicModal>
 </template>
 
 <script lang="ts">
   import { defineComponent, ref, nextTick, computed, reactive } from 'vue';
-  import { Tabs, TabPane } from 'ant-design-vue';
   import { BasicModal, useModalInner } from '/@/components/Modal';
   import { BasicForm, FormSchema, useForm } from '/@/components/Form/index';
-  import { QuestionReplyContent, updateQuestionsAndReply } from '/@/api/dev_page/sys_config';
+  import {
+    QuestionReplyContent,
+    saveQuestionsAndReply,
+    updateQuestionsAndReply,
+    getOtherLangData,
+  } from '/@/api/dev_page/sys_config';
   import { useMessage } from '/@/hooks/web/useMessage';
   import { useUserStore } from '/@/store/modules/user';
+  import TextContentForm from './TextContentForm.vue';
+  import UploadImageForm from './UploadImageForm.vue';
+
+  const AD_TYPEs = [
+    {
+      label: '顶部Banner',
+      value: 1,
+    },
+    {
+      label: '循环文案',
+      value: 2,
+    },
+    {
+      label: '开场文案',
+      value: 3,
+    },
+  ];
+
   export default defineComponent({
-    components: { BasicModal, BasicForm, TabPane, Tabs },
+    components: { BasicModal, BasicForm, TextContentForm, UploadImageForm },
     props: {
       userData: {
         type: Object as PropType<QuestionReplyContent>,
@@ -34,58 +58,48 @@
     setup(props, { emit }) {
       const { supportLangs, defaultLang = 1 } = useUserStore();
       const { createMessage } = useMessage();
-      // 传过来的值
-      const modelRef = reactive<Recordable>({});
-      const activeKey = ref<number>(defaultLang);
-      const contentId = ref<string>('');
 
-      const langTabs = computed(() => {
-        return supportLangs.filter((item) => item.id !== defaultLang);
+      const otherDataLoading = ref<boolean>(false);
+      const metaType = ref<number>(1);
+      const contentId = ref<string>('');
+      const uploadRef = ref();
+      const contentRef = ref();
+      const modelValue = reactive({});
+      const modelRef = reactive({
+        type: 1,
+        open: false,
       });
 
-      const formSchema = computed<FormSchema[]>(() => [
+      const configSchema = computed<FormSchema[]>(() => [
         {
-          field: 'content',
-          component: 'InputTextArea',
-          defaultValue: '',
+          field: 'type',
+          component: 'Select',
+          defaultValue: 1,
           required: true,
-          label: '内容',
-          show: true,
+          label: '类型',
+          show: () => !contentId.value,
           colProps: {
             span: 24,
+          },
+          componentProps: {
+            options: AD_TYPEs,
           },
         },
       ]);
 
-      const [registerForm, { validate, resetFields, updateSchema, clearValidate }] = useForm({
+      const [confgFormRegister] = useForm({
         labelWidth: 80,
-        schemas: formSchema.value,
+        schemas: configSchema.value,
         showActionButtonGroup: false,
         actionColOptions: {
           span: 24,
         },
       });
+
       const [register, { closeModal }] = useModalInner((data) => {
         data && onDataReceive(data);
       });
 
-      function createModelValue() {
-        if (!modelRef[activeKey.value]) {
-          modelRef[activeKey.value] = {
-            content: '',
-          };
-        }
-      }
-
-      function handleChangeTabs(e) {
-        activeKey.value = e;
-        createModelValue();
-        clearValidate();
-        formSchema.value.forEach((item) => {
-          item.required = e == defaultLang;
-          updateSchema(item);
-        });
-      }
       //监听关闭打开
       function handleVisibleChange(v) {
         if (!v) {
@@ -98,83 +112,156 @@
 
       function resetForm() {
         contentId.value = '';
-        Object.keys(modelRef).forEach((key) => {
-          delete modelRef[key];
-        });
-        resetFields();
-        handleChangeTabs(1);
+        modelRef.type = 1;
+        modelRef.open = false;
+        resetFormBase();
+      }
+
+      function resetFormBase() {
+        if (contentRef.value) {
+          contentRef.value.reset();
+        }
+        for (let key in modelValue) {
+          delete modelValue[key];
+        }
+        if (uploadRef.value) {
+          uploadRef.value.setFormModel({
+            title: '',
+            content: '',
+          });
+        }
       }
 
       function onFieldChange(filed: string, value: string) {
-        createModelValue();
-        modelRef[activeKey.value][filed] = value;
+        modelRef[filed] = value;
       }
 
-      function onDataReceive(data?: QuestionReplyContent) {
+      function onDataReceive(data?: any) {
         //初始和表单
         if (data) {
+          console.log(data, '===');
+          const { tid = 1, content, title, id } = data;
+          modelRef.type = tid;
           contentId.value = data.id;
-          const { childList = [], langId, content } = data;
-          modelRef[langId] = {
-            content,
-          };
 
-          for (const lang of childList) {
-            modelRef[lang.langId] = {
-              content: lang.content,
+          if (tid === 1) {
+            if (uploadRef.value) {
+              uploadRef.value.setFormModel({
+                title,
+                content,
+              });
+            }
+          } else {
+            const { langId } = data;
+            modelValue[langId] = {
+              title,
+              content,
             };
+            otherDataLoading.value = true;
+            getOtherLangData({
+              parentId: id,
+              type: tid,
+            })
+              .then((res) => {
+                const { list = [] } = res;
+                for (const lang of list) {
+                  modelValue[lang.langId] = {
+                    title: lang.title,
+                    content: lang.content,
+                  };
+                }
+              })
+              .finally(() => {
+                otherDataLoading.value = false;
+              });
           }
         }
       }
 
-      function handleOK() {
-        validate()
-          .then(async () => {
-            const requiredLang = modelRef[defaultLang];
-            console.log(modelRef, 'modelRef');
-            if (!requiredLang || !requiredLang.content) {
-              createMessage.warning('请填写默认语言！');
-            } else {
-              const data = supportLangs.map((lang) => {
-                const value = modelRef[lang.id];
-                return {
-                  langId: lang.id,
-                  content: value ? value.content : '',
-                };
-              });
-              try {
-                if (contentId.value) {
-                  await updateQuestionsAndReply({
-                    mainId: contentId.value,
-                    type: +contentId.value,
-                    data,
-                  });
-                  createMessage.success('更新成功');
-                  closeModal();
-                  setTimeout(() => {
-                    emit('reloadTable');
-                  }, 1000);
-                }
-              } catch {}
-            }
-          })
-          .catch((e) => {
-            console.error(e, 'dsa');
+      function onConfigDataChange(key: string, value: any) {
+        modelRef[key] = value;
+        if (key === 'type') {
+          resetFormBase();
+        }
+      }
+
+      async function handleSubmit(
+        data: {
+          langId: number;
+          title: any;
+          content: any;
+        }[],
+      ) {
+        if (contentId.value) {
+          await updateQuestionsAndReply({
+            mainId: contentId.value,
+            type: modelRef.type,
+            data,
           });
+        } else {
+          await saveQuestionsAndReply({
+            type: modelRef.type,
+            data,
+          });
+        }
+
+        createMessage.success('更新成功');
+        closeModal();
+        emit('reloadTable');
+      }
+
+      function handleOK() {
+        if (modelRef.type === 1 && uploadRef.value) {
+          uploadRef.value.submit().then(async (res) => {
+            console.log(res, '==res===');
+            await handleSubmit([
+              {
+                langId: defaultLang,
+                ...res,
+              },
+            ]);
+          });
+        }
+        if (modelRef.type !== 1 && contentRef.value) {
+          contentRef.value
+            .validate()
+            .then(async () => {
+              console.log(modelValue, 'model value');
+              const requiredLang = modelValue[defaultLang];
+              if (!requiredLang || !requiredLang.content || !requiredLang.title) {
+                createMessage.warning('请填写默认语言！');
+              } else {
+                const data = supportLangs.map((lang) => {
+                  const value = modelValue[lang.id];
+                  return {
+                    langId: lang.id,
+                    title: value ? value.title : '',
+                    content: value ? value.content : '',
+                  };
+                });
+
+                await handleSubmit(data);
+              }
+            })
+            .catch((e) => {
+              console.error(e, 'dsa');
+            });
+        }
       }
 
       return {
-        defaultLang,
+        metaType,
+        otherDataLoading,
+        confgFormRegister,
         contentId,
-        langTabs,
-        supportLangs,
-        activeKey,
+        uploadRef,
+        contentRef,
+        modelValue,
         modelRef,
-        handleChangeTabs,
         register,
-        registerForm,
         handleVisibleChange,
         onFieldChange,
+        onConfigDataChange,
         handleOK,
       };
     },

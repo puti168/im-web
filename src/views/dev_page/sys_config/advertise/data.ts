@@ -4,7 +4,12 @@ import { formateTime } from '/@/utils/date-formate';
 export const columns: BasicColumn[] = [
   {
     title: '项目名',
-    dataIndex: 'name',
+    dataIndex: 'title',
+    width: 150,
+  },
+  {
+    title: '类型',
+    dataIndex: 'typeName',
     width: 150,
   },
   {

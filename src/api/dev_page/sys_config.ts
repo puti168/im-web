@@ -28,6 +28,9 @@ enum Api {
   UPDATE_REPLAY = '/backend/conduct/update',
   DELETE_REPLAY = '/backend/conduct/delete',
   UPDATE_REPLAY_SORT = '/backend/conduct/updateSort',
+  GET_OTHER_LANG = '/backend/conduct/getOtherLangData',
+  UPDATE_ENABLE = '/backend/conduct/updateEnable',
+  UPLOAD_IMAGE = '/backend/fileinfo/uploadImage',
 }
 export const fetchDynamicKey = (params: any) => {
   return defHttp.post<any>({
@@ -141,6 +144,8 @@ export interface QuestionReplyContent {
   creator: string;
   id: string;
   langId: number;
+  type: number;
+  isEnabled: boolean;
   childList: QuestionReplyContent[];
 }
 export const getQuestionsAndReply = (params: GetQuestionsAndReplayParams) => {
@@ -207,17 +212,44 @@ export const updateQuestionReplySort = (params: UpdateReplySortParams) => {
   });
 };
 
-interface GetBannerRotationResponse {
-  map: {
-    [key: number]: QuestionReplyContent;
-  };
+interface GetOtherLangDataParams {
+  parentId: string;
+  type: number;
 }
-export const getBannerRotation = () => {
-  return defHttp.post<GetBannerRotationResponse>({
-    url: Api.BNNER_ROTAIO,
-    params: { types: [1, 2, 3] },
+interface GetOtherLangDataResponse {
+  list: QuestionReplyContent[];
+}
+export const getOtherLangData = (params: GetOtherLangDataParams) => {
+  return defHttp.post<GetOtherLangDataResponse>({
+    url: Api.GET_OTHER_LANG,
+    params,
   });
 };
+
+/* eslint-disable */
+interface GetBannerRotationParams extends Pick<BasicPageParams, 'pageNum' | 'pageSize'> {}
+interface GetBannerRotationResponse {
+  list: QuestionReplyContent[];
+  total: number;
+}
+export const getBannerRotation = (params: GetBannerRotationParams) => {
+  return defHttp.post<GetBannerRotationResponse>({
+    url: Api.BNNER_ROTAIO,
+    params: { types: [1, 2, 3], ...params },
+  });
+};
+
+interface UpdateRotationEnableParams {
+  id: string;
+  type: number;
+}
+
+export function updateRotationEnable(params: UpdateRotationEnableParams) {
+  return defHttp.post<GetBannerRotationResponse>({
+    url: Api.UPDATE_ENABLE,
+    params,
+  });
+}
 
 export const updateSchemeMsd = (params: DemoParams) => {
   defHttp.post<DemoListGetResultModel>({
@@ -225,3 +257,16 @@ export const updateSchemeMsd = (params: DemoParams) => {
     params,
   });
 };
+
+interface UploadBannerImageResponse {
+  fileName: string;
+  filePath: string;
+  fileSize: string;
+  fileStatus: number;
+}
+export const uploadBannerImage = (params) => {
+  return defHttp.post<UploadBannerImageResponse>({
+    url: Api.UPLOAD_IMAGE,
+    params,
+  });
+}
