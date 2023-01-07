@@ -196,8 +196,8 @@ export const deleteQuestionsAndReply = (params: DeleteQuestionAndReplyParams) =>
 };
 
 interface UpdateReplySortParams {
-  endSortId: string;
-  startSortId: string;
+  endSortId: number;
+  startSortId: number;
   type: number;
 }
 export const updateQuestionReplySort = (params: UpdateReplySortParams) => {
