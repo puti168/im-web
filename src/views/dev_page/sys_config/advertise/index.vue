@@ -27,7 +27,7 @@
   import { BasicTable, useTable } from '/@/components/Table';
   import { columns } from './data';
   import { useModal } from '/@/components/Modal';
-  import { getBannerRotation } from '/@/api/dev_page/sys_config';
+  import { getBannerRotation, updateRotationEnable } from '/@/api/dev_page/sys_config';
   import UploadModal from './comp/UploadModal.vue';
   import RegisterModel from './comp/RegisterModel.vue';
 
@@ -102,7 +102,15 @@
 
       function handleChange(checked, record) {
         console.log(record);
+        const { id, type } = record;
         record.isEnabled = checked;
+        updateRotationEnable({
+          id,
+          type,
+          isEnable: record.isEnabled ? 1 : 0,
+        }).then(() => {
+          setTimeout(reload, 1000);
+        });
       }
 
       return {
