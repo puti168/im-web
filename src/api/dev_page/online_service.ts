@@ -7,6 +7,7 @@ import { DemoListGetResultModel } from '/@/api/demo/model/tableModel';
 import { queryHistoryRecordsEntry } from '/@/api/dev_page/model/online-service/queryHistoryRecordsEntry';
 import { queryUserMessage } from '/@/api/dev_page/model/online-service/queryUserMessage';
 import { pageList } from '/@/api/dev_page/model/online-service/pageList';
+import { pageListNew } from '/@/api/dev_page/model/online-service/pageListNew';
 import { getLang } from '/@/api/dev_page/model/online-service/detect';
 import { translate } from '/@/api/dev_page/model/online-service/translate';
 import { closeOrder } from '/@/api/dev_page/model/online-service/closeOrder';
@@ -22,6 +23,7 @@ enum Api {
   queryUserDetail = '/backend/chatMessage/queryUserDetail',
   closeOrder = '/backend/chatMessage/closeOrder',
   pageList = '/backend/publicmsg/pageList',
+  getConductInfo = '/user/getConductInfo',
   getLang = '/backend/translation/getLang',
   translate = '/backend/translation/translate',
 }
@@ -84,6 +86,13 @@ export const pageList = (params: pageList) =>
     url: Api.pageList,
     params,
   });
+
+export const getConductInfo = (params: pageListNew) =>
+  defHttp.post<DemoListGetResultModel>({
+    url: Api.getConductInfo,
+    params,
+  });
+
 export const getLang = (params?: getLang) =>
   defHttp.post<DemoListGetResultModel>({
     url: Api.getLang,

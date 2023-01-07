@@ -3,4 +3,6 @@ export interface pageListNew {
   pageNum: number;
   pageSize: number;
   distributorId: string;
+  orderId?: number;
+  keyWord?: number;
 }

@@ -231,14 +231,13 @@
           <div v-for="item in payListData" @mouseover="item.showSend = true" @mouseout="item.showSend = false">
             <div class="content">
               <div class="content-answer margin-bottom">{{ item.title }}</div>
-              <div class="content-answer">{{ item.remark }}</div>
+              <div class="content-answer">{{ item.content }}</div>
             </div>
-            <div class="send" v-show="item.showSend" @click="sendQuickReplay(item.remark)"> 发送 </div>
+            <div class="send" v-show="item.showSend" @click="sendQuickReplay(item.content)"> 发送 </div>
           </div>
         </div>
       </div>
     </div>
-    <!--    todo-->
     <div class="lang-select" v-show="langState.showDialog">
       <a-select
         class="select"
@@ -269,6 +268,7 @@
     pageList,
     getLang,
     translate,
+    getConductInfo,
   } from '/@/api/dev_page/online_service';
   import { useServiceStore } from '/@/store/modules/online-service';
   import { useUserStore } from '/@/store/modules/user';
@@ -278,6 +278,7 @@
   import { computed } from 'vue';
   import SocketInstance from '/@/api/im-server/socket-instance';
   import { CopyOutlined, CloseCircleOutlined } from '@ant-design/icons-vue';
+  import { formateTime, formateTimeDate } from '/@/utils/date-formate';
 
   const serviceStore = useServiceStore();
   const userStore = useUserStore();
@@ -296,19 +297,11 @@
     firstLogin.value = false;
   }
 
-  const current_time = computed(() => {
-    var offset = new Date() + ''; //将时间格式转为字符串
-    console.log(offset); //  Mon Nov 02 2020 20:57:20 GMT-0600 (北美中部标准时间)
-    let asderf = offset.indexOf('GMT');
-    let fghdfgd = offset.substring(asderf + 3, asderf + 8);
-    return fghdfgd; //给了你定义的一个字段，在拿到数据后使用
-  });
-
   function getTime(time) {
-    return moment(time).utcOffset(current_time.value).format('YYYY-MM-DD HH:mm:ss');
+    return formateTime(time);
   }
   function getTimeHour(time) {
-    return moment(time).utcOffset(current_time.value).format('HH:mm:ss');
+    return formateTimeDate(time);
   }
   async function queryOnlineStatusVue() {
     const { status } = await queryOnlineStatus();
@@ -392,7 +385,6 @@
       currItem.isTrans = true;
     }
   }
-  //todo
   async function toTranslate(message, item) {
     if (langState.langList.length === 0) {
       const langTemp = await getLang();
@@ -467,6 +459,10 @@
     id,
     (curr, pre) => {
       if (curr && curr !== pre) {
+        //清空快速回复数据
+        payListData.value = [];
+        quickReplay.pageNum = 0;
+        pageListVue();
         //请求网路数据
         historyPageNo.value = 1;
         chatListData.value = [];
@@ -625,7 +621,6 @@
     queryOnlineStatusVue();
     queryMychatListVue();
     queryCsMWChatCountVue();
-    pageListVue();
     console.log(localeStore.getLocale, '-------', localLanguage[localeStore.getLocale]);
   });
 
@@ -634,18 +629,6 @@
     pageSize: 10,
     pageLimitNum: 0,
   });
-  async function pageListVue() {
-    // TODO: 换新接口了在对接
-    return;
-    const data = await pageList({
-      type: 1,
-      pageNum: quickReplay.pageNum,
-      pageSize: quickReplay.pageSize,
-    });
-    console.log(data, '----');
-    quickReplay.pageLimitNum = Number(data.pages);
-    payListData.value.push(...data.records);
-  }
 
   watch(userListRef, (curr, pre) => {
     curr &&
@@ -692,7 +675,11 @@
   const searchValue = ref('');
   const showSend = ref(false);
   function search() {
-    console.log(123);
+    if (!currOrderId.value) return;
+    quickReplay.pageNum = 0;
+    payListData.value = [];
+    // todo
+    pageListVue();
   }
   function sendQuickReplay(content) {
     if (!id.value) return;
@@ -713,6 +700,19 @@
         }
       });
   });
+  async function pageListVue() {
+    const data = await getConductInfo({
+      type: 5,
+      pageNum: quickReplay.pageNum,
+      pageSize: quickReplay.pageSize,
+      distributorId: Number(userStore.getUserInfo.distributorId),
+      orderId: currOrderId.value,
+      keyWord: searchValue.value,
+    });
+    console.log(data, '----');
+    quickReplay.pageLimitNum = Number(data.pages);
+    payListData.value.push(...data.conductList);
+  }
   //待接入list
   const state = reactive({
     checkAll: false,
@@ -1224,12 +1224,12 @@
     position: fixed;
     width: 100%;
     height: 100%;
-    background-color: rgb(240 242 245 / 40%);
+    background-color: rgb(240 242 245 / 70%);
 
     .select {
       position: absolute;
       top: 20%;
-      left: 50%;
+      left: 40%;
       transform: translate(-50%, -50%);
       width: 200px;
     }
