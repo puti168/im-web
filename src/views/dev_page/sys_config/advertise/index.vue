@@ -101,16 +101,19 @@
       }
 
       function handleChange(checked, record) {
-        console.log(record);
         const { id, type } = record;
         record.isEnabled = checked;
         updateRotationEnable({
           id,
           type,
           isEnable: record.isEnabled ? 1 : 0,
-        }).then(() => {
-          setTimeout(reload, 1000);
-        });
+        })
+          .then(() => {
+            setTimeout(reload, 1000);
+          })
+          .catch(() => {
+            record.isEnabled = !checked;
+          });
       }
 
       return {
