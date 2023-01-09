@@ -265,7 +265,6 @@
     queryHistoryRecords,
     queryUserMessage,
     closeOrder,
-    pageList,
     getLang,
     translate,
     getConductInfo,
@@ -274,8 +273,6 @@
   import { useUserStore } from '/@/store/modules/user';
   import { useLocaleStore } from '/@/store/modules/locale';
   import { AesEncryption } from '/@/utils/cipher';
-  import moment from 'moment';
-  import { computed } from 'vue';
   import SocketInstance from '/@/api/im-server/socket-instance';
   import { CopyOutlined, CloseCircleOutlined } from '@ant-design/icons-vue';
   import { formateTime, formateTimeDate } from '/@/utils/date-formate';
@@ -500,7 +497,7 @@
     });
   }
   function addData(msg, userNickName, sendType, msgType, time) {
-    if (msg && msg.trim() && aesEncr.encryptByAES(msg)) {
+    if (msg && msg.trim()) {
       const newMsg = {
         msgType: 1,
         sendType: 2,
