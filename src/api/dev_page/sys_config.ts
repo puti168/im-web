@@ -365,7 +365,7 @@ interface GetAgentDetailResponse {
     operName: string;
     paramVal: string;
     ruleId: number;
-    groupInfos: { groupId: string; name: string }[];
+    groupInfos: { groupId: string; name: string; status: 0 | 1 }[];
   };
 }
 

@@ -66,14 +66,14 @@ export const formModalSchemas: FormSchema[] = [
   },
   {
     field: 'groupIds',
-    component: 'ApiSelect',
+    component: 'Select',
     label: '所属组别',
     rules: [
       {
         required: true,
         // @ts-ignore
         validator: async (rule, value) => {
-          if (!value) {
+          if (!value || value.length === 0) {
             /* eslint-disable-next-line */
             return Promise.reject('请选择组别');
           }
@@ -83,19 +83,7 @@ export const formModalSchemas: FormSchema[] = [
       },
     ],
     componentProps: {
-      // more details see /src/components/Form/src/components/ApiSelect.vue
-      api: getGroupPageList,
-      params: {
-        page: 1,
-        pageSize: 9999,
-      },
-      resultField: 'items',
-      // use name as label
-      labelField: 'name',
-      // use id as value
-      valueField: 'id',
-      // not request untill to select
-      immediate: true,
+      options: [],
       mode: 'multiple',
     },
     colProps: {

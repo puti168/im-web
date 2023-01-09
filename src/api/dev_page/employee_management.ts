@@ -100,7 +100,7 @@ export const deleteIP = (params: any[]) =>
     params,
   });
 
-export const getGroupPageList = (params: DemoParams) => {
+export const getGroupPageList = (params: any) => {
   params.pageNum = params.page;
   params.deleteFlag = 0;
   return defHttp
