@@ -24,8 +24,8 @@ enum Api {
   closeOrder = '/backend/chatMessage/closeOrder',
   pageList = '/backend/publicmsg/pageList',
   getConductInfo = '/user/getConductInfo',
-  getLang = '/backend/translation/getLang',
-  translate = '/backend/translation/translate',
+  getLang = '/third/getLang',
+  translate = '/third/cs/translate',
 }
 
 export const setOnlineStatus = (params: SetOnlineStatusModel) =>
