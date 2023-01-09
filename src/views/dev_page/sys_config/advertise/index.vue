@@ -4,6 +4,9 @@
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
           <a-button class="mr-1" type="warning" @click="handleEdit(record)">编辑</a-button>
+          <span class="mr-1">
+            <PopConfirmButton type="danger" @confirm="handleRemove(record)" title="确认删除？"> 删除 </PopConfirmButton>
+          </span>
           <a-switch
             :checked="Boolean(record.isEnabled)"
             checked-children="开启"
@@ -27,9 +30,11 @@
   import { BasicTable, useTable } from '/@/components/Table';
   import { columns } from './data';
   import { useModal } from '/@/components/Modal';
-  import { getBannerRotation, updateRotationEnable } from '/@/api/dev_page/sys_config';
+  import { PopConfirmButton } from '/@/components/Button';
+  import { deleteQuestionsAndReply, getBannerRotation, updateRotationEnable } from '/@/api/dev_page/sys_config';
   import UploadModal from './comp/UploadModal.vue';
   import RegisterModel from './comp/RegisterModel.vue';
+  import { useMessage } from '/@/hooks/web/useMessage';
 
   export default defineComponent({
     name: 'AdvertiseSetting',
@@ -38,8 +43,11 @@
       PageWrapper,
       BasicTable,
       UploadModal,
+      PopConfirmButton,
     },
     setup() {
+      const { createMessage } = useMessage();
+
       const [registerTable, { reload }] = useTable({
         api: getData,
         columns: columns,
@@ -101,14 +109,31 @@
       }
 
       function handleChange(checked, record) {
-        console.log(record);
         const { id, type } = record;
         record.isEnabled = checked;
         updateRotationEnable({
           id,
           type,
           isEnable: record.isEnabled ? 1 : 0,
+        })
+          .then(() => {
+            setTimeout(reload, 1000);
+          })
+          .catch(() => {
+            record.isEnabled = !checked;
+          });
+      }
+
+      function handleRemove(record) {
+        if (record.isEnabled) {
+          createMessage.error('不能删除启用中的配置');
+          return;
+        }
+
+        deleteQuestionsAndReply({
+          ids: [record.id],
         }).then(() => {
+          createMessage.success('删除成功');
           setTimeout(reload, 1000);
         });
       }
@@ -123,6 +148,7 @@
         handleEdit,
         onEditChange,
         handleChange,
+        handleRemove,
       };
     },
   });
