@@ -3,12 +3,20 @@
     <BasicTable @register="registerTable" @edit-change="onEditChange">
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
-          <a-button class="mr-1" v-if="record.tid == 1" type="warning" @click="sendUpload(record)">编辑</a-button>
-          <a-button class="mr-1" v-else type="warning" @click="send(record)">编辑</a-button>
+          <a-button class="mr-1" type="warning" @click="handleEdit(record)">编辑</a-button>
+          <a-switch
+            :checked="Boolean(record.isEnabled)"
+            checked-children="开启"
+            un-checked-children="关闭"
+            @change="(checked) => handleChange(checked, record)"
+          />
         </template>
       </template>
+      <template #toolbar>
+        <a-button type="success" @click="handleEdit()">新增</a-button>
+      </template>
     </BasicTable>
-    <RegisterModel @register="register4" @reload-table="reload" />
+    <RegisterModel @register="registerModel" @reload-table="reload" />
     <UploadModal @register="registerUploadModal" @reload-table="reload" />
   </PageWrapper>
 </template>
@@ -19,7 +27,7 @@
   import { BasicTable, useTable } from '/@/components/Table';
   import { columns } from './data';
   import { useModal } from '/@/components/Modal';
-  import { getBannerRotation } from '/@/api/dev_page/sys_config';
+  import { getBannerRotation, updateRotationEnable } from '/@/api/dev_page/sys_config';
   import UploadModal from './comp/UploadModal.vue';
   import RegisterModel from './comp/RegisterModel.vue';
 
@@ -37,6 +45,9 @@
         columns: columns,
         bordered: true,
         showTableSetting: true,
+        fetchSetting: {
+          pageField: 'pageNum',
+        },
         // showIndexColumn: false,
         actionColumn: {
           width: 220,
@@ -45,43 +56,40 @@
           // slots: { customRender: 'action' },
         },
       });
-      const [register4, { openModal: openModal4 }] = useModal();
+
+      const [registerModel, { openModal }] = useModal();
 
       const [registerUploadModal, { openModal: openUploadModal }] = useModal();
 
-      function getData() {
-        const sourceMap = [
-          {
-            name: '顶部banner',
-            tid: 1,
-          },
-          {
-            name: '循环文案',
-            tid: 2,
-          },
-          {
-            name: '开场文案',
-            tid: 3,
-          },
-        ];
-        return getBannerRotation().then((res) => {
-          const map = res.map || {};
-          Object.keys(map).forEach((key: string) => {
-            const index = +key - 1;
-            sourceMap[index] = { ...map[key], ...sourceMap[index] };
-          });
+      function getData(params: any) {
+        const typeMap = {
+          1: '顶部banner',
+          2: '循环文案',
+          3: '开场文案',
+        };
+        return getBannerRotation(params).then((res) => {
+          const { list = [], total } = res;
+          const items = list.map((item) => ({
+            typeName: typeMap[item.type] || '-',
+            tid: item.type,
+            ...item,
+          }));
           return {
-            items: sourceMap,
-            total: 3,
+            items,
+            total: +total,
           };
         });
       }
 
       function send(record: any) {
-        openModal4(true, record);
+        openModal(true, record);
       }
       function sendUpload(record: any) {
         openUploadModal(true, record);
+      }
+
+      function handleEdit(record: any) {
+        openModal(true, record);
       }
 
       function onEditChange({ column, value, record }) {
@@ -92,14 +100,29 @@
         console.log(column, value, record);
       }
 
+      function handleChange(checked, record) {
+        console.log(record);
+        const { id, type } = record;
+        record.isEnabled = checked;
+        updateRotationEnable({
+          id,
+          type,
+          isEnable: record.isEnabled ? 1 : 0,
+        }).then(() => {
+          setTimeout(reload, 1000);
+        });
+      }
+
       return {
         registerTable,
-        register4,
+        registerModel,
         registerUploadModal,
         send,
         reload,
         sendUpload,
+        handleEdit,
         onEditChange,
+        handleChange,
       };
     },
   });

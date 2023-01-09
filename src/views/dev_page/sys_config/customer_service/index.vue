@@ -1,49 +1,34 @@
 <template>
   <PageWrapper title="客服配置" contentBackground contentClass="p-4">
-    <BasicTable @register="registerTable" @edit-change="onEditChange">
-      <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'action'">
-          <a-button color="warning" @click="send(record)">编辑</a-button>
-        </template>
-      </template>
-    </BasicTable>
-    <Modal4 @register="register4" @reloadTable="reload" />
+    <SettingList v-if="!activeSettingParamId" @set-edit="onSetEdit" />
+    <SettingDetail v-else :param-id="activeSettingParamId" @back="activeSettingParamId = null" />
   </PageWrapper>
 </template>
-<script lang="ts" setup>
-  import { BasicTable, useTable } from '/@/components/Table';
-  import { columns } from './data';
+
+<script lang="ts">
+  import { defineComponent, ref } from 'vue';
   import { PageWrapper } from '/@/components/Page';
-  import { useModal } from '/@/components/Modal';
-  import Modal4 from './comp/Modal4.vue';
-  import { getUserConfig } from '/@/api/dev_page/sys_config';
-  const [registerTable, { reload }] = useTable({
-    columns: columns,
-    bordered: true,
-    api: getUserConfig,
-    searchInfo: {
-      distributorId: 123,
+  import SettingList from './comp/SettingList.vue';
+  import SettingDetail from './comp/SettingDetail.vue';
+
+  export default defineComponent({
+    name: 'CustomerService',
+    components: {
+      PageWrapper,
+      SettingList,
+      SettingDetail,
     },
-    showTableSetting: true,
-    // showIndexColumn: false,
-    actionColumn: {
-      width: 160,
-      title: '操作',
-      dataIndex: 'action',
-      // slots: { customRender: 'action' },
+    setup() {
+      const activeSettingParamId = ref<number | null>(null);
+
+      function onSetEdit(paramId: number) {
+        activeSettingParamId.value = paramId;
+      }
+
+      return {
+        activeSettingParamId,
+        onSetEdit,
+      };
     },
   });
-  const [register4, { openModal: openModal4 }] = useModal();
-
-  function send(record: any) {
-    openModal4(true, record);
-  }
-
-  function onEditChange({ column, value, record }) {
-    // 本例
-    if (column.dataIndex === 'id') {
-      record.editValueRefs.name4.value = `${value}`;
-    }
-    console.log(column, value, record);
-  }
 </script>

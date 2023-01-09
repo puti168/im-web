@@ -35,7 +35,7 @@ import { StrengthMeter } from '/@/components/StrengthMeter';
 import { IconPicker } from '/@/components/Icon';
 import { CountdownInput } from '/@/components/CountDown';
 
-const componentMap = new Map<ComponentType, Component>();
+const componentMap = new Map<ComponentType | string, Component>();
 
 componentMap.set('Input', Input);
 componentMap.set('InputGroup', Input.Group);
@@ -75,7 +75,7 @@ componentMap.set('InputCountDown', CountdownInput);
 componentMap.set('Upload', BasicUpload);
 componentMap.set('Divider', Divider);
 
-export function add(compName: ComponentType, component: Component) {
+export function add(compName: ComponentType | string, component: Component) {
   componentMap.set(compName, component);
 }
 

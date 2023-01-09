@@ -6,7 +6,7 @@
     @visible-change="handleVisibleChange"
     @ok="handleOK"
   >
-    <div class="pr-3px">
+    <div v-loading="loadingLangData" class="pr-3px">
       <Tabs v-model:activeKey="activeKey" @change="handleChangeTabs" type="card">
         <TabPane :key="1" tab="默认语言" />
         <TabPane v-for="item in langTabs" :key="item.id" :tab="item.descZh" />
@@ -21,7 +21,12 @@
   import { Tabs, TabPane } from 'ant-design-vue';
   import { BasicModal, useModalInner } from '/@/components/Modal';
   import { BasicForm, FormSchema, useForm } from '/@/components/Form/index';
-  import { QuestionReplyContent, saveQuestionsAndReply, updateQuestionsAndReply } from '/@/api/dev_page/sys_config';
+  import {
+    getOtherLangData,
+    QuestionReplyContent,
+    saveQuestionsAndReply,
+    updateQuestionsAndReply,
+  } from '/@/api/dev_page/sys_config';
   import { useMessage } from '/@/hooks/web/useMessage';
   import { useUserStore } from '/@/store/modules/user';
   export default defineComponent({
@@ -42,6 +47,7 @@
       const modelRef = reactive<Recordable>({});
       const activeKey = ref<number>(defaultLang);
       const contentId = ref<string>('');
+      const loadingLangData = ref<boolean>(false);
 
       const langTabs = computed(() => {
         return supportLangs.filter((item) => item.id !== defaultLang);
@@ -129,19 +135,29 @@
       function onDataReceive(data?: QuestionReplyContent) {
         //初始和表单
         if (data) {
+          loadingLangData.value = true;
           contentId.value = data.id;
-          const { childList = [], langId, content, title } = data;
+          const { id, langId, content, title } = data;
           modelRef[langId] = {
             title,
             content,
           };
-
-          for (const lang of childList) {
-            modelRef[lang.langId] = {
-              title: lang.title,
-              content: lang.content,
-            };
-          }
+          getOtherLangData({
+            parentId: id,
+            type: props.type,
+          })
+            .then((res) => {
+              const { list = [] } = res;
+              for (const lang of list) {
+                modelRef[lang.langId] = {
+                  title: lang.title,
+                  content: lang.content,
+                };
+              }
+            })
+            .finally(() => {
+              loadingLangData.value = false;
+            });
         }
       }
 
@@ -177,9 +193,7 @@
                 }
 
                 closeModal();
-                setTimeout(() => {
-                  emit('reloadTable');
-                }, 1000);
+                emit('reloadTable');
               } catch {}
             }
           })
@@ -190,6 +204,7 @@
 
       return {
         contentId,
+        loadingLangData,
         langTabs,
         supportLangs,
         activeKey,

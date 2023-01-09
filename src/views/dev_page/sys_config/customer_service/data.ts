@@ -1,61 +1,113 @@
-import {
-  BasicColumn,
-  FormSchema,
-} from '/@/components/Table';
+import { formateTime } from '/@/utils/date-formate';
+import { getGroupPageList } from '/@/api/dev_page/employee_management';
+import { BasicColumn, FormSchema } from '/@/components/Table';
 
-
- 
- export const columns: BasicColumn[] = [
+export const columns: BasicColumn[] = [
   {
     title: '项目名',
-    dataIndex: 'name',
+    dataIndex: 'desc',
     width: 150,
   },
   {
     title: '添加时间',
-    dataIndex: 'updateTime',
     width: 100,
+    customRender: ({ record }) => formateTime(record.opTime),
   },
   {
     title: '操作人',
-    dataIndex: 'updateUser',
+    dataIndex: 'operName',
     width: 150,
-  }
+  },
 ];
 
-export const schemas: FormSchema[] = [
+export const detailColumns: BasicColumn[] = [
   {
-    field: 'handleLimit',
-    component: 'Input',
-    componentProps:{
-      type:'number'
+    title: '配置名称',
+    dataIndex: 'name',
+    width: 150,
+  },
+  {
+    title: '适用组别',
+    width: 150,
+    customRender: ({ record }) => {
+      return (record.groupInfos || '').reduce((str, curItem) => {
+        str += str ? `、${curItem.name}` : curItem.name;
+        return str;
+      }, '');
     },
-    rules: [{ required: true }],
-    label: '客服接待最多人数',
+  },
+  {
+    title: '限制人数',
+    dataIndex: 'paramVal',
+    width: 150,
+  },
+  {
+    title: '操作时间',
+    width: 150,
+    customRender: ({ record }) => formateTime(record.opTime),
+  },
+  {
+    title: '操作人',
+    dataIndex: 'operName',
+    width: 150,
+  },
+];
+
+export const formModalSchemas: FormSchema[] = [
+  {
+    field: 'ruleName',
+    component: 'Input',
+    defaultValue: '',
+    label: '配置名称',
+    required: true,
     colProps: {
       span: 24,
     },
   },
   {
-    field: 'levelNum',
-    component: 'Select',
-    rules: [{ required: true }],
-    label: '优先匹配等级',
+    field: 'groupIds',
+    component: 'ApiSelect',
+    label: '所属组别',
+    rules: [
+      {
+        required: true,
+        // @ts-ignore
+        validator: async (rule, value) => {
+          if (!value) {
+            /* eslint-disable-next-line */
+            return Promise.reject('请选择组别');
+          }
+          return Promise.resolve();
+        },
+        trigger: 'blur',
+      },
+    ],
     componentProps: {
-      class:'start-create-1',
-      options: [
-        {
-          label: 'VIP0',
-          value: "0",
-          key: 'VIP0',
-        },
-        {
-          label: 'VIP1',
-          value: "1",
-          key: 'VIP1',
-        },
-      ],
+      // more details see /src/components/Form/src/components/ApiSelect.vue
+      api: getGroupPageList,
+      params: {
+        page: 1,
+        pageSize: 9999,
+      },
+      resultField: 'items',
+      // use name as label
+      labelField: 'name',
+      // use id as value
+      valueField: 'id',
+      // not request untill to select
+      immediate: true,
+      mode: 'multiple',
     },
+    colProps: {
+      span: 24,
+    },
+  },
+  {
+    field: 'value',
+    component: 'InputNumber',
+    defaultValue: '',
+    label: '限制人数',
+    required: true,
     colProps: {
       span: 24,
     },
