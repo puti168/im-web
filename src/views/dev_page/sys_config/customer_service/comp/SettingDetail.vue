@@ -59,6 +59,7 @@
           pageField: 'pageNo',
         },
         showTableSetting: true,
+        rowKey: 'ruleId',
         actionColumn: {
           width: 160,
           title: '操作',

@@ -87,6 +87,7 @@
             width: 150,
           },
         ],
+        rowKey: 'id',
         bordered: true,
         showTableSetting: true,
         // showIndexColumn: false,
@@ -124,15 +125,17 @@
             onEnd({ newIndex, oldIndex }) {
               if (newIndex !== oldIndex) {
                 const dataSource = getDataSource();
-                const newIndexRow = dataSource[(newIndex || 1) - 1];
-                const oldIndexRow = dataSource[(oldIndex || 1) - 1];
+                const _newIndex = (newIndex || 1) - 1;
+                const _oldIndex = (oldIndex || 1) - 1;
+                const newIndexRowSortId = dataSource[_newIndex].sortId;
+                const oldIndexRowSortId = dataSource[_oldIndex].sortId;
                 updateQuestionReplySort({
                   type: props.type,
-                  startSortId: oldIndexRow.sortId,
-                  endSortId: newIndexRow.sortId,
+                  startSortId: oldIndexRowSortId,
+                  endSortId: newIndexRowSortId,
                 }).then(() => {
                   createMessage.success('操作成功');
-                  delayReload();
+                  reload();
                 });
               }
             },
