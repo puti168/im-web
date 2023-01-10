@@ -40,6 +40,7 @@ enum Api {
   UPDATE_AGENT_RULE = '/backend/customerserviceconfig/updateCsRule',
   REMOVE_AGENT_RULE = '/backend/customerserviceconfig/delCsRule',
   GET_RULE_DETAIL = '/backend/customerserviceconfig/getRuleDetail',
+  UPDATE_RULE_SORT = '/backend/customerserviceconfig/updateSort',
 }
 export const fetchDynamicKey = (params: any) => {
   return defHttp.post<any>({
@@ -372,6 +373,19 @@ interface GetAgentDetailResponse {
 export const getAgentRuleDetail = (params: { ruleId: number }) => {
   return defHttp.post<GetAgentDetailResponse>({
     url: Api.GET_RULE_DETAIL,
+    params,
+  });
+}
+
+interface UpdateRuleSortParams {
+  paramId: number;
+  startSortId: number;
+  endSortId: number;
+}
+
+export const updateCsRuleSort = (params: UpdateRuleSortParams) => {
+  return defHttp.post<void>({
+    url: Api.UPDATE_RULE_SORT,
     params,
   });
 }
