@@ -59,7 +59,7 @@
     setup(props) {
       const { createMessage } = useMessage();
 
-      const [registerTable, { reload }] = useTable({
+      const [registerTable, { reload, getDataSource }] = useTable({
         api: getQuestionsAndReply,
         searchInfo: {
           type: props.type,
@@ -123,10 +123,13 @@
             animation: 150,
             onEnd({ newIndex, oldIndex }) {
               if (newIndex !== oldIndex) {
+                const dataSource = getDataSource();
+                const newIndexRow = dataSource[(newIndex || 1) - 1];
+                const oldIndexRow = dataSource[(oldIndex || 1) - 1];
                 updateQuestionReplySort({
                   type: props.type,
-                  startSortId: oldIndex!,
-                  endSortId: newIndex!,
+                  startSortId: oldIndexRow.sortId,
+                  endSortId: newIndexRow.sortId,
                 }).then(() => {
                   createMessage.success('操作成功');
                   delayReload();
