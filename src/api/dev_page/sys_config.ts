@@ -41,6 +41,7 @@ enum Api {
   REMOVE_AGENT_RULE = '/backend/customerserviceconfig/delCsRule',
   GET_RULE_DETAIL = '/backend/customerserviceconfig/getRuleDetail',
   UPDATE_RULE_SORT = '/backend/customerserviceconfig/updateSort',
+  GET_UN_CHOOSE_GROUP = '/backend/customerserviceconfig/getUnChoosedGroups',
 }
 export const fetchDynamicKey = (params: any) => {
   return defHttp.post<any>({
@@ -386,6 +387,20 @@ interface UpdateRuleSortParams {
 export const updateCsRuleSort = (params: UpdateRuleSortParams) => {
   return defHttp.post<void>({
     url: Api.UPDATE_RULE_SORT,
+    params,
+  });
+}
+
+interface GetUnChooseGroupsResponse {
+  unChoosedGroupList: {
+    groupId: string;
+    name: string;
+    status: number;
+  }[];
+}
+export const getUnChooseGroups = (params: { paramId: number }) => {
+  return defHttp.post<GetUnChooseGroupsResponse>({
+    url: Api.GET_UN_CHOOSE_GROUP,
     params,
   });
 }
