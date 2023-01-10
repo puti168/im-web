@@ -35,7 +35,11 @@
   import UploadModal from './comp/UploadModal.vue';
   import RegisterModel from './comp/RegisterModel.vue';
   import { useMessage } from '/@/hooks/web/useMessage';
-
+  const typeMap = {
+    1: '顶部banner',
+    2: '循环文案',
+    3: '开场文案',
+  };
   export default defineComponent({
     name: 'AdvertiseSetting',
     components: {
@@ -70,11 +74,6 @@
       const [registerUploadModal, { openModal: openUploadModal }] = useModal();
 
       function getData(params: any) {
-        const typeMap = {
-          1: '顶部banner',
-          2: '循环文案',
-          3: '开场文案',
-        };
         return getBannerRotation(params).then((res) => {
           const { list = [], total } = res;
           const items = list.map((item) => ({
@@ -120,6 +119,7 @@
             setTimeout(reload, 1000);
           })
           .catch(() => {
+            createMessage.error(`${typeMap[type]}必须有一个开启`);
             record.isEnabled = !checked;
           });
       }

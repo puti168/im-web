@@ -260,6 +260,8 @@ export function updateRotationEnable(params: UpdateRotationEnableParams) {
   return defHttp.post<void>({
     url: Api.UPDATE_ENABLE,
     params,
+  }, {
+    errorMessageMode: 'none',
   });
 }
 
