@@ -1,7 +1,7 @@
 <template>
   <BasicForm @register="formRegister" :model="formModel" @field-value-change="onValueChange" />
   <template v-if="formModel.content">
-    <Image :src="formModel.content" />
+    <Image :width="200" :src="formModel.content" />
   </template>
 </template>
 
