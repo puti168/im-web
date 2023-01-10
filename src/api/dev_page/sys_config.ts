@@ -31,7 +31,7 @@ enum Api {
   UPDATE_REPLAY_SORT = '/backend/conduct/updateSort',
   GET_OTHER_LANG = '/backend/conduct/getOtherLangData',
   UPDATE_ENABLE = '/backend/conduct/updateEnable',
-  UPLOAD_IMAGE = '/backend/fileinfo/uploadImage',
+  UPLOAD_IMAGE = '/third/cs/fileinfo/uploadImage',
 
   /** 客服配置接口 */
   GET_AGENT_SET_LIST = '/backend/customerserviceconfig/getSysCfgParms',

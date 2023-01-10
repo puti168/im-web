@@ -4,7 +4,7 @@ import { DemoParams, DemoListGetResultModel } from './model/tableModel';
 enum Api {
   SESSIONORDER_LIST = '/backend/sessionorder/pageList',
   MESSAGE_LIST = '/backend/chatMessage/pageList',
-  LANG_LIST = '/backend/translation/getLang',
+  LANG_LIST = '/third/cs/getLang',
 }
 
 export const getSessionorderList = (params: DemoParams) => {

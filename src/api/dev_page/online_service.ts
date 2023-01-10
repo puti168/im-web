@@ -24,7 +24,7 @@ enum Api {
   closeOrder = '/backend/chatMessage/closeOrder',
   pageList = '/backend/publicmsg/pageList',
   getConductInfo = '/user/getConductInfo',
-  getLang = '/third/getLang',
+  getLang = '/third/cs/getLang',
   translate = '/third/cs/translate',
 }
 

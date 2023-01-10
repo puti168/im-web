@@ -1,7 +1,7 @@
 import { defHttp } from '/@/utils/http/axios';
 
 enum Api {
-  GetLang = '/backend/translation/getLang',
+  GetLang = '/third/cs/getLang',
 }
 
 export interface LangData {
