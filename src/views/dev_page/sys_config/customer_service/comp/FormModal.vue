@@ -47,44 +47,61 @@
         if (groupList.value.length > 0) {
           return;
         }
+        loadingDetail.value = true;
         getGroupPageList({
           page: 1,
           pageSize: 9999,
-        }).then((res) => {
-          groupList.value = res.items.map((item) => ({
-            id: item.id,
-            name: item.name,
-          }));
-        });
-      }
-
-      function onDataReceive(data) {
-        loadingDetail.value = true;
-        getAgentRuleDetail({
-          ruleId: data.ruleId,
         })
           .then((res) => {
-            const { ruleId, name, paramVal, groupInfos = [] } = res.detailInfo;
-            modelRef.ruleId = ruleId;
-            modelRef.ruleName = name;
-            modelRef.value = +paramVal;
-            modelRef.groupIds = groupInfos.filter((_) => _.status === 1).map((_) => _.groupId);
-            const groups = groupList.value.filter((item) => {
-              return groupInfos.findIndex((_: any) => _.groupId === item.id) > -1;
-            });
-            updateSchema({
-              field: 'groupIds',
-              componentProps: {
-                options: groups.map((group) => ({
-                  value: group.id,
-                  label: group.name,
-                })),
-              },
-            });
+            groupList.value = res.items.map((item) => ({
+              id: item.id,
+              name: item.name,
+            }));
           })
           .finally(() => {
             loadingDetail.value = false;
           });
+      }
+
+      function onDataReceive(data) {
+        if (data) {
+          loadingDetail.value = true;
+          getAgentRuleDetail({
+            ruleId: data.ruleId,
+          })
+            .then((res) => {
+              const { ruleId, name, paramVal, groupInfos = [] } = res.detailInfo;
+              modelRef.ruleId = ruleId;
+              modelRef.ruleName = name;
+              modelRef.value = +paramVal;
+              modelRef.groupIds = groupInfos.filter((_) => _.status === 1).map((_) => _.groupId);
+              const groups = groupList.value.filter((item) => {
+                return groupInfos.findIndex((_: any) => _.groupId === item.id) > -1;
+              });
+              updateSchema({
+                field: 'groupIds',
+                componentProps: {
+                  options: groups.map((group) => ({
+                    value: group.id,
+                    label: group.name,
+                  })),
+                },
+              });
+            })
+            .finally(() => {
+              loadingDetail.value = false;
+            });
+        } else {
+          updateSchema({
+            field: 'groupIds',
+            componentProps: {
+              options: groupList.value.map((group) => ({
+                value: group.id,
+                label: group.name,
+              })),
+            },
+          });
+        }
       }
 
       //监听关闭打开
@@ -96,7 +113,7 @@
             delete modelRef[key];
           }
         } else {
-          props.userData && nextTick(() => onDataReceive(props.userData));
+          nextTick(() => onDataReceive(props.userData));
         }
       }
 
