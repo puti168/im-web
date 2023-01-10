@@ -4,6 +4,7 @@ import {
 } from '/@/components/Table';
 import { getGroupPageList } from '/@/api/dev_page/employee_management';
 import { getLangList } from '/@/api/dev_page/history_record';
+import { formateTime } from '/@/utils/date-formate';
 
 
 export const columns: BasicColumn[] = [
@@ -27,6 +28,9 @@ export const columns: BasicColumn[] = [
     title: '最后登录时间',
     dataIndex: 'lastLoginTime',
     width: 150,
+    customRender: ({ record }) => {
+      return formateTime(record.lastLoginTime);
+    },
   }, {
     title: '最后登录IP',
     dataIndex: 'lastLoginIp',

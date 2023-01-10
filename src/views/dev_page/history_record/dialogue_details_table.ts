@@ -1,11 +1,12 @@
 import { BasicColumn, FormSchema } from '/@/components/Table';
 import dayjs from 'dayjs';
+import { formateTime } from '/@/utils/date-formate';
 export const columns: BasicColumn[] = [
   {
     title: '时间',
     dataIndex: 'createTime',
     customRender: ({ text }) => {
-      return text ? dayjs(Number(text)).format('YYYY-MM-DD HH:mm:ss') : '-';
+      return text ? formateTime(text) : '-';
     },
     width: 120,
   },
@@ -74,6 +75,9 @@ export const columnsAll: BasicColumn[] = [
     title: '发起时间',
     dataIndex: 'createTime',
     width: 200,
+    customRender: ({ record }) => {
+      return formateTime(record.createTime);
+    },
   },
   {
     title: '接入客服',
@@ -85,7 +89,9 @@ export const columnsAll: BasicColumn[] = [
     title: '接入时间',
     dataIndex: 'updateTime',
     width: 200,
-    // slots: { customRender: 'id' },
+    customRender: ({ record }) => {
+      return formateTime(record.updateTime);
+    },
   },
   {
     title: '聊天条数',
