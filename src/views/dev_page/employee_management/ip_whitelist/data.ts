@@ -1,11 +1,6 @@
-import {
-  BasicColumn,
-  FormSchema,
-} from '/@/components/Table';
+import { BasicColumn, FormSchema } from '/@/components/Table';
 
-
- 
- export const columns: BasicColumn[] = [
+export const columns: BasicColumn[] = [
   {
     title: '编号',
     dataIndex: 'code',
@@ -25,14 +20,14 @@ import {
     title: '类型',
     dataIndex: 'type',
     width: 150,
-  }
+  },
 ];
 
 export const schemas: FormSchema[] = [
   {
     field: 'ip',
     component: 'Input',
-    defaultValue:'',
+    defaultValue: '',
     rules: [{ required: true }],
     label: 'IP',
     colProps: {
@@ -42,7 +37,7 @@ export const schemas: FormSchema[] = [
   {
     field: 'remark',
     component: 'InputTextArea',
-    defaultValue:'',
+    defaultValue: '',
     rules: [{ required: true }],
     label: '备注',
     colProps: {
@@ -52,16 +47,19 @@ export const schemas: FormSchema[] = [
   {
     field: 'type',
     component: 'Select',
-    defaultValue:'0',
+    defaultValue: '0',
     rules: [{ required: true }],
-    componentProps:{
-      options:[{
-        label:'白名单',
-        value:'0'
-      },{
-        label:'黑名单',
-        value:'1'
-      }]
+    componentProps: {
+      options: [
+        {
+          label: '白名单',
+          value: '0',
+        },
+        // {
+        //   label: '黑名单',
+        //   value: '1',
+        // },
+      ],
     },
     label: '类型',
     colProps: {
