@@ -41,6 +41,10 @@ export const basicProps = {
   autoSubmitOnEnter: propTypes.bool.def(false),
   submitOnReset: propTypes.bool,
   submitOnChange: propTypes.bool,
+  submitOnChangeFields: {
+    type: Array as PropType<string[]>,
+    default: () => [],
+  },
   size: propTypes.oneOf(['default', 'small', 'large']).def('default'),
   // 禁用表单
   disabled: propTypes.bool,

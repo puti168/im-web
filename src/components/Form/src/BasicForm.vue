@@ -94,6 +94,10 @@
         return { ...props, ...unref(propsRef) } as FormProps;
       });
 
+      const submitOnChangeFields = computed(() => {
+        return getProps.value.submitOnChangeFields;
+      });
+
       const getFormClass = computed(() => {
         return [
           prefixCls,
@@ -248,6 +252,9 @@
         const { validateTrigger } = unref(getBindValue);
         if (!validateTrigger || validateTrigger === 'change') {
           validateFields([key]).catch((_) => {});
+        }
+        if (submitOnChangeFields.value && submitOnChangeFields.value.includes(key)) {
+          handleSubmit();
         }
         emit('field-value-change', key, value);
       }

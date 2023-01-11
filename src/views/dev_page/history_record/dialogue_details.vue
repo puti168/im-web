@@ -1,6 +1,6 @@
 <template>
   <PageWrapper title="对话详细" contentBackground contentClass="p-4">
-    <BasicTable @register="registerTable" v-if="!isMessage">
+    <BasicTable v-if="!isMessage" @register="registerTable">
       <template #bodyCell="{ column, record, text }">
         <template v-if="column.key === 'id'"> ID: {{ record.id }} </template>
         <template v-if="column.key === 'status'">
@@ -82,19 +82,18 @@
     bordered: true,
     showTableSetting: true,
     useSearchForm: true,
-    beforeFetch: (params) => {   
-      
+    beforeFetch: (params) => {
       if (params.time) {
-        
-        params.startTime = params.time[0]
-        params.endTime = params.time[1]
+        params.startTime = params.time[0];
+        params.endTime = params.time[1];
         delete params.time;
       }
       return params;
     },
     formConfig: {
-      labelWidth: 120,
+      labelWidth: 80,
       schemas: searchFormSchema,
+      submitOnChangeFields: ['time'],
     },
   });
 

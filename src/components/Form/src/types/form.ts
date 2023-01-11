@@ -63,6 +63,8 @@ export interface FormProps {
   submitOnReset?: boolean;
   // Submit form on form changing
   submitOnChange?: boolean;
+  // Submit form on form fields changing
+  submitOnChangeFields?: string[];
   // Col configuration for the entire form
   labelCol?: Partial<ColEx>;
   // Col configuration for the entire form
