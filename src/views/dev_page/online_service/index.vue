@@ -226,15 +226,21 @@
               placeholder="输入搜索内容"
               style="width: 200px"
               @search="search"
+              @pressEnter="search"
             />
           </div>
-          <div v-for="item in payListData" @mouseover="item.showSend = true" @mouseout="item.showSend = false">
-            <div class="content">
-              <div class="content-answer margin-bottom">{{ item.title }}</div>
-              <div class="content-answer">{{ item.content }}</div>
+          <template v-if="payListData && payListData.length > 0">
+            <div v-for="item in payListData" @mouseover="item.showSend = true" @mouseout="item.showSend = false">
+              <div class="content">
+                <div class="content-answer margin-bottom">{{ item.title }}</div>
+                <div class="content-answer">{{ item.content }}</div>
+              </div>
+              <div class="send" v-show="item.showSend" @click="sendQuickReplay(item.content)"> 发送 </div>
             </div>
-            <div class="send" v-show="item.showSend" @click="sendQuickReplay(item.content)"> 发送 </div>
-          </div>
+          </template>
+          <template v-else>
+            <div style="height: 100px; line-height: 100px; text-align: center; width: 100%">没有搜到相关数据</div>
+          </template>
         </div>
       </div>
     </div>
@@ -380,7 +386,6 @@
       });
       currItem.trans = data;
       currItem.isTrans = true;
-
     }
   }
   async function toTranslate(message, item) {
@@ -672,13 +677,22 @@
   const payListDataRef = ref();
   const searchValue = ref('');
   const showSend = ref(false);
+
   function search() {
-    if (!currOrderId.value || !searchValue.value) return;
+    if (!currOrderId.value) return;
     quickReplay.pageNum = 0;
     payListData.value = [];
     // todo
     pageListVue();
   }
+  watch(searchValue, (curr) => {
+    console.log(curr, '------curr');
+    if (!curr) {
+      console.log(curr, '------curr---inner');
+      //重新执行请求
+      search();
+    }
+  });
   function sendQuickReplay(content) {
     if (!id.value) return;
     addData(content);
@@ -735,6 +749,7 @@
     } else state.showChat = false;
   }
   async function startChat() {
+    if (state.checkedList.length === 0) return;
     const data = await matchOrders({
       distributorId: userStore.getUserInfo.distributorId,
       csId: userStore.getUserInfo.userId,
