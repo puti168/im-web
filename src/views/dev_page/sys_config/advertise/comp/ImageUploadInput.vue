@@ -1,6 +1,6 @@
 <template>
   <div class="image-upload-input">
-    <Input :value="value" allowClear @change="onInput" />
+    <Input :value="value" allowClear @change="onInput" placeholder="建议图片尺寸：720*340" />
     <Upload name="file" accept=".jpg,.jpeg,.gif,.png,.webp" :showUploadList="false" :before-upload="beforeUpload">
       <Button :loading="uploading"> Click to Upload </Button>
     </Upload>
