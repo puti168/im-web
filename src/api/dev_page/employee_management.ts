@@ -43,7 +43,7 @@ export const saveUSER = (params: DemoParams | any) => {
   if (params.langIds) params.langIds = params.langIds.toString();
   if (params.status) params.status = params.status - 0;
 
-  let result = aesEncr.encryptByAES(JSON.stringify(params));
+  const result = aesEncr.encryptByAES(JSON.stringify(params));
   return defHttp.post<DemoListGetResultModel>({
     url: Api.SAVE_USER,
     params: {
@@ -52,9 +52,11 @@ export const saveUSER = (params: DemoParams | any) => {
   });
 };
 export const updateUSER = (params: DemoParams | any) => {
-  let result = aesEncr.encryptByAES(JSON.stringify(params));
+  if (params.langIds) {
+    params.langIds = params.langIds.toString();
+  }
+  const result = aesEncr.encryptByAES(JSON.stringify(params));
 
-  if (params.langIds) params.langIds = params.langIds.toString();
   return defHttp.post<DemoListGetResultModel>({
     url: Api.UPDATE_USER,
     params: {
@@ -141,7 +143,7 @@ export const getGroupById = (params: DemoParams | any) =>
   });
 
 export const updateMyPassword = (params) => {
-  let result = aesEncr.encryptByAES(JSON.stringify(params));
+  const result = aesEncr.encryptByAES(JSON.stringify(params));
   return defHttp.post<DemoListGetResultModel>({
     url: Api.UPDATE_PASS_WORD,
     params: {
