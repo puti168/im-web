@@ -380,6 +380,7 @@
       });
       currItem.trans = data;
       currItem.isTrans = true;
+
     }
   }
   async function toTranslate(message, item) {
