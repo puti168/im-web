@@ -530,7 +530,6 @@
           content: aesEncr.encryptByAES(msg),
           senderNickName: userStore.getUserInfo.nickname,
           time: Date.now(),
-          staticKey: userStore.getUserInfo.numberStaticKey,
         });
       }
     }
