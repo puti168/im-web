@@ -19,8 +19,8 @@ class WsSocket {
   config = {
     heartbeat: {
       setInterval: null,
-      pingInterval: 20000,
-      pingTimeout: 60000,
+      pingInterval: 60 * 1000, //60s
+      pingTimeout: 180 * 1000, //180s
     },
     reconnect: {
       lockReconnect: false,
@@ -64,11 +64,11 @@ class WsSocket {
     this.events = Object.assign({}, this.defaultEvent, events);
     this.count = 0;
 
-    this.on('connect', (data) => {
-      this.config.heartbeat.pingInterval = data.ping_interval * 1000;
-      this.config.heartbeat.pingTimeout = data.ping_timeout * 1000;
-      this.heartbeat();
-    });
+    // this.on('connect', (data) => {
+    //   this.config.heartbeat.pingInterval = data.ping_interval * 1000;
+    //   this.config.heartbeat.pingTimeout = data.ping_timeout * 1000;
+    //   this.heartbeat();
+    // });
   }
 
   /**
@@ -104,6 +104,16 @@ class WsSocket {
   connection() {
     this.connect == null && this.loadSocket();
     return this;
+  }
+
+  reconnectNormal() {
+    // 没连接上会一直重连，设置延迟避免请求过多
+    clearTimeout(this.config.reconnect.setTimeout);
+
+    this.config.reconnect.setTimeout = setTimeout(() => {
+      this.connection();
+      console.log(`网络连接已断开，正在尝试重新连接...`);
+    }, this.config.reconnect.time);
   }
 
   /**
@@ -155,6 +165,7 @@ class WsSocket {
 
     this.events.onOpen(evt);
 
+    this.heartbeat();
     this.ping();
   }
 
@@ -218,7 +229,7 @@ class WsSocket {
           this.connect.close();
         }
 
-        this.reconnect();
+        this.reconnectNormal();
       } else {
         this.ping();
       }
