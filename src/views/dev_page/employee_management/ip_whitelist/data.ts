@@ -1,11 +1,11 @@
 import { BasicColumn, FormSchema } from '/@/components/Table';
 
 export const columns: BasicColumn[] = [
-  {
-    title: '编号',
-    dataIndex: 'code',
-    width: 150,
-  },
+  // {
+  //   title: '编号',
+  //   dataIndex: 'code',
+  //   width: 150,
+  // },
   {
     title: 'IP',
     dataIndex: 'ip',

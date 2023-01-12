@@ -96,7 +96,7 @@ export const updateIP = (params: DemoParams) =>
     url: Api.UPDATE_IP,
     params,
   });
-export const deleteIP = (params: any[]) =>
+export const deleteIP = (params: { ids: any[] }) =>
   defHttp.post<DemoListGetResultModel>({
     url: Api.DELETE_IP,
     params,
