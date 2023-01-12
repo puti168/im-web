@@ -164,18 +164,22 @@
       function handleOK() {
         validate()
           .then(async () => {
-            const requiredLang = modelRef[defaultLang];
-            if (!requiredLang || !requiredLang.title || !requiredLang.content) {
-              createMessage.warning('请填写默认语言！');
+            const data = supportLangs.map((lang) => {
+              const value = modelRef[lang.id];
+              return {
+                langId: lang.id,
+                title: value ? value.title : '',
+                content: value ? value.content : '',
+              };
+            });
+
+            const isNotComplate =
+              data.filter((item) => {
+                return (item.title && !item.content) || (!item.title && item.content);
+              }).length > 0;
+            if (isNotComplate) {
+              createMessage.warning('请补全信息！');
             } else {
-              const data = supportLangs.map((lang) => {
-                const value = modelRef[lang.id];
-                return {
-                  langId: lang.id,
-                  title: value ? value.title : '',
-                  content: value ? value.content : '',
-                };
-              });
               try {
                 if (contentId.value) {
                   await updateQuestionsAndReply({
