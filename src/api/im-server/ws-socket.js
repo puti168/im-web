@@ -164,7 +164,7 @@ class WsSocket {
     this.lastTime = new Date().getTime();
 
     this.events.onOpen(evt);
-
+    this.config.heartbeat.setInterval && clearTimeout(this.config.heartbeat.setInterval);
     this.heartbeat();
     this.ping();
   }
