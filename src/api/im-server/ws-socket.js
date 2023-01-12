@@ -127,7 +127,7 @@ class WsSocket {
    * @param {Object} evt Websocket 消息
    */
   onParse(evt) {
-    const { csId, content, distributorId, fromId, msgType, sendType, userId, time, orderId, senderNickName } =
+    const { csId, content, distributorId, fromId, msgType, sendType, userId, time, orderId, senderNickName, langId } =
       JSON.parse(evt.data);
 
     return {
@@ -141,6 +141,7 @@ class WsSocket {
       time: time,
       orderId: orderId,
       senderNickName: senderNickName,
+      langId,
     };
   }
 
