@@ -126,7 +126,7 @@
   const FormItem = Form.Item;
   const InputPassword = Input.Password;
   const { t } = useI18n();
-  const { notification, createErrorModal } = useMessage();
+  const { notification, createErrorModal, createMessage } = useMessage();
   const { prefixCls } = useDesign('login');
   const userStore = useUserStore();
 
@@ -176,6 +176,7 @@
         password: data.pwd,
         mode: 'none', //不要默认的错误提示
       });
+
       if (userInfo) {
         notification.success({
           message: t('sys.login.loginSuccessTitle'),
@@ -195,6 +196,7 @@
       //   content: (error as unknown as Error).message || t('sys.api.networkExceptionMsg'),
       //   getContainer: () => document.body.querySelector(`.${prefixCls}`) || document.body,
       // });
+      createMessage.error((error as unknown as Error).message || t('sys.api.networkExceptionMsg'));
     } finally {
       loading.value = false;
     }
