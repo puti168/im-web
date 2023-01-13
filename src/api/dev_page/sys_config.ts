@@ -47,6 +47,8 @@ export const fetchDynamicKey = (params: any) => {
   return defHttp.post<any>({
     url: Api.fetchDynamicKey,
     params,
+  }, {
+    errorMessageMode: 'modal',
   });
 };
 export const getUserConfig = () => {

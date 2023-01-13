@@ -190,11 +190,11 @@
         localStorage.setItem('password', data.pwd);
       }
     } catch (error) {
-      createErrorModal({
-        title: t('sys.api.errorTip'),
-        content: (error as unknown as Error).message || t('sys.api.networkExceptionMsg'),
-        getContainer: () => document.body.querySelector(`.${prefixCls}`) || document.body,
-      });
+      // createErrorModal({
+      //   title: t('sys.api.errorTip'),
+      //   content: (error as unknown as Error).message || t('sys.api.networkExceptionMsg'),
+      //   getContainer: () => document.body.querySelector(`.${prefixCls}`) || document.body,
+      // });
     } finally {
       loading.value = false;
     }

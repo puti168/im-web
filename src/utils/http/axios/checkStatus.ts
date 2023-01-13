@@ -46,6 +46,9 @@ export function checkStatus(
     case 405:
       errMessage = t('sys.api.errMsg405');
       break;
+    case 406:
+      errMessage = t('sys.api.errMsg401');
+      break;
     case 408:
       errMessage = t('sys.api.errMsg408');
       break;
