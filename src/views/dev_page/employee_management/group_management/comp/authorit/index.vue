@@ -5,12 +5,7 @@
       <BasicForm @register="registerForm" :model="modelRef" />
     </div>
     <Spin :spinning="treeLoading">
-      <BasicTree 
-          ref="asyncExpandTreeRef" 
-          :checkable="true"
-          defaultExpandAll
-          @check="handleCheck"
-          :treeData="tree" />
+      <BasicTree ref="asyncExpandTreeRef" :checkable="true" defaultExpandAll @check="handleCheck" :treeData="tree" />
     </Spin>
   </BasicModal>
 </template>
@@ -25,7 +20,7 @@
   import { updateGroup, getGroupById } from '/@/api/dev_page/employee_management';
   import { useMessage } from '/@/hooks/web/useMessage';
   export default defineComponent({
-    components: { BasicModal, BasicForm ,Spin ,BasicTree },
+    components: { BasicModal, BasicForm, Spin, BasicTree },
     props: {
       userData: { type: Object },
     },
@@ -45,21 +40,21 @@
       const [register, { closeModal }] = useModalInner((data) => {
         data && onDataReceive(data);
       });
-      
+
       function handleOK() {
         validate()
           .then(async (res) => {
             console.log(res);
             if (res) {
-              console.log(selectKey,'selectKey');
-              let arr:any = []
-              selectKey.forEach(item => {
-                arr.push({id:item})
-              })
+              console.log(selectKey, 'selectKey');
+              let arr: any = [];
+              selectKey.forEach((item) => {
+                arr.push({ id: item });
+              });
               // setListForKey(menuList.value)
-              res.menuList = arr
+              res.menuList = arr;
               res.id = id.value;
-              console.log(res,'---参数');
+              console.log(res, '---参数');
               await updateGroup(res);
               console.log(modelRef.value);
               emit('reloadTable');
@@ -71,38 +66,41 @@
             console.error(e, 'dsa');
           });
       }
-      let selectKey:any[] = [];
-      let id = ref<string>('')
+      let selectKey: any[] = [];
+      let id = ref<string>('');
       function onDataReceive(data) {
         //初始和表单
         modelRef.value = data;
         id.value = data.id;
         getGroupById({ id: data.id })
-          .then((res:any) => {
+          .then((res: any) => {
             menuList.value = res.menuList;
             modelRef.value.name = res.name;
-            setTreeForkey()
+            setTreeForkey();
           })
           .catch(() => {});
       }
-      function setTreeForkey(){
-        selectKey = []
-        setKeyForList(menuList.value)
+      function setTreeForkey() {
+        selectKey = [];
+        setKeyForList(menuList.value);
         getTree().setCheckedKeys(selectKey);
       }
-      function setKeyForList(list:any[]){
-        list.forEach((item:any) => {
-          if(item.checked) selectKey.push(item.id);
-          if(item.childrens && item.childrens.length > 0) setKeyForList(item.childrens)
-        })
+      function setKeyForList(list: any[]) {
+        list.forEach((item: any) => {
+          if (item.childrens && item.childrens.length > 0) {
+            setKeyForList(item.childrens);
+          } else if (item.checked) {
+            selectKey.push(item.id);
+          }
+        });
       }
-      function setListForKey(list:any[]){
-        list.forEach(item => {
-          if(selectKey.includes(item.id )) item.checked = true;
-          else item.checked = false;
-          if(item.childrens && item.childrens.length > 0) setListForKey(item.childrens)
-        })
-      }
+      // function setListForKey(list: any[]) {
+      //   list.forEach((item) => {
+      //     if (selectKey.includes(item.id)) item.checked = true;
+      //     else item.checked = false;
+      //     if (item.childrens && item.childrens.length > 0) setListForKey(item.childrens);
+      //   });
+      // }
       function getTree() {
         const tree = unref(asyncExpandTreeRef);
         if (!tree) {
@@ -120,22 +118,27 @@
       const asyncExpandTreeRef = ref<Nullable<TreeActionType>>(null);
       const treeLoading = ref(false);
       async function loadTreeData() {
-          treeLoading.value = true;
-          tree.value =  await getMenuList();
-          treeLoading.value = false;
-          // 展开全部
-          nextTick(() => {
-            unref(asyncExpandTreeRef)?.expandAll(true);
-          });
+        treeLoading.value = true;
+        tree.value = await getMenuList();
+        treeLoading.value = false;
+        // 展开全部
+        nextTick(() => {
+          unref(asyncExpandTreeRef)?.expandAll(true);
+        });
+        console.log(tree.value, 'tree data');
       }
-      function handleCheck(data){
-        selectKey = data;
+      function handleCheck(data, { halfCheckedKeys = [] }) {
+        selectKey = [...data, ...halfCheckedKeys];
       }
-      onMounted(()=>{
-        if(tree.value.length <= 0) loadTreeData()
-      })
+      onMounted(() => {
+        if (tree.value.length <= 0) loadTreeData();
+      });
       return {
-        tree,loadTreeData,asyncExpandTreeRef,treeLoading,handleCheck,
+        tree,
+        loadTreeData,
+        asyncExpandTreeRef,
+        treeLoading,
+        handleCheck,
         register,
         schemas,
         registerForm,
