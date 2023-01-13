@@ -29,7 +29,7 @@ export const columns: BasicColumn[] = [
     dataIndex: 'lastLoginTime',
     width: 150,
     customRender: ({ record }) => {
-      return formateTime(record.lastLoginTime);
+      return record.lastLoginTime === -1 ? null : formateTime(record.lastLoginTime);
     },
   }, {
     title: '最后登录IP',
