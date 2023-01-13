@@ -28,6 +28,7 @@ export function checkStatus(
     // Jump to the login page if not logged in, and carry the path of the current page
     // Return to the current page after successful login. This step needs to be operated on the login page.
     case 401:
+    case 406:
       userStore.setToken(undefined);
       errMessage = msg || t('sys.api.errMsg401');
       if (stp === SessionTimeoutProcessingEnum.PAGE_COVERAGE) {
@@ -45,9 +46,6 @@ export function checkStatus(
       break;
     case 405:
       errMessage = t('sys.api.errMsg405');
-      break;
-    case 406:
-      errMessage = t('sys.api.errMsg401');
       break;
     case 408:
       errMessage = t('sys.api.errMsg408');
