@@ -49,12 +49,12 @@ export const schemas: FormSchema[] = [
       options: [
         {
           label: '启用',
-          value: "0",
+          value: "1",
           key: 'VIP0',
         },
         {
           label: '禁用',
-          value: "1",
+          value: "0",
           key: 'VIP1',
         },
       ],
