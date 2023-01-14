@@ -168,13 +168,12 @@
     try {
       loading.value = true;
       console.log(data, '---data---');
-
       const userInfo = await userStore.login({
         distributorId: data.distributorId,
-        secretCode: Number(data.secretCode),
+        secretCode: data.secretCode,
         name: data.userName,
         password: data.pwd,
-        mode: 'none', //不要默认的错误提示
+        mode: 'modal', //不要默认的错误提示
       });
 
       if (userInfo) {
@@ -191,12 +190,12 @@
         localStorage.setItem('password', data.pwd);
       }
     } catch (error) {
+      // console.log(error);
       // createErrorModal({
       //   title: t('sys.api.errorTip'),
       //   content: (error as unknown as Error).message || t('sys.api.networkExceptionMsg'),
       //   getContainer: () => document.body.querySelector(`.${prefixCls}`) || document.body,
       // });
-      createMessage.error((error as unknown as Error).message || t('sys.api.networkExceptionMsg'));
     } finally {
       loading.value = false;
     }
