@@ -215,7 +215,7 @@
               <copy-outlined @click="copy(userInfo.inviteCode)" />
             </div>
             <div class="user-message-detail-line">
-              <div>用户IP:{{ 123 }}</div>
+              <div>用户IP:{{ userInfo.ip }}</div>
             </div>
           </div>
         </div>
