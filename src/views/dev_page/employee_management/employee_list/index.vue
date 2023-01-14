@@ -3,7 +3,7 @@
     <BasicTable @register="registerTable" @edit-change="onEditChange">
       <template #bodyCell="{ column, record, text }">
         <template v-if="column.key === 'status'">
-          {{ { 0: '启用', 1: '禁用' }[text] }}
+          {{ { 0: '禁用', 1: '启用' }[text] }}
         </template>
         <template v-if="column.key === 'action'">
           <a-button class="mr-1" type="warning" @click="send(record)">编辑</a-button>
