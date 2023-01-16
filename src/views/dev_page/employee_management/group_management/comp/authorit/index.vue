@@ -67,6 +67,7 @@
           });
       }
       let selectKey: any[] = [];
+      let selectLeafKey: string[] = [];
       let id = ref<string>('');
       function onDataReceive(data) {
         //初始和表单
@@ -82,17 +83,26 @@
       }
       function setTreeForkey() {
         selectKey = [];
+        selectLeafKey = [];
         setKeyForList(menuList.value);
-        getTree().setCheckedKeys(selectKey);
+        getTree().setCheckedKeys(selectLeafKey);
       }
       function setKeyForList(list: any[]) {
+        let hasChildChecked = false;
         list.forEach((item: any) => {
           if (item.childrens && item.childrens.length > 0) {
-            setKeyForList(item.childrens);
+            hasChildChecked = setKeyForList(item.childrens);
+            if (hasChildChecked) {
+              selectKey.push(item.id);
+            }
           } else if (item.checked) {
             selectKey.push(item.id);
+            selectLeafKey.push(item.id);
+            hasChildChecked = true;
           }
         });
+
+        return hasChildChecked;
       }
       // function setListForKey(list: any[]) {
       //   list.forEach((item) => {
